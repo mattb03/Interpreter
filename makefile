@@ -22,9 +22,6 @@ test:
 run:
 	$(JAVA) $(JFLAGS) havabol.HavaBol p1Input.txt
 
-run2:
-	$(JAVA) $(JFLAGS) havabol.HavaBol p2Input.txt
-
 out1:
 	$(JAVA) $(JFLAGS) havabol.HavaBol error1.txt
 
