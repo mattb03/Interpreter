@@ -1,3 +1,8 @@
+******IMPORTANT NOTE*************
+    # Before you get started you must create an empty "bin" directory as it doesnt exist
+    # to do this on command line:   $ mkdir bin
+***********************************
+
 In order to create the .class files in the /bin directory
 
     $ make 
