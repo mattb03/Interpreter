@@ -1,0 +1,37 @@
+java -classpath bin havabol.HavaBol error3.txt
+primClassif subClassif   tokenStr
+1 Int x;
+OPERAND     IDENTFIER    Int
+OPERAND     IDENTFIER    x
+SEPARATOR   -            ;
+2 Float pike;
+OPERAND     IDENTFIER    Float
+OPERAND     IDENTFIER    pike
+SEPARATOR   -            ;
+3 String yStr;
+OPERAND     IDENTFIER    String
+OPERAND     IDENTFIER    yStr
+SEPARATOR   -            ;
+5 x = 11;
+OPERAND     IDENTFIER    x
+OPERATOR    -            =
+OPERAND     INTEGER      11
+SEPARATOR   -            ;
+6 x = x + 1;
+OPERAND     IDENTFIER    x
+OPERATOR    -            =
+OPERAND     IDENTFIER    x
+OPERATOR    -            +
+OPERAND     INTEGER      1
+SEPARATOR   -            ;
+7 pike = 3.14|;
+OPERAND     IDENTFIER    pike
+OPERATOR    -            =
+********** ERROR **********
+MALFORMED_NUM  3.14|  at line 7, column 8
+java.lang.Exception
+	at havabol.Scanner.handleErrors(Scanner.java:165)
+	at havabol.Scanner.process(Scanner.java:70)
+	at havabol.Scanner.setCurrentToken(Scanner.java:293)
+	at havabol.Scanner.getNext(Scanner.java:281)
+	at havabol.HavaBol.main(HavaBol.java:36)

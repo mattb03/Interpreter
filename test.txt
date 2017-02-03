@@ -1,0 +1,36 @@
+String varA, varB;
+
+Float pi = 3.14;
+Bool isHere = T;
+
+
+varA += varB;
+
+
+Int x;
+if x notin nums:
+
+else if x in nums:
+    endif
+
+
+else if x or y and z or q:
+
+else:
+    for i in blah:
+
+
+
+
+
+
+
+z
+
+
+
+
+" \"  "
+
+
+
