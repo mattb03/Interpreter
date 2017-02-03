@@ -1,8 +1,8 @@
-In order to create the .class files and the /bin directory
+In order to create the .class files in the /bin directory
 
     $ make 
 
-In order to clean .class files and /bin directory
+In order to clean .class files in the /bin directory
     $make clean
 
 In order to run the different cases:
