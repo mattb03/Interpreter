@@ -11,7 +11,7 @@ public class Scanner {
     public int col = 1;
     public int line = 1;
     public boolean exit;
-    public boolean str;
+    //public boolean str;
     public boolean opCombine;
     public String lines[];
     public int lastLine;
@@ -22,6 +22,7 @@ public class Scanner {
     private final static String numbers = "0123456789";
     public static final String MALFORMED_NUM = "MALFORMED_NUM";
     public static final String NON_TERMINATED_STRING = "NON_TERMINATED_STRING";
+    public static final String INVALID_OPERATOR = "INVALID_OPERATOR";
 
     public Scanner(String SourceFileNm, SymbolTable symbolTable) throws IOException, Exception
     {
@@ -86,12 +87,25 @@ public class Scanner {
             // if it got this far it must be an identifier or and keyword operator
             this.idEval(value);
         }
-        // logic to handle concatenation of operators ie  <=
+        // logic to handle concatenation of operators ie  <=, >=, !=, ^, ==
         if (this.nextToken.primClassif == this.nextToken.OPERATOR && this.currentToken.primClassif == this.currentToken.OPERATOR)
         {
             this.currentToken.tokenStr += this.nextToken.tokenStr;
             this.opCombine = true;
             this.getNext();
+            this.opCombine = true;
+        }
+        if (this.opCombine)
+        {
+            String str = this.currentToken.tokenStr;
+            if ((str.length() == 2) && (str.equals("<=") || str.equals(">=") || str.equals("!=") ||str.equals("==")))
+            {
+                this.opCombine = false;
+            }
+            else
+            {
+                this.handleErrors(str, INVALID_OPERATOR);
+            }
         }
     }
    /**
@@ -202,8 +216,18 @@ public class Scanner {
     */
     public void handleErrors(String value, String errVal) throws Exception
     {
+        int col;
+        if (errVal.equals(INVALID_OPERATOR))
+        {
+            col = this.currentToken.iSourceLineNr;
+        }
+        else
+        {
+            col = this.col;
+
+        }
         System.out.println("********** ERROR **********");
-        System.out.printf("%s  %s  at line %d, column %d\n", errVal, value, this.line, this.col);
+        System.out.printf("%s  %s  at line %d, column %d\n", errVal, value, this.line, col);
         throw new Exception();
     }
 
