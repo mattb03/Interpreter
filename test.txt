@@ -4,12 +4,11 @@ String varA, varB;
 
 Float pi = 3.14;
 
-x and or asdfasdfasdf
 
 Bool isHere = T;
 
 
-varA += varB;
+varA !! varB;
 
 
 Int x;
@@ -25,7 +24,7 @@ else:
     for i in blah:
 
 
-varB !! varC;
+varB != varC;
 
 
 

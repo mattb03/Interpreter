@@ -219,7 +219,7 @@ public class Scanner {
         int col;
         if (errVal.equals(INVALID_OPERATOR))
         {
-            col = this.currentToken.iSourceLineNr;
+            col = this.currentToken.iColPos;
         }
         else
         {
@@ -371,4 +371,3 @@ public class Scanner {
         this.process(value);
     }
 }
-//adsfasdfasdfasdfasdf
