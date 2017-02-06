@@ -50,7 +50,7 @@ public class Scanner {
         // first val of token a quote? then its a string
         if (value.charAt(0) == '"' || value.charAt(0) == '\'')
         {
-            this.strEval();
+            this.strEval(value);
         }
          // is first val a number?
         else if (this.numbers.indexOf(value.charAt(0)) != -1)
@@ -91,7 +91,7 @@ public class Scanner {
         if (this.nextToken.primClassif == this.nextToken.OPERATOR && this.currentToken.primClassif == this.currentToken.OPERATOR)
         {
             this.currentToken.tokenStr += this.nextToken.tokenStr;
-            this.opCombine = true;
+            //this.opCombine = true;
             this.getNext();
             this.opCombine = true;
         }
@@ -175,8 +175,49 @@ public class Scanner {
     *@return void - nothing to be returned
     *<p>
     */
-    public void strEval()
+    public void strEval(String value)
     {
+
+        char array[] = value.toCharArray();
+        array[0] = 0x0;
+        array[array.length-1] = 0x0;
+        for (int i=0; i < array.length; i++)
+        {
+            if (array[i] =='\\' && array[i+1] == 't')
+            {
+                array[i] = 0x00;
+                array[i+1] = 0x09;
+                i++;
+            }
+            else if (array[i] == '\\' && array[i+1] == 'n')
+            {
+                array[i] = 0x00;
+                array[i+1] = 0x0a;
+                i++;
+            }
+            else if (array[i] == '\\' && array[i+1] == '\\')
+            {
+                array[i] = 0x00;
+                i++;
+            }
+            else if (array[i] == '\\' && array[i+1] == 'a')
+            {
+                array[i] = 0x00;
+                array[i+1] = 0x07;
+                i++;
+            }
+            else if (array[i] == '\\' && array[i+1] == '\'')
+            {
+                array[i] = 0x00;
+                i++;
+            }
+            else if (array[i] == '\\' && array[i+1] == '\"')
+            {
+                array[i] = 0x00;
+                i++;
+            }
+        }
+        this.nextToken.tokenStr = String.valueOf(array);
         this.nextToken.primClassif = this.nextToken.OPERAND;
         this.nextToken.subClassif = this.nextToken.STRING;
     }
@@ -235,7 +276,7 @@ public class Scanner {
     {
         if (this.nextToken != null && !this.opCombine)
             this.currentToken = this.nextToken;
-        this.opCombine = false;
+        //this.opCombine = false;
         String retVal = "";
         int i;
         // if global exit state is true? return empty string

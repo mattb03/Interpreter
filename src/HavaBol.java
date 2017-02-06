@@ -38,9 +38,9 @@ public class HavaBol
             {
                 //System.out.print(scan.currentToken);
                 scan.currentToken.printToken();
-                scan.nextToken.printToken();
+                //scan.nextToken.printToken();
 
-                System.out.println();
+                //System.out.println();
             }
         }
         catch (Exception e)

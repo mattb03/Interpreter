@@ -119,6 +119,57 @@ public class Token
         System.out.printf("%-11s %-12s %s\n"
             , primClassifStr
             , subClassifStr
-            , tokenStr);
+            , this.parseString(this));
+    }
+
+    public String hexPrint(int indent, String str)
+    {
+        StringBuilder retStr = new StringBuilder();
+        int len = str.length();
+        char[] charray = str.toCharArray();
+        char ch;
+        // print each character string
+        for (int i = 0; i < len; i++)
+        {
+            ch = charray[i];
+            if (ch == 0x00) // ignore nulls
+                ;
+            else if (ch > 31 && ch < 127) // ASCII printable charcters
+                retStr.append(ch);
+            else
+               retStr.append(". ");
+        }
+        retStr.append("\n");
+        // indent the second line to the number of specified spaces
+        for (int i = 0; i < indent; i++)
+        {
+            retStr.append(" ");
+        }
+        // print the second line. Non-printable characters will be shown as
+        // their hex value. Printable will simply be a space
+        for (int i = 0; i < len; i++)
+        {
+            ch = charray[i];
+            // only deal with the printable characters
+            if (ch > 31 && ch < 127) // ASCII printable characters
+                retStr.append(" ");
+            else if (ch == 0x00)  // ignore nulls
+                ;
+            else
+                retStr.append(String.format("%02X", (int)ch));
+        }
+        return retStr.toString();
+    }
+
+    private String parseString(Token tok)
+    {
+        if (tok.subClassif == STRING)
+        {
+            return this.hexPrint(25, this.tokenStr);
+        }
+        else
+        {
+            return tok.tokenStr;
+        }
     }
 }
