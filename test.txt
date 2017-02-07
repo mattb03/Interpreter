@@ -1,11 +1,11 @@
-Int x = 100;
-x = 200;
 
-String weird;
-weird = "\tTX\tTexas\n";
-
-String str = "Chris"
-
-str = "\t\tblah\tblah\n\n";
+Int a = 100;
+a = a * 300 + 10;
+String x = "\\\\ ";
 
 
+String name = "Chris";
+
+//name = name # " Buckner";
+
+print (name);

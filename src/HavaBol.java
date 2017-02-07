@@ -36,11 +36,14 @@ public class HavaBol
             //scan.nextToken.printToken();
             while (! scan.getNext().isEmpty())
             {
-                //System.out.print(scan.currentToken);
-                scan.currentToken.printToken();
-                //scan.nextToken.printToken();
-
-                //System.out.println();
+                try
+                {
+                  scan.currentToken.printToken();
+                }
+                catch (NullPointerException e)
+                {
+                  continue;
+                }
             }
         }
         catch (Exception e)

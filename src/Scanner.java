@@ -11,8 +11,8 @@ public class Scanner {
     public int col = 1;
     public int line = 1;
     public boolean exit;
-    //public boolean str;
     public boolean opCombine;
+    public boolean aComment;
     public String lines[];
     public int lastLine;
     private final static String operators = "+-*/<>!=#^";
@@ -33,6 +33,7 @@ public class Scanner {
         this.exit = false;
         this.lastLine = -1;
         this.opCombine = false;
+        this.aComment = false;
         this.getNext();
 
     }
@@ -47,6 +48,7 @@ public class Scanner {
     */
     public void process(String value) throws Exception
     {
+        //System.out.println(this.nextToken.tokenStr);
         // first val of token a quote? then its a string
         if (value.charAt(0) == '"' || value.charAt(0) == '\'')
         {
@@ -88,10 +90,9 @@ public class Scanner {
             this.idEval(value);
         }
         // logic to handle concatenation of operators ie  <=, >=, !=, ^, ==
-        if (this.nextToken.primClassif == this.nextToken.OPERATOR && this.currentToken.primClassif == this.currentToken.OPERATOR)
+        if (this.currentToken != null && this.nextToken.primClassif == this.nextToken.OPERATOR && this.currentToken.primClassif == this.currentToken.OPERATOR)
         {
             this.currentToken.tokenStr += this.nextToken.tokenStr;
-            //this.opCombine = true;
             this.getNext();
             this.opCombine = true;
         }
@@ -274,9 +275,9 @@ public class Scanner {
 
     public String getNext() throws Exception
     {
+        boolean finCom = false;
         if (this.nextToken != null && !this.opCombine)
             this.currentToken = this.nextToken;
-        //this.opCombine = false;
         String retVal = "";
         int i;
         // if global exit state is true? return empty string
@@ -292,35 +293,53 @@ public class Scanner {
             this.exit = true;
             return " ";
         }
-        // try to run thru entire file buffer
+        // try to run thru entire file buffer until we hit something that is a char we can use
         for (i = 0; i < this.buffer.length(); i++)
         {
             char c = this.buffer.charAt(i);
-            // if we hit a line feed, increment line num and set col num to one
-            if (c == '\n')
+            if (c == '/' && this.buffer.charAt(i+1) == '/')
+            {
+                this.aComment = true;
+                i++;
+            }
+            else if (c == '\n' && !this.aComment)
             {
                 this.line++;
                 this.col = 1;
             }
-            // else we hit space or tab, increment col num by one
+            else if (c == '\n' && this.aComment)
+            {
+                this.aComment = false;
+                finCom = true;
+            }
             else if (c == ' ' || c == '\t')
             {
                 this.col++;
             }
-            // we hit some other char besides \n \t or space, stop running thru buffer
+            else if (this.aComment)
+            {
+                ;
+            }
             else
             {
                 break;
             }
         }
-        // chop off part of buffer we just ran thru
+        // resize buffer (chop off what we just ran thru)
         this.buffer = this.buffer.substring(i);
+        // if we have a completed comment are there is just one char left in buffer set EOF
+        if (finCom && this.buffer.length() < 2)
+        {
+            this.nextToken = new Token();
+            this.nextToken.primClassif = this.nextToken.EOF;
+            this.nextToken.subClassif = this.nextToken.VOID;
+            this.exit = true;
+            return " ";
+        }
         // start running thru rest of buffer
         for (i = 0; i < this.buffer.length(); i++)
         {
-            // we will look at first char of buffer
             char c = this.buffer.charAt(i);
-            // add it to our return val (token)
             retVal += c;
             // if char is a delimiter
             if (this.delimiters.indexOf(c) != -1)
@@ -328,14 +347,20 @@ public class Scanner {
                 // if first char in our run thru the remaining buffer
                 if (i == 0)
                 {
+                    if (this.buffer.charAt(0) == '/' && this.buffer.charAt(1) == '/')
+                    {
+                        this.aComment = true;
+                        continue;
+                    }
                     // if this first char is a quote
                     if (retVal.charAt(0) == '"' || retVal.charAt(0) == '\'') // if a quote, add to retVal
                     {
-                        // keep going thru buffer
                         continue;
                     }
                     // chop off one char from beginning of buffer
                     this.buffer = this.buffer.substring(1);
+                    if (this.aComment)
+                        this.buffer = this.buffer.substring(1);
                 }
                 // if not the first char in our run thru buffer (aka first char in our token)
                 else
@@ -353,7 +378,6 @@ public class Scanner {
                                 retVal = retVal.substring(0, retVal.length());
                                 // chop this piece off front of our buffer
                                 this.buffer = this.buffer.substring(retVal.length());
-                                // break out of this loop; stop iterating
                                 break;
                             }
                         }
@@ -363,10 +387,8 @@ public class Scanner {
                         {
                             // set col num to this token's length
                             this.col += retVal.length();
-                            // throw appropriate exception
                             this.handleErrors(retVal, NON_TERMINATED_STRING);
                         }
-                        // not first char, first char is a quote, keep going(building our token)
                         continue;
                     }
                     // not on first char in our current buffer, but we didnt hit any above conditions, we will
@@ -375,8 +397,8 @@ public class Scanner {
                     // chop our built up return val off the front of the buffer
                     this.buffer = this.buffer.substring(retVal.length());
                 }
-                // when we finally get here we must break out because our string(token) is now built
-                break;
+                if (!this.aComment)
+                    break;
             }
         }
         // our current line num is NOT equal to our last line num
@@ -395,9 +417,9 @@ public class Scanner {
             this.lastLine = this.line;
         }
         // call the setCurrentToken method to evaulate and set the token or throw an exception
-        this.setToken(retVal);
+        if (!this.aComment)
+            this.setToken(retVal);
 
-        //this.currentToken = this.nextToken;
 
         // update col num by adding the length of our current token to it.
         this.col += retVal.length();
