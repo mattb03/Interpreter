@@ -177,7 +177,7 @@ public class Scanner {
     *@return void - nothing to be returned
     *<p>
     */
-    public void strEval(String value)
+    public void strEval(String value) throws Exception
     {
 
         char array[] = value.toCharArray();
@@ -219,7 +219,13 @@ public class Scanner {
                 i++;
             }
         }
-        this.nextToken.tokenStr = String.valueOf(array);
+        String newStr = String.valueOf(array);
+        //System.out.println(array[array.length-2]);
+        if (array[array.length-2] == '\\' && array[array.length-3] != 0x00)
+        {
+            this.handleErrors(newStr, NON_TERMINATED_STRING);
+        }
+        this.nextToken.tokenStr = newStr;
         this.nextToken.primClassif = this.nextToken.OPERAND;
         this.nextToken.subClassif = this.nextToken.STRING;
     }
@@ -373,15 +379,10 @@ public class Scanner {
                         // and if the current char matches our beginning quote char
                         if (c == retVal.charAt(0))
                         {
-                            // and if the char before it is NOT a backslash (escaping)
-                            if (retVal.charAt(i - 1) != '\\')
-                            {
-                                // make this our return val (token)
-                                retVal = retVal.substring(0, retVal.length());
-                                // chop this piece off front of our buffer
-                                this.buffer = this.buffer.substring(retVal.length());
-                                break;
-                            }
+                            retVal = retVal.substring(0, retVal.length());
+                            // chop this piece off front of our buffer
+                            this.buffer = this.buffer.substring(retVal.length());
+                            break;
                         }
                         // not first char in our buffer(aka our token), first char starts with a quote
                         // and char is a line feed

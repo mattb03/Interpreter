@@ -8,4 +8,8 @@ if x == 100:
     print("BOOM");
 
 // Simple if
-print("hello world");
+print("hello\t\tworld\n");
+
+
+String test = "this is the newline char:\t\t\\n\n\t\tFour backslashes:\t\\\\\\\\";
+
