@@ -93,18 +93,19 @@ public class Scanner {
         if (this.currentToken != null && this.nextToken.primClassif == this.nextToken.OPERATOR && this.currentToken.primClassif == this.currentToken.OPERATOR)
         {
             this.currentToken.tokenStr += this.nextToken.tokenStr;
-            this.getNext();
             this.opCombine = true;
+            this.getNext();
         }
         if (this.opCombine)
         {
             String str = this.currentToken.tokenStr;
-            if ((str.length() == 2) && (str.equals("<=") || str.equals(">=") || str.equals("!=") ||str.equals("==")))
+            if ((str.length() > 1 ) && (str.equals("<=") || str.equals(">=") || str.equals("!=") || str.equals("==")))
             {
                 this.opCombine = false;
             }
             else
             {
+                System.out.println();
                 this.handleErrors(str, INVALID_OPERATOR);
             }
         }
@@ -311,6 +312,7 @@ public class Scanner {
             {
                 this.aComment = false;
                 finCom = true;
+                this.line++;
             }
             else if (c == ' ' || c == '\t')
             {
@@ -318,7 +320,7 @@ public class Scanner {
             }
             else if (this.aComment)
             {
-                ;
+                continue;
             }
             else
             {

@@ -19,6 +19,9 @@ Token.class:
 test:
 	$(JAVA) $(JFLAGS) havabol.HavaBol test.txt
 
+test2:
+	$(JAVA) $(JFLAGS) havabol.HavaBol test.txt.bak
+
 run:
 	$(JAVA) $(JFLAGS) havabol.HavaBol p1Input.txt
 

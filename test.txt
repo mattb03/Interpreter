@@ -1,11 +1,11 @@
-
-Int a = 100;
-a = a * 300 + 10;
-String x = "\\\\ ";
-
-
 String name = "Chris";
+x = 100 * 200;
+if x <= 1000:
+    print();
+//     fj   =-  
+hello;
+if x == 100:
+    print("BOOM");
 
-//name = name # " Buckner";
-
-print (name);
+// Simple if
+print("hello world");
