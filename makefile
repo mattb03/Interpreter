@@ -10,11 +10,23 @@ HavaBol.class: Scanner.class
 Scanner.class: Token.class SymbolTable.class
 	$(JCC) $(JCFLAGS) src/Scanner.java
 
-SymbolTable.class:
-	$(JCC) $(JCFLAGS) src/SymbolTable.java
-
 Token.class:
 	$(JCC) $(JCFLAGS) src/Token.java
+
+SymbolTable.class:  STEntry.class STControl.class STFunction.class STIdentifier.class
+	$(JCC) $(JCFLAGS) src/SymbolTable.java
+
+STEntry.class:
+	$(JCC) $(JCFLAGS) src/STEntry.java
+
+STControl.class:
+	$(JCC) $(JCFLAGS) src/STControl.java
+
+STFunction.class:
+	$(JCC) $(JCFLAGS) src/STFunction.java
+
+STIdentifier.class:
+	$(JCC) $(JCFLAGS) src/STIdentifier.java
 
 test:
 	$(JAVA) $(JFLAGS) havabol.HavaBol test.txt
@@ -28,10 +40,10 @@ run:
 out1:
 	$(JAVA) $(JFLAGS) havabol.HavaBol error1.txt
 
-out2: 
+out2:
 	$(JAVA) $(JFLAGS) havabol.HavaBol error2.txt
 
-out3: 
+out3:
 	$(JAVA) $(JFLAGS) havabol.HavaBol error3.txt
 
 clean:
