@@ -220,7 +220,6 @@ public class Scanner {
             }
         }
         String newStr = String.valueOf(array);
-        //System.out.println(array[array.length-2]);
         if (array[array.length-2] == '\\' && array[array.length-3] != 0x00)
         {
             this.handleErrors(newStr, NON_TERMINATED_STRING);
@@ -282,11 +281,11 @@ public class Scanner {
 
     public String getNext() throws Exception
     {
+        int i;
+        String retVal = "";
         boolean finCom = false;
         if (this.nextToken != null && !this.opCombine)
             this.currentToken = this.nextToken;
-        String retVal = "";
-        int i;
         // if global exit state is true? return empty string
         if (this.exit == true)
             return "";
@@ -376,13 +375,17 @@ public class Scanner {
                     // if the first char is our return val(token) was a quote
                     if (retVal.charAt(0) == '"' || retVal.charAt(0) == '\'')
                     {
-                        // and if the current char matches our beginning quote char
                         if (c == retVal.charAt(0))
                         {
-                            retVal = retVal.substring(0, retVal.length());
-                            // chop this piece off front of our buffer
-                            this.buffer = this.buffer.substring(retVal.length());
-                            break;
+                            // and if the char before it is NOT a backslash (escaping)
+                            if (retVal.charAt(i -1) != '\\' || (retVal.charAt(i-2) == '\\' && retVal.charAt(i-1) == '\\'))
+                            {
+                                // make this our return val (token)
+                                retVal = retVal.substring(0, retVal.length());
+                                // chop this piece off front of our buffer
+                                this.buffer = this.buffer.substring(retVal.length());
+                                break;
+                            }
                         }
                         // not first char in our buffer(aka our token), first char starts with a quote
                         // and char is a line feed
@@ -419,7 +422,6 @@ public class Scanner {
             // set the lastLine num equal to the current line num
             this.lastLine = this.line;
         }
-        // call the setCurrentToken method to evaulate and set the token or throw an exception
         if (!this.aComment)
             this.setToken(retVal);
 

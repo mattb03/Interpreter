@@ -1,3 +1,20 @@
+String test = "  \\";
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 String name = "Chris";
 x = 100 * 200;
 if x <= 1000:
@@ -11,5 +28,7 @@ if x == 100:
 print("hello\t\tworld\n");
 
 
-String test = "this is the newline char:\t\t\\n\n\t\tFour backslashes:\t\\\\\\\\";
+String test = "this is the newline char:\t\t\\n\n\t\tFour backslashes:\t \\";
 
+
+test = "  he said \"Hello\"\n";
