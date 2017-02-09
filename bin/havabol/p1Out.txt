@@ -1,0 +1,125 @@
+java -classpath bin havabol.HavaBol p1Input.txt
+primClassif subClassif   tokenStr
+1 Int x;
+OPERAND     IDENTFIER    Int
+OPERAND     IDENTFIER    x
+SEPARATOR   -            ;
+2 Float pi;
+OPERAND     IDENTFIER    Float
+OPERAND     IDENTFIER    pi
+SEPARATOR   -            ;
+3 String yStr;
+OPERAND     IDENTFIER    String
+OPERAND     IDENTFIER    yStr
+SEPARATOR   -            ;
+4 x = 11;
+OPERAND     IDENTFIER    x
+OPERATOR    -            =
+OPERAND     INTEGER      11
+SEPARATOR   -            ;
+5 x = x + 1;
+OPERAND     IDENTFIER    x
+OPERATOR    -            =
+OPERAND     IDENTFIER    x
+OPERATOR    -            +
+OPERAND     INTEGER      1
+SEPARATOR   -            ;
+6 pi = 3.14;
+OPERAND     IDENTFIER    pi
+OPERATOR    -            =
+OPERAND     FLOAT        3.14
+SEPARATOR   -            ;
+7 print ("x1=", x);
+OPERAND     IDENTFIER    print
+SEPARATOR   -            (
+OPERAND     STRING       "x1="
+SEPARATOR   -            ,
+OPERAND     IDENTFIER    x
+SEPARATOR   -            )
+SEPARATOR   -            ;
+8 print ("pi=", pi);
+OPERAND     IDENTFIER    print
+SEPARATOR   -            (
+OPERAND     STRING       "pi="
+SEPARATOR   -            ,
+OPERAND     IDENTFIER    pi
+SEPARATOR   -            )
+SEPARATOR   -            ;
+10 yStr = 'Hello';
+OPERAND     IDENTFIER    yStr
+OPERATOR    -            =
+OPERAND     STRING       'Hello'
+SEPARATOR   -            ;
+11 print ("yStr=", yStr);
+OPERAND     IDENTFIER    print
+SEPARATOR   -            (
+OPERAND     STRING       "yStr="
+SEPARATOR   -            ,
+OPERAND     IDENTFIER    yStr
+SEPARATOR   -            )
+SEPARATOR   -            ;
+13 yStr = "Can't";
+OPERAND     IDENTFIER    yStr
+OPERATOR    -            =
+OPERAND     STRING       "Can't"
+SEPARATOR   -            ;
+14 print ("yStr=", yStr);
+OPERAND     IDENTFIER    print
+SEPARATOR   -            (
+OPERAND     STRING       "yStr="
+SEPARATOR   -            ,
+OPERAND     IDENTFIER    yStr
+SEPARATOR   -            )
+SEPARATOR   -            ;
+16 x = 10*3 + 7;
+OPERAND     IDENTFIER    x
+OPERATOR    -            =
+OPERAND     INTEGER      10
+OPERATOR    -            *
+OPERAND     INTEGER      3
+OPERATOR    -            +
+OPERAND     INTEGER      7
+SEPARATOR   -            ;
+17 if x > 20:
+OPERAND     IDENTFIER    if
+OPERAND     IDENTFIER    x
+OPERATOR    -            >
+OPERAND     INTEGER      20
+SEPARATOR   -            :
+18     print ("x=", x);
+OPERAND     IDENTFIER    print
+SEPARATOR   -            (
+OPERAND     STRING       "x="
+SEPARATOR   -            ,
+OPERAND     IDENTFIER    x
+SEPARATOR   -            )
+SEPARATOR   -            ;
+19     yStr = "yes";
+OPERAND     IDENTFIER    yStr
+OPERATOR    -            =
+OPERAND     STRING       "yes"
+SEPARATOR   -            ;
+20 else:
+OPERAND     IDENTFIER    else
+SEPARATOR   -            :
+21    print ("x is low");
+OPERAND     IDENTFIER    print
+SEPARATOR   -            (
+OPERAND     STRING       "x is low"
+SEPARATOR   -            )
+SEPARATOR   -            ;
+22 endif;
+OPERAND     IDENTFIER    endif
+SEPARATOR   -            ;
+24 yStr = 'Can\'t wait';
+OPERAND     IDENTFIER    yStr
+OPERATOR    -            =
+OPERAND     STRING       'Can\'t wait'
+SEPARATOR   -            ;
+25 print (yStr);
+OPERAND     IDENTFIER    print
+SEPARATOR   -            (
+OPERAND     IDENTFIER    yStr
+SEPARATOR   -            )
+SEPARATOR   -            ;
+EOF         -            
