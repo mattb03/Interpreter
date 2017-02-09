@@ -18,11 +18,13 @@ public class Scanner {
     private final static String operators = "+-*/<>!=#^";
     private final static String separators = "():;[],";
     private final static String delimiters = " \t;:()\'\"=!<>+-*/[]#^\n,";
+    private final static String escChars = "\"\'\\nat";
     private final static String letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private final static String numbers = "0123456789";
     public static final String MALFORMED_NUM = "MALFORMED_NUM";
     public static final String NON_TERMINATED_STRING = "NON_TERMINATED_STRING";
     public static final String INVALID_OPERATOR = "INVALID_OPERATOR";
+    public static final String INVALID_ESC = "ILLEGAL_ESCAPE_CHARACTER";
 
     public Scanner(String SourceFileNm, SymbolTable symbolTable) throws IOException, Exception
     {
@@ -185,6 +187,10 @@ public class Scanner {
         array[array.length-1] = 0x0;
         for (int i=0; i < array.length; i++)
         {
+            if (array[i] == '\\' && this.escChars.indexOf(array[i+1]) == -1)
+            {
+                this.handleErrors(value, INVALID_ESC);
+            }
             if (array[i] =='\\' && array[i+1] == 't')
             {
                 array[i] = 0x00;
@@ -219,12 +225,7 @@ public class Scanner {
                 i++;
             }
         }
-        String newStr = String.valueOf(array);
-        if (array[array.length-2] == '\\' && array[array.length-3] != 0x00)
-        {
-            this.handleErrors(newStr, NON_TERMINATED_STRING);
-        }
-        this.nextToken.tokenStr = newStr;
+        this.nextToken.tokenStr = String.valueOf(array);
         this.nextToken.primClassif = this.nextToken.OPERAND;
         this.nextToken.subClassif = this.nextToken.STRING;
     }
