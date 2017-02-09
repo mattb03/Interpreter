@@ -17,6 +17,7 @@ In order to run the different cases:
     $ make out2 
     $ make out3 
     $ make test
+    $ make test2   (*this is Clarks test input*)
 
 To test different input:
     modify test.txt and then run "make test"
