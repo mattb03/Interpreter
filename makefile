@@ -10,11 +10,11 @@ HavaBol.class: Scanner.class
 Scanner.class: Token.class SymbolTable.class
 	$(JCC) $(JCFLAGS) src/Scanner.java
 
-Token.class:
-	$(JCC) $(JCFLAGS) src/Token.java
-
 SymbolTable.class:  STEntry.class STControl.class STFunction.class STIdentifier.class
 	$(JCC) $(JCFLAGS) src/SymbolTable.java
+
+Token.class:
+	$(JCC) $(JCFLAGS) src/Token.java
 
 STEntry.class:
 	$(JCC) $(JCFLAGS) src/STEntry.java

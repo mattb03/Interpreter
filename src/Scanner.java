@@ -432,13 +432,14 @@ public class Scanner {
         // return our current validated token
         return retVal;
     }
+
     private void setToken(String value) throws Exception
     {
         this.nextToken = new Token(value);
         this.nextToken.iSourceLineNr = this.line;
         this.nextToken.iColPos = this.col;
         this.process(value);
-        // call putSymbol(String symbol, STEntry entry) and pass in the 
-        
+        // call putSymbol(String symbol, STEntry entry) and pass in the
+
     }
 }

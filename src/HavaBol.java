@@ -33,20 +33,23 @@ public class HavaBol
                     , "tokenStr");
 
             Scanner scan = new Scanner(args[0], symbolTable);
-            //scan.nextToken.printToken();
             while (! scan.getNext().isEmpty())
             {
                 try
                 {
-                  // call putSymbol(String symbol, STEntry entry) and pass in the 
+                  // call putSymbol(String symbol, STEntry entry)
 
                   scan.currentToken.printToken();
+                  symbolTable.putSymbol(scan.currentToken.tokenStr, new STEntry(
+                    scan.currentToken.tokenStr, scan.currentToken.primClassif,
+                    scan.currentToken.subClassif));
                 }
                 catch (NullPointerException e)
                 {
                   continue;
                 }
             }
+            symbolTable.printTable();
         }
         catch (Exception e)
         {

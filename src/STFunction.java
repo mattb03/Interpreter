@@ -5,54 +5,42 @@ import java.util.*;
 
 public class STFunction extends STEntry
 {
-    public String symbol;
-    public int primClassif;
-    public String primClassifStr;
-    public String subClassif;
     public String returnType; // type/subClassif ie. Int, void
     public String definedBy;	// structure/defined by ie. builtin, user
-    public int numArgs;
-    public String parmList;
+    public int numArgs = 0;
+    public String parmList = "NULL";
     public SymbolTable symbolTable;
     public String row;
 
-    public STFunction (String symbol, int primClassif, 
+    public STFunction (String symbol, int primClassif,
                 int returnTypeNum, int definedByNum, int numArgs)
     {
-        super(symbol, primClassif);
-    	this.symbol = symbol;
-    	this.primClassif = primClassif;
-    	this.primClassifStr = "function";
+        super(symbol, primClassif, definedByNum);
     	if (returnTypeNum == 2)
     		this.returnType = "Int";
     	else if (returnTypeNum == 3)
     		this.returnType = "Float";
     	else if (returnTypeNum == 4)
-    		this.returnType = "boolean";
+    		this.returnType = "Bool";
     	else if (returnTypeNum == 5)
-    		this.returnType = "string";
+    		this.returnType = "String";
     	else if (returnTypeNum == 6)
-    		this.returnType = "date";
+    		this.returnType = "Date";
     	else if (returnTypeNum == 7)
-    		this.returnType = "void";
+    		this.returnType = "Void";
         this.returnType = returnType;
         if (definedByNum == 13)
-        	this.definedBy = "builtin";
+        	this.definedBy = "BUILTIN";
         else if(definedByNum == 14)
-        	this.definedBy = "user";
+        	this.definedBy = "USER";
         this.definedBy = definedBy;
         this.numArgs = numArgs;
-        //System.out.println("symbol: " + this.symbol + "\tprimclass: " + this.primClassif + "\treturn type: " + this.returnType + 
-        //		"\tdefinedby: " + this.definedBy + "\tnumargs: " + this.numArgs);
-
-        
-        
     }
-
+    //Symbol ,primClassif, type, structure, defined by, parm, nonlocal
 	@Override
 	public String toString() {
-		return "STFunction [symbol=" + symbol + ", primClassifStr=" + primClassifStr + ", primClassif=" + primClassif
-				+ ", returnType=" + returnType + ", definedBy=" + definedBy + ", numArgs=" + numArgs + ", parmList="
-				+ parmList + "]";
+		return "STFunction [symbol= "+symbol+", primClassifStr= "+
+         primClassifStr+", returnType= "+returnType+", definedBy= "+
+         definedBy+", numArgs= "+numArgs+", parmList= "+parmList+"]";
 	}
 }

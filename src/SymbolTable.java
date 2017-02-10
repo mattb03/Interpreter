@@ -7,8 +7,6 @@ public class SymbolTable
     public static final String reservedSymbols = "def enddef";
     public static final String functionSymbols = "print LENGTH";
     public HashMap<String, STEntry> table;
-    private String key;
-    private STEntry value;
 
     public SymbolTable()
     {
@@ -20,11 +18,7 @@ public class SymbolTable
     public void printTable() {
 
     	for(Map.Entry<String, STEntry> entry : table.entrySet()) {
-            key = entry.getKey();
-            value = entry.getValue();
-            System.out.println(value);
-            System.out.println(value.symbol);
-
+            System.out.println(entry.getValue());
         }
     	STEntry obj = getSymbol("MAXLENGTH");
     	if (obj instanceof STControl) {
@@ -47,31 +41,42 @@ public class SymbolTable
     	}
     }
 
-
     STEntry getSymbol(String symbol)
     {
-    	// so entry is the pair <String, STEntry>
-    	// and key = <String> and value = <STEntry>
-    	// so by returning value, you return the STEntry object
-    	for(Map.Entry<String, STEntry> entry : table.entrySet()) {
-            key = entry.getKey();
-            value = entry.getValue();
-            //String valueStr = new String(value, "ASCII");
-            if (symbol.equals(value.symbol))
-            {
-            	return table.get(symbol);
-
-//            	 return value;
-            }
-
-        }
-
-    	return null;
+        return table.get(symbol);
     }
 
-    public void putSymbol (String symbol, STEntry entry)
+    public void putSymbol(String symbol, STEntry entry)
     {
-    	table.put(symbol, entry);
+        int prim = entry.primClassif;
+        int sub = entry.subClassif;
+        if (prim == Token.OPERAND && sub == Token.IDENTIFIER)
+        {
+            table.put(symbol, new STIdentifier(symbol, prim, sub));
+        }
+        else if (prim == Token.OPERAND && sub == Token.INTEGER)
+        {
+            entry.subClassifStr = "INTEGER";
+            table.put(symbol, entry);
+        }
+        else if (prim == Token.OPERAND && sub == Token.FLOAT)
+        {
+            entry.subClassifStr = "FLOAT";
+            table.put(symbol, entry);
+        }
+        else if (prim == Token.OPERAND && sub == Token.STRING)
+        {
+            entry.subClassifStr = "STRING";
+            table.put(symbol, entry);
+        }
+        else if (prim == Token.CONTROL)
+        {
+            table.put(symbol, new STControl(symbol, prim, sub));
+        }
+        else if (prim == Token.OPERATOR)
+        {
+            table.put(symbol, entry);
+        }
     }
 
 	private void initGlobal ()
@@ -109,14 +114,11 @@ public class SymbolTable
         table.put("MAXELEM", new STFunction("MAXELEM",Token.FUNCTION,Token.INTEGER
                 , Token.BUILTIN, VAR_ARGS));
 
-        table.put("and", new STEntry("and", Token.OPERATOR));
-        table.put("or", new STEntry("or", Token.OPERATOR));
-        table.put("or", new STEntry("or", Token.OPERATOR));
-        table.put("not", new STEntry("not", Token.OPERATOR));
-        table.put("in", new STEntry("in", Token.OPERATOR));
-        table.put("notin", new STEntry("notin", Token.OPERATOR));
+        table.put("and", new STEntry("and", Token.OPERATOR, Token.VOID));
+        table.put("or", new STEntry("or", Token.OPERATOR, Token.VOID));
+        table.put("or", new STEntry("or", Token.OPERATOR, Token.VOID));
+        table.put("not", new STEntry("not", Token.OPERATOR, Token.VOID));
+        table.put("in", new STEntry("in", Token.OPERATOR, Token.VOID));
+        table.put("notin", new STEntry("notin", Token.OPERATOR, Token.VOID));
     }
-
-
-
 }
