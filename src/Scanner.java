@@ -92,7 +92,7 @@ public class Scanner {
             this.idEval(value);
         }
         // logic to handle concatenation of operators ie  <=, >=, !=, ^, ==
-        if (this.currentToken != null && this.nextToken.primClassif == this.nextToken.OPERATOR && this.currentToken.primClassif == this.currentToken.OPERATOR)
+        if (this.currentToken != null && this.nextToken.primClassif == Token.OPERATOR && this.currentToken.primClassif == Token.OPERATOR)
         {
             this.currentToken.tokenStr += this.nextToken.tokenStr;
             this.opCombine = true;
@@ -439,7 +439,5 @@ public class Scanner {
         this.nextToken.iSourceLineNr = this.line;
         this.nextToken.iColPos = this.col;
         this.process(value);
-        // call putSymbol(String symbol, STEntry entry) and pass in the
-
     }
 }
