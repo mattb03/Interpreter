@@ -9,7 +9,6 @@ public class STFunction extends STEntry
     public String definedBy;	// structure/defined by ie. builtin, user
     public int numArgs = 0;
     public String parmList = "NULL";
-    public SymbolTable symbolTable;
     public String row;
 
     public STFunction (String symbol, int primClassif,
