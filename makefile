@@ -34,6 +34,9 @@ test:
 test2:
 	$(JAVA) $(JFLAGS) havabol.HavaBol test.txt.bak
 
+test3:
+	$(JAVA) $(JFLAGS) havabol.HavaBol p3Input.txt
+
 run:
 	$(JAVA) $(JFLAGS) havabol.HavaBol p1Input.txt
 

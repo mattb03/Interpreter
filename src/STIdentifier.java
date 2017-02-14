@@ -16,6 +16,6 @@ public class STIdentifier extends STEntry
     public String toString()
     {
         return "STIdentifier [symbol= "+symbol+" primClassifStr= "+primClassifStr
-        +" type= "+ subClassifStr+"]";
+        +", type= "+ subClassifStr+"]";
     }
 }

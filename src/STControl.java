@@ -20,6 +20,6 @@ public class STControl extends STEntry
     public String toString()
     {
         return "STControl [symbol= "+symbol+" primClassifStr= "+primClassifStr
-        +" type= "+ subClassifStr+"]";
+        +", type= "+ subClassifStr+"]";
     }
 }

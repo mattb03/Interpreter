@@ -30,6 +30,6 @@ public class STEntry
     @Override
 	public String toString() {
 		return "STEntry [symbol= "+symbol+" primClassifStr= "+primClassifStr
-        +" type= "+ subClassifStr+"]";
+        +", type= "+ subClassifStr+"]";
 	}
 }

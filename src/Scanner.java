@@ -92,7 +92,8 @@ public class Scanner {
             this.idEval(value);
         }
         // logic to handle concatenation of operators ie  <=, >=, !=, ^, ==
-        if (this.currentToken != null && this.nextToken.primClassif == Token.OPERATOR && this.currentToken.primClassif == Token.OPERATOR)
+        if (this.currentToken != null && this.nextToken.primClassif == Token.OPERATOR && this.currentToken.primClassif == Token.OPERATOR &&
+             (this.nextToken.iColPos - this.currentToken.iColPos == 1))
         {
             this.currentToken.tokenStr += this.nextToken.tokenStr;
             this.opCombine = true;
