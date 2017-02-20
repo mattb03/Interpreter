@@ -1,8 +1,5 @@
 package havabol;
 
-import java.io.*;
-import java.util.*;
-
 public class STIdentifier extends STEntry
 {
     public STIdentifier (String symbol, int primClassif, int subClassif)

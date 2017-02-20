@@ -1,8 +1,5 @@
 package havabol;
 
-import java.io.*;
-import java.util.*;
-
 public class STEntry
 {
     public String symbol;

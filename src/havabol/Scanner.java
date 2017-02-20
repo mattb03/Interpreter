@@ -2,9 +2,9 @@ package havabol;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 
 public class Scanner {
+	public String sourceFileNm;
     public String buffer;
     public Token currentToken;
     public Token nextToken;
@@ -29,6 +29,7 @@ public class Scanner {
 
     public Scanner(String SourceFileNm, SymbolTable symbolTable) throws IOException, Exception
     {
+    	this.sourceFileNm = SourceFileNm;
         // create our buffer to iterate thru
         this.buffer = new String(Files.readAllBytes(Paths.get(SourceFileNm)));
         int i = this.buffer.length() - 1;
@@ -71,7 +72,7 @@ public class Scanner {
             this.strEval(value);
         }
          // is first val a number?
-        else if (this.numbers.indexOf(value.charAt(0)) != -1)
+        else if (numbers.indexOf(value.charAt(0)) != -1)
         {
             try
             {   // try to parse as an integer, if so it is an int. if not...
@@ -107,7 +108,7 @@ public class Scanner {
         }
         // logic to handle concatenation of operators ie  <=, >=, !=, ^, ==
         if (this.currentToken != null && this.nextToken.primClassif == Token.OPERATOR && this.currentToken.primClassif == Token.OPERATOR &&
-             (this.nextToken.iColPos - this.currentToken.iColPos == 1))
+                (this.nextToken.iColPos - this.currentToken.iColPos == 1))
         {
             this.currentToken.tokenStr += this.nextToken.tokenStr;
             this.opCombine = true;
@@ -135,8 +136,8 @@ public class Scanner {
     public void intEval()
     {
 
-        this.nextToken.primClassif = this.nextToken.OPERAND;
-        this.nextToken.subClassif = this.nextToken.INTEGER;
+        this.nextToken.primClassif = Token.OPERAND;
+        this.nextToken.subClassif = Token.INTEGER;
     }
    /**
     *This method sets the currentToken attributes to correspond to a float
@@ -145,8 +146,8 @@ public class Scanner {
     */
     public void floatEval()
     {
-        this.nextToken.primClassif = this.nextToken.OPERAND;
-        this.nextToken.subClassif = this.nextToken.FLOAT;
+        this.nextToken.primClassif = Token.OPERAND;
+        this.nextToken.subClassif = Token.FLOAT;
     }
    /**
     *This method sets the currentToken attributes to correspond to an identifier
@@ -158,35 +159,40 @@ public class Scanner {
         //and", "or", "not", "in", "notin
         if (value.equals("and") || value.equals("or") || value.equals("not") || value.equals("in") || value.equals("notin"))
         {
-            this.nextToken.primClassif = this.nextToken.OPERATOR;
-            this.nextToken.subClassif = this.nextToken.VOID;
+            this.nextToken.primClassif = Token.OPERATOR;
+            this.nextToken.subClassif = Token.VOID;
         }
         // control flow/end tokens  if, endif, else,  while, endwhile, for, endfor
         else if (value.equals("if") || value.equals("while") || value.equals("for"))
         {
-            this.nextToken.primClassif = this.nextToken.CONTROL;
-            this.nextToken.subClassif = this.nextToken.FLOW;
+            this.nextToken.primClassif = Token.CONTROL;
+            this.nextToken.subClassif = Token.FLOW;
         }
-        else if (value.equals("endif") || value.equals("endwhile") || value.equals("endfor"))
+        else if (value.equals("endif") || value.equals("else") || value.equals("endwhile") || value.equals("endfor"))
         {
-            this.nextToken.primClassif = this.nextToken.CONTROL;
-            this.nextToken.subClassif = this.nextToken.END;
+            this.nextToken.primClassif = Token.CONTROL;
+            this.nextToken.subClassif = Token.END;
         }
         // recognize control declare tokens (Int, Float, String, Bool)
         else if (value.equals("Int") || value.equals("Float") || value.equals("String") || value.equals("Bool"))
         {
-            this.nextToken.primClassif = this.nextToken.CONTROL;
-            this.nextToken.subClassif = this.nextToken.DECLARE;
+            this.nextToken.primClassif = Token.CONTROL;
+            this.nextToken.subClassif = Token.DECLARE;
+        }
+        else if (value.equals("print"))
+        {
+        	this.nextToken.primClassif = Token.FUNCTION;
+        	this.nextToken.subClassif = Token.BUILTIN;
         }
         else if (value.equals("T") || value.equals("F"))
         {
-            this.nextToken.primClassif = this.nextToken.OPERAND;
-            this.nextToken.subClassif = this.nextToken.BOOLEAN;
+            this.nextToken.primClassif = Token.OPERAND;
+            this.nextToken.subClassif = Token.BOOLEAN;
         }
         else
         {
-            this.nextToken.primClassif = this.nextToken.OPERAND;
-            this.nextToken.subClassif = this.nextToken.IDENTIFIER;
+            this.nextToken.primClassif = Token.OPERAND;
+            this.nextToken.subClassif = Token.IDENTIFIER;
         }
     }
    /**
@@ -202,7 +208,7 @@ public class Scanner {
         array[array.length-1] = 0x0;
         for (int i=0; i < array.length; i++)
         {
-            if (array[i] == '\\' && this.escChars.indexOf(array[i+1]) == -1)
+            if (array[i] == '\\' && escChars.indexOf(array[i+1]) == -1)
             {
                 this.handleErrors(value, INVALID_ESC);
             }
@@ -241,8 +247,8 @@ public class Scanner {
             }
         }
         this.nextToken.tokenStr = String.valueOf(array);
-        this.nextToken.primClassif = this.nextToken.OPERAND;
-        this.nextToken.subClassif = this.nextToken.STRING;
+        this.nextToken.primClassif = Token.OPERAND;
+        this.nextToken.subClassif = Token.STRING;
     }
    /**
     *This method sets the currentToken attributes to correspond to an operator
@@ -253,21 +259,21 @@ public class Scanner {
     */
     public void delEval(String value)
     {
-        if (this.operators.indexOf(value.charAt(0)) != -1)
+        if (operators.indexOf(value.charAt(0)) != -1)
         {
-            this.nextToken.primClassif = this.nextToken.OPERATOR;
-            this.nextToken.subClassif = this.nextToken.VOID;
+            this.nextToken.primClassif = Token.OPERATOR;
+            this.nextToken.subClassif = Token.VOID;
         }
-        else if (this.separators.indexOf(value.charAt(0)) != -1)
+        else if (separators.indexOf(value.charAt(0)) != -1)
         {
-            this.nextToken.primClassif = this.nextToken.SEPARATOR;
+            this.nextToken.primClassif = Token.SEPARATOR;
             if (value.charAt(0) == ')')
             {
-                this.nextToken.subClassif = this.nextToken.RT_PAREN;
+                this.nextToken.subClassif = Token.RT_PAREN;
             }
             else
             {
-                this.nextToken.subClassif = this.nextToken.VOID;
+                this.nextToken.subClassif = Token.VOID;
             }
         }
     }
@@ -304,7 +310,7 @@ public class Scanner {
             this.currentToken = this.nextToken;
         // if global exit state is true? return empty string
         if (this.exit == true) {
-        	return "";
+            return "";
         }
         // if there are only line feeds left in our buffer, weve hit the end of file
         if (this.buffer.matches("[\\s]+") || this.buffer.isEmpty())
@@ -318,12 +324,12 @@ public class Scanner {
     		// print the last line only if its a comment
     		if (this.line-1 <= lines.length && this.lines[this.line-1].matches("^\\s*/\\s*/.*$")) 
     		{
-    			System.out.printf("%d %s\n", this.line, this.lines[this.line - 1]);
+    			System.out.printf("d %s\n", this.line, this.lines[this.line - 1]);
     		}
-    		// set EOF param's in currentToken, set exit state to true, return " ", so we can come back one more time
+            // set EOF param's in currentToken, set exit state to true, return " ", so we can come back one more time
             this.nextToken = new Token();
-            this.nextToken.primClassif = this.nextToken.EOF;
-            this.nextToken.subClassif = this.nextToken.VOID;
+            this.nextToken.primClassif = Token.EOF;
+            this.nextToken.subClassif = Token.VOID;
             this.exit = true;
             return " ";
         }
@@ -337,8 +343,7 @@ public class Scanner {
                 i++;
             }
             else if (c == '\n' && !this.aComment)
-            {         
-
+            {
             	if (this.line != this.lastLine && this.line <= this.lines.length) 
             	{
             		System.out.printf("%d %s\n", this.line, this.lines[this.line - 1]);
@@ -350,8 +355,7 @@ public class Scanner {
             }
             else if (c == '\n' && this.aComment)
             {
-
-                this.aComment = false;
+            	this.aComment = false;
                 finCom = true;
             	if (this.line != this.lastLine && this.line <= this.lines.length) 
             	{
@@ -360,7 +364,6 @@ public class Scanner {
             	
             	this.lastLine = this.line;
                 this.line++;
-
             }
             else if (c == ' ' || c == '\t')
             {
@@ -393,8 +396,8 @@ public class Scanner {
     			System.out.printf("%d %s\n", this.line, this.lines[this.line - 1]);
     		}
             this.nextToken = new Token();
-            this.nextToken.primClassif = this.nextToken.EOF;
-            this.nextToken.subClassif = this.nextToken.VOID;
+            this.nextToken.primClassif = Token.EOF;
+            this.nextToken.subClassif = Token.VOID;
             this.exit = true;
             return " ";
         }
@@ -403,9 +406,9 @@ public class Scanner {
         {
             char c = this.buffer.charAt(i);
             retVal += c;
-
+            
             // if char is a delimiter
-            if (this.delimiters.indexOf(c) != -1)
+            if (delimiters.indexOf(c) != -1)
             {
                 // if first char in our run thru the remaining buffer
                 if (i == 0)

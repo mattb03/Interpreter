@@ -12,6 +12,7 @@ public class SymbolTable
     {
         table = new HashMap<String, STEntry>();
         initGlobal();
+        // printTable();
     }
 
     public void printTable() {
@@ -85,11 +86,11 @@ public class SymbolTable
         table.put("enddef", new STControl("enddef",Token.CONTROL,Token.END));
         table.put("if", new STControl("if",Token.CONTROL,Token.FLOW));
         table.put("endif", new STControl("endif",Token.CONTROL,Token.END));
+        table.put("else", new STControl("else",Token.CONTROL,Token.END));
         table.put("for", new STControl("for",Token.CONTROL,Token.FLOW));
         table.put("endfor", new STControl("endfor",Token.CONTROL,Token.END));
         table.put("while", new STControl("while",Token.CONTROL,Token.FLOW));
-        table.put
-            ("endwhile", new STControl("endwhile",Token.CONTROL,Token.END));
+        table.put("endwhile", new STControl("endwhile",Token.CONTROL,Token.END));
 
         table.put("print", new STFunction("print",Token.FUNCTION,Token.VOID
                 , Token.BUILTIN, VAR_ARGS));
@@ -102,10 +103,8 @@ public class SymbolTable
 
         table.put("LENGTH", new STFunction("LENGTH",Token.FUNCTION,Token.INTEGER
                 , Token.BUILTIN, VAR_ARGS));
-        table.put("MAXLENGTH", new STFunction("MAXLENGTH",Token
-            .FUNCTION,Token.INTEGER, Token.BUILTIN, VAR_ARGS));
-        table.put("LENGTH", new STFunction("LENGTH",Token.FUNCTION,Token.INTEGER
-                , Token.BUILTIN, VAR_ARGS));
+        table.put("MAXLENGTH", new STFunction("MAXLENGTH",Token.FUNCTION,Token.INTEGER
+        		, Token.BUILTIN, VAR_ARGS));
         table.put("SPACES", new STFunction("SPACES",Token.FUNCTION,Token.INTEGER
                 , Token.BUILTIN, VAR_ARGS));
         table.put("ELEM", new STFunction("ELEM",Token.FUNCTION,Token.INTEGER
@@ -114,7 +113,6 @@ public class SymbolTable
                 , Token.BUILTIN, VAR_ARGS));
 
         table.put("and", new STEntry("and", Token.OPERATOR, Token.VOID));
-        table.put("or", new STEntry("or", Token.OPERATOR, Token.VOID));
         table.put("or", new STEntry("or", Token.OPERATOR, Token.VOID));
         table.put("not", new STEntry("not", Token.OPERATOR, Token.VOID));
         table.put("in", new STEntry("in", Token.OPERATOR, Token.VOID));

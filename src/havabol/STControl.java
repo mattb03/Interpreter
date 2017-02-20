@@ -1,8 +1,5 @@
 package havabol;
 
-import java.io.*;
-import java.util.*;
-
 public class STControl extends STEntry
 {
     public STControl (String symbol, int primClassif, int subClassif)

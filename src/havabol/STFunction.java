@@ -1,8 +1,5 @@
 package havabol;
 
-import java.io.*;
-import java.util.*;
-
 public class STFunction extends STEntry
 {
     public String returnType; // type/subClassif ie. Int, void
@@ -27,12 +24,12 @@ public class STFunction extends STEntry
     		this.returnType = "Date";
     	else if (returnTypeNum == 7)
     		this.returnType = "Void";
-        this.returnType = returnType;
+    	
         if (definedByNum == 13)
         	this.definedBy = "BUILTIN";
         else if(definedByNum == 14)
         	this.definedBy = "USER";
-        this.definedBy = definedBy;
+        
         this.numArgs = numArgs;
     }
     //Symbol ,primClassif, type, structure, defined by, parm, nonlocal
