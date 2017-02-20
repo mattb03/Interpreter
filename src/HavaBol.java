@@ -49,7 +49,7 @@ public class HavaBol
                   continue;
                 }
             }
-            symbolTable.printTable();
+            // symbolTable.printTable();
         }
         catch (Exception e)
         {

@@ -12,7 +12,6 @@ public class SymbolTable
     {
         table = new HashMap<String, STEntry>();
         initGlobal();
-        printTable();
     }
 
     public void printTable() {

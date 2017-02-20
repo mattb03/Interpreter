@@ -15,6 +15,7 @@ public class Scanner {
     public boolean aComment;
     public String lines[];
     public int lastLine;
+    public int blankLines = -1;
     private final static String operators = "+-*/<>!=#^";
     private final static String separators = "():;[],";
     private final static String delimiters = " \t;:()\'\"=!<>+-*/[]#^\n,";
@@ -30,6 +31,19 @@ public class Scanner {
     {
         // create our buffer to iterate thru
         this.buffer = new String(Files.readAllBytes(Paths.get(SourceFileNm)));
+        int i = this.buffer.length() - 1;
+        boolean stopFlag = false;
+        // this loop is to gather the number of blank lines at eof
+        // to print later
+        while (stopFlag == false)
+        {
+        	if (this.buffer.charAt(i) == '\n') {
+        		this.blankLines++;
+        	}
+        	else
+        		stopFlag = true;
+        	i--;
+        }
         // create our String array of lines
         this.lines = this.buffer.split("\n");
         this.exit = false;
@@ -289,12 +303,24 @@ public class Scanner {
         if (this.nextToken != null && !this.opCombine)
             this.currentToken = this.nextToken;
         // if global exit state is true? return empty string
-        if (this.exit == true)
-            return "";
+        if (this.exit == true) {
+        	return "";
+        }
         // if there are only line feeds left in our buffer, weve hit the end of file
         if (this.buffer.matches("[\\s]+") || this.buffer.isEmpty())
         {
-            // set EOF param's in currentToken, set exit state to true, return " ", so we can come back one more time
+        	int lineNum = this.lines.length + 1;
+        	// this loop is to print the blank lines at eof if any
+    		for (i = 0; i <= this.blankLines; i++) {
+	        	System.out.print(lineNum + " \n");
+	    		lineNum++;
+	    	}
+    		// print the last line only if its a comment
+    		if (this.line-1 <= lines.length && this.lines[this.line-1].matches("^\\s*/\\s*/.*$")) 
+    		{
+    			System.out.printf("%d %s\n", this.line, this.lines[this.line - 1]);
+    		}
+    		// set EOF param's in currentToken, set exit state to true, return " ", so we can come back one more time
             this.nextToken = new Token();
             this.nextToken.primClassif = this.nextToken.EOF;
             this.nextToken.subClassif = this.nextToken.VOID;
@@ -311,15 +337,30 @@ public class Scanner {
                 i++;
             }
             else if (c == '\n' && !this.aComment)
-            {
-                this.line++;
+            {         
+
+            	if (this.line != this.lastLine && this.line <= this.lines.length) 
+            	{
+            		System.out.printf("%d %s\n", this.line, this.lines[this.line - 1]);
+            	}
+                this.lastLine = this.line;
+            	this.line++;
+
                 this.col = 1;
             }
             else if (c == '\n' && this.aComment)
             {
+
                 this.aComment = false;
                 finCom = true;
+            	if (this.line != this.lastLine && this.line <= this.lines.length) 
+            	{
+            		System.out.printf("%d %s\n", this.line, this.lines[this.line - 1]);
+            	}
+            	
+            	this.lastLine = this.line;
                 this.line++;
+
             }
             else if (c == ' ' || c == '\t')
             {
@@ -339,6 +380,18 @@ public class Scanner {
         // if we have a completed comment are there is just one char left in buffer set EOF
         if (finCom && this.buffer.length() < 2)
         {
+        	int lineNum = this.lines.length + 1;
+
+        	// this loop is to print blank lines at eof if any
+    		for (i = 0; i <= this.blankLines; i++) {
+	        	System.out.print(lineNum + " \n");
+	    		lineNum++;
+	    	}
+    		// print the last line only if its a comment
+    		if (this.line-1 <= lines.length && this.lines[this.line-1].matches("^\\s*/\\s*/.*$")) 
+    		{
+    			System.out.printf("%d %s\n", this.line, this.lines[this.line - 1]);
+    		}
             this.nextToken = new Token();
             this.nextToken.primClassif = this.nextToken.EOF;
             this.nextToken.subClassif = this.nextToken.VOID;
@@ -350,6 +403,7 @@ public class Scanner {
         {
             char c = this.buffer.charAt(i);
             retVal += c;
+
             // if char is a delimiter
             if (this.delimiters.indexOf(c) != -1)
             {
