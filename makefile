@@ -38,7 +38,7 @@ test3:
 	$(JAVA) $(JFLAGS) havabol.HavaBol p3Input.txt
 
 run:
-	$(JAVA) $(JFLAGS) havabol.HavaBol p1Input.txt
+	$(JAVA) $(JFLAGS) havabol.HavaBol p2Input.txt
 
 out1:
 	$(JAVA) $(JFLAGS) havabol.HavaBol error1.txt
