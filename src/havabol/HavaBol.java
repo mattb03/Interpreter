@@ -32,7 +32,7 @@ public class HavaBol
                     , "subClassif"
                     , "tokenStr");
 
-            Scanner scan = new Scanner(args[0], symbolTable);
+            Scanner scan = new Scanner(args[0]);
             while (! scan.getNext().isEmpty())
             {
                 try

@@ -27,7 +27,7 @@ public class Scanner {
     public static final String INVALID_OPERATOR = "INVALID_OPERATOR";
     public static final String INVALID_ESC = "ILLEGAL_ESCAPE_CHARACTER";
 
-    public Scanner(String SourceFileNm, SymbolTable symbolTable) throws IOException, Exception
+    public Scanner(String SourceFileNm) throws IOException, Exception
     {
     	this.sourceFileNm = SourceFileNm;
         // create our buffer to iterate thru
@@ -322,7 +322,7 @@ public class Scanner {
 	    		lineNum++;
 	    	}
     		// print the last line only if its a comment
-    		if (this.line-1 <= lines.length && this.lines[this.line-1].matches("^\\s*/\\s*/.*$")) 
+    		if (this.line-1 <= lines.length && this.lines[this.line-1].matches("^\\s*/\\s*/.*$"))
     		{
     			System.out.printf("d %s\n", this.line, this.lines[this.line - 1]);
     		}
@@ -344,7 +344,7 @@ public class Scanner {
             }
             else if (c == '\n' && !this.aComment)
             {
-            	if (this.line != this.lastLine && this.line <= this.lines.length) 
+            	if (this.line != this.lastLine && this.line <= this.lines.length)
             	{
             		System.out.printf("%d %s\n", this.line, this.lines[this.line - 1]);
             	}
@@ -357,11 +357,11 @@ public class Scanner {
             {
             	this.aComment = false;
                 finCom = true;
-            	if (this.line != this.lastLine && this.line <= this.lines.length) 
+            	if (this.line != this.lastLine && this.line <= this.lines.length)
             	{
             		System.out.printf("%d %s\n", this.line, this.lines[this.line - 1]);
             	}
-            	
+
             	this.lastLine = this.line;
                 this.line++;
             }
@@ -391,7 +391,7 @@ public class Scanner {
 	    		lineNum++;
 	    	}
     		// print the last line only if its a comment
-    		if (this.line-1 <= lines.length && this.lines[this.line-1].matches("^\\s*/\\s*/.*$")) 
+    		if (this.line-1 <= lines.length && this.lines[this.line-1].matches("^\\s*/\\s*/.*$"))
     		{
     			System.out.printf("%d %s\n", this.line, this.lines[this.line - 1]);
     		}
@@ -406,7 +406,7 @@ public class Scanner {
         {
             char c = this.buffer.charAt(i);
             retVal += c;
-            
+
             // if char is a delimiter
             if (delimiters.indexOf(c) != -1)
             {

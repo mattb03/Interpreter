@@ -31,11 +31,11 @@ STIdentifier.class:
 Utility.class: Numeric.class
 	$(JCC) $(JCFLAGS) src/havabol/Utility.java
 
-Numeric.class: ParserObject.class ParserException.class ResultValue.class
+Numeric.class: Parser.class ParserException.class ResultValue.class
 	$(JCC) $(JCFLAGS) src/havabol/Numeric.java
 
-ParserObject.class:
-	$(JCC) $(JCFLAGS) src/havabol/ParserObject.java
+Parser.class:
+	$(JCC) $(JCFLAGS) src/havabol/Parser.java
 
 ParserException.class:
 	$(JCC) $(JCFLAGS) src/havabol/ParserException.java
