@@ -7,7 +7,7 @@ public class ResultValue {
 	public String terminatingStr;	// used for end of lists of things
         							// (e.g., a list of statements might be terminated by "endwhile")
 
-    public ResultValue(String value) {
-        this.value = value;
+    public ResultValue() {
+    
     }
 }

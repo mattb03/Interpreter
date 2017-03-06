@@ -7,6 +7,7 @@ public class STEntry
     public String primClassifStr = "??";
     public int subClassif;
     public String subClassifStr = "VOID";
+    public String value = "NO VALUE";
 
     public STEntry(String symbol, int primClassif, int subClassif)
     {

@@ -12,7 +12,7 @@ public class STIdentifier extends STEntry
     @Override
     public String toString()
     {
-        return "STIdentifier [symbol= "+symbol+" primClassifStr= "+primClassifStr
+        return "STIdentifier [symbol= "+symbol+"  value= "+this.value+" primClassifStr= "+primClassifStr
         +", type= "+ subClassifStr+"]";
     }
 }
