@@ -49,6 +49,7 @@ public class HavaBol
                   continue;
                 }
             }
+            Parser parser = new Parser(args[0], symbolTable);
             // symbolTable.printTable();
         }
         catch (Exception e)

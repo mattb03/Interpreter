@@ -7,7 +7,7 @@ public class Numeric {
 	public String strValue;		// display value
 	public int type;			// INTEGER, FLOAT
 	
-	public Numeric(ParserObject parser, ResultValue res, String op, String opPos) throws ParserException {
+	public Numeric(Parser parser, ResultValue res, String op, String opPos) throws ParserException {
 		
 		try {
 			doubleValue = Double.parseDouble(res.value);

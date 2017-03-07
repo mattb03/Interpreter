@@ -160,6 +160,12 @@ public class Token
         }
         return retStr.toString();
     }
+    
+    
+    public ResultValue toResult()
+    {
+    	return null;
+    }
 
     private String parseString(Token tok)
     {

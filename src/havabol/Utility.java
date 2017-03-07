@@ -2,8 +2,8 @@ package havabol;
 
 public class Utility {
 
-	public static ResultValue add(ParserObject parser, Numeric nOp1, Numeric nOp2) throws ParserException {
-		ResultValue res = new ResultValue();
+	public static ResultValue add(Parser parser, Numeric nOp1, Numeric nOp2) throws ParserException {
+		ResultValue res = new ResultValue("");
 		res.type = nOp1.type;
 		if (nOp1.type == Token.INTEGER)
 			res.value = Integer.toString((nOp1.integerValue + nOp2.integerValue));
@@ -18,8 +18,8 @@ public class Utility {
 		return res;
 	}
 	
-	public static ResultValue subtract(ParserObject parser, Numeric nOp1, Numeric nOp2) throws ParserException {
-		ResultValue res = new ResultValue();
+	public static ResultValue subtract(Parser parser, Numeric nOp1, Numeric nOp2) throws ParserException {
+		ResultValue res = new ResultValue("");
 		res.type = nOp1.type;
 		if (nOp1.type == Token.INTEGER)
 			res.value = Integer.toString((nOp1.integerValue - nOp2.integerValue));
@@ -33,8 +33,8 @@ public class Utility {
 		return res;
 	}
 	
-	public static ResultValue multiply(ParserObject parser, Numeric nOp1, Numeric nOp2) throws ParserException {
-		ResultValue res = new ResultValue();
+	public static ResultValue multiply(Parser parser, Numeric nOp1, Numeric nOp2) throws ParserException {
+		ResultValue res = new ResultValue("");
 		res.type = nOp1.type;
 		if (nOp1.type == Token.INTEGER)
 			res.value = Integer.toString((nOp1.integerValue * nOp2.integerValue));
@@ -48,8 +48,8 @@ public class Utility {
 		return res;
 	}
 	
-	public static ResultValue divide(ParserObject parser, Numeric nOp1, Numeric nOp2) throws ParserException {
-		ResultValue res = new ResultValue();
+	public static ResultValue divide(Parser parser, Numeric nOp1, Numeric nOp2) throws ParserException {
+		ResultValue res = new ResultValue("");
 		res.type = nOp1.type;
 		if (nOp1.type == Token.INTEGER)
 			res.value = Integer.toString((nOp1.integerValue / nOp2.integerValue));
@@ -63,15 +63,15 @@ public class Utility {
 		return res;
 	}
 	
-	public static ResultValue concatNum(ParserObject parser, Numeric nOp1, Numeric nOp2) {
-		ResultValue res = new ResultValue();
+	public static ResultValue concatNum(Parser parser, Numeric nOp1, Numeric nOp2) {
+		ResultValue res = new ResultValue("");
 		res.type = nOp1.type;
 		res.value = nOp1.strValue + nOp2.strValue;
 		return res;
 	}
 	
-	public static ResultValue concatStr(ParserObject parser, String str1, String str2) {
-		ResultValue res = new ResultValue();
+	public static ResultValue concatStr(Parser parser, String str1, String str2) {
+		ResultValue res = new ResultValue("");
 		res.type = Token.STRING;
 		res.value = str1 + str2;
 		return res;
