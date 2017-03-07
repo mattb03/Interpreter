@@ -12,9 +12,9 @@ public class Utility {
 		else {
 			String error = nOp1.strValue + " and/or " + nOp2.strValue + " are/is not a numeric type\n";
 			throw new ParserException(parser.scan.currentToken.iSourceLineNr, error
-					, parser.scan.sourceFileNm);
+					, parser.scan.sourceFileNm, "");
 		}
-		
+
 		return res;
 	}
 	
@@ -28,7 +28,7 @@ public class Utility {
 		else {
 			String error = nOp1.strValue + " and/or " + nOp2.strValue + " are/is not a numeric type\n";
 			throw new ParserException(parser.scan.currentToken.iSourceLineNr, error
-					, parser.scan.sourceFileNm);
+					, parser.scan.sourceFileNm, "");
 		}
 		return res;
 	}
@@ -43,7 +43,7 @@ public class Utility {
 		else {
 			String error = nOp1.strValue + " and/or " + nOp2.strValue + " are/is not a numeric type\n";
 			throw new ParserException(parser.scan.currentToken.iSourceLineNr, error
-					, parser.scan.sourceFileNm);
+					, parser.scan.sourceFileNm, "");
 		}
 		return res;
 	}
@@ -58,7 +58,7 @@ public class Utility {
 		else {
 			String error = nOp1.strValue + " and/or " + nOp2.strValue + " are/is not a numeric type\n";
 			throw new ParserException(parser.scan.currentToken.iSourceLineNr, error
-					, parser.scan.sourceFileNm);
+					, parser.scan.sourceFileNm, "");
 		}
 		return res;
 	}

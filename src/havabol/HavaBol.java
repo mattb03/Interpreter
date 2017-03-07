@@ -21,19 +21,18 @@ public class HavaBol
 {
     public static void main(String[] args)
     {
-        // Create the SymbolTable
-        SymbolTable symbolTable = new SymbolTable();
-
         try
         {
             // Print a column heading
-            System.out.printf("%-11s %-12s %s\n"
+            /*System.out.printf("%-11s %-12s %s\n"
                     , "primClassif"
                     , "subClassif"
-                    , "tokenStr");
+                    , "tokenStr");*/
+        	SymbolTable st = new SymbolTable();
 
-            Scanner scan = new Scanner(args[0]);
-            while (! scan.getNext().isEmpty())
+            Parser parser = new Parser(args[0], st);
+            parser.statements();
+            /*while (! scan.getNext().isEmpty())
             {
                 try
                 {
@@ -48,8 +47,7 @@ public class HavaBol
                 {
                   continue;
                 }
-            }
-            Parser parser = new Parser(args[0], symbolTable);
+            }*/
             // symbolTable.printTable();
         }
         catch (Exception e)

@@ -4,24 +4,129 @@ public class Parser {
 
     public Scanner scan;
     public SymbolTable st;
+    public ParserException error;
+
 
     public Parser(String SourceFileNm, SymbolTable st) {
         try {
-            Scanner scan = new Scanner(SourceFileNm);
+            scan = new Scanner(SourceFileNm);
         }catch (Exception e) {
         }
         this.st = st;
     }
+    
+    public void statements() throws Exception, ParserException {
+        while (! scan.getNext().isEmpty()) {
+            //System.out.println(scan.currentToken.tokenStr);
 
-    public ResultValue statements() {
-        //if (scan.currenToken.prim
+            if (scan.currentToken.tokenStr.toLowerCase().equals("print")) {
+                if (scan.nextToken.tokenStr.equals("(")) {
+                    scan.getNext();  // on '('
+                    scan.getNext(); // on value inside print( )
+                    Token val = scan.currentToken;  // assigned this to val
+                    if (scan.nextToken.tokenStr.equals(")")) {
+                        scan.getNext();  // on ')'
+                        if (scan.nextToken.tokenStr.equals(";")) {
+                            STEntry arg = st.getSymbol(val.tokenStr);
+                            if (arg == null) {  // NOT in symbol table, thus a string literal
+                                System.out.println(val.tokenStr);
+                            } else {
+                                System.out.println(arg.value);
+                            }
+
+                            //this.st.putSymbol(val.tokenStr, new STEntry(
+                                        //val.tokenStr, val.primClassif,
+                                        //val.subClassif));
+                        } else {
+                            throw new ParserException(
+                                scan.currentToken.iSourceLineNr,
+                                 "Expected ';' ", scan.sourceFileNm,"");
+                        }
+                    } else {
+                        throw new ParserException(
+                            scan.currentToken.iSourceLineNr,
+                             "Expected ')' ", scan.sourceFileNm, "");
+                    }
+                }
+            // if we come across a declare statement. i.e. Int, String, Bool ...
+            } else if (scan.currentToken.subClassif == 12) {
+                // if nextToken is not an identifier throw an error
+                if (scan.nextToken.subClassif != 1) {
+                    throw new ParserException(scan.nextToken.iSourceLineNr,
+                        "Identifier expected after declare statement:",
+                        scan.sourceFileNm, "");
+                } else {
+                        //INTEGER = 2;
+                        //FLOAT = 3;
+                        //BOOLEAN = 4;
+                        //STRING = 5;
+                        //DATE = 6;
+                    int type = 7;
+                    String token = scan.currentToken.tokenStr;
+                    if (token.equals("Int"))
+                        type = 2;
+                    else if (token.equals("Float"))
+                        type = 3;
+                    else if (token.equals("Bool"))
+                        type = 4;
+                    else if (token.equals("String"))
+                        type = 5;
+                    else if (token.equals("Date"))
+                        type = 6;
+                    scan.getNext();
+                    //put this token into symbol table!!!
+                    st.putSymbol(scan.currentToken.tokenStr,
+                            new STEntry(scan.currentToken.tokenStr,
+                                scan.currentToken.primClassif,
+                                scan.currentToken.subClassif));
+                    // set the type in the symbol table for the identifier
+                    st.getSymbol(scan.currentToken.tokenStr).type = type;
+
+                    if (scan.nextToken.tokenStr.equals("=")) {
+                        assign(scan.currentToken);
+                    }
+                }
+
+            } else if (scan.currentToken.tokenStr.toLowerCase().equals("if")) {
+                ifStmt();
+            } else if (scan.currentToken.tokenStr.toLowerCase().equals("while")) {
+                whileStmt();
+            } else if (scan.currentToken.subClassif == 1) {
+                if (st.getSymbol(scan.currentToken.tokenStr) == null) {
+                    throw new ParserException(scan.currentToken.iSourceLineNr,
+                        "Symbol "+scan.currentToken.tokenStr+
+                        "is not in Symbol Table.", scan.sourceFileNm, "");
+                }
+            }
+        }
+        //this.st.printTable();
     }
 
+    public void assign(Token curSymbol) throws Exception {
+        int type = st.getSymbol(curSymbol.tokenStr).type;
+        scan.getNext();
+        scan.getNext();
+        if (scan.nextToken.tokenStr.equals(";")) {
+            if (type != scan.currentToken.subClassif) {
+                throw new ParserException(scan.currentToken.iSourceLineNr,
+                    "Incompatible type.", scan.sourceFileNm, scan.lines[scan.line-1]);
+            } else {
+                st.getSymbol(curSymbol.tokenStr).value = scan.currentToken.tokenStr;
+            }
+        } else {
+            //expr(curSymbol, parse);
+        	expr();
+        }
+    }
 
+    public void ifStmt() {
+        System.out.println("Im an if statement!!!");
+    }
 
-//GOALS:
+    public void whileStmt() {
+        System.out.println("Im a while statement!!");
+    }
 
-//expr() - returns a ResultValue
 
     /* 1   expr := products expr'
      * 2.1 expr':= '+' products expr'
@@ -33,6 +138,7 @@ public class Parser {
      * 5.2		 |	variable
      */
 	public ResultValue expr() throws Exception {
+		/*
 		scan.getNext();
 		ResultValue res = products();				// rule 1
 		ResultValue temp = new ResultValue("");
@@ -59,6 +165,8 @@ public class Parser {
 			}
 		}
 		return res;
+		*/
+		return null;
 	}
 	
 	// Assumption: currently on an operand
@@ -119,6 +227,8 @@ public class Parser {
 	public void error(String fmt, Object... varArgs) throws Exception {
 		String diagnosticTxt = String.format(fmt, varArgs);
 		throw new ParserException(scan.currentToken.iSourceLineNr
-				, diagnosticTxt, scan.sourceFileNm);
+				, diagnosticTxt, scan.sourceFileNm, "");
 	}
 }
+
+
