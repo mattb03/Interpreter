@@ -2,7 +2,6 @@
 package havabol;
 
 //import java.util.*;
-
 public class Token
 {
     public String tokenStr = "";
@@ -160,10 +159,9 @@ public class Token
         }
         return retStr.toString();
     }
-    
-    
-    public ResultValue toResult()
-    {
+
+
+    public ResultValue toResult() {
     	return null;
     }
 
