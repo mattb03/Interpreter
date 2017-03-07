@@ -12,12 +12,12 @@ public class Utility {
 		else {
 			String error = nOp1.strValue + " and/or " + nOp2.strValue + " are/is not a numeric type\n";
 			throw new ParserException(parser.scan.currentToken.iSourceLineNr, error
-					, parser.scan.sourceFileNm);
+					, parser.scan.sourceFileNm, "");
 		}
-		
+
 		return res;
 	}
-	
+
 	public static ResultValue subtract(ParserObject parser, Numeric nOp1, Numeric nOp2) throws ParserException {
 		ResultValue res = new ResultValue();
 		res.type = nOp1.type;
@@ -28,11 +28,11 @@ public class Utility {
 		else {
 			String error = nOp1.strValue + " and/or " + nOp2.strValue + " are/is not a numeric type\n";
 			throw new ParserException(parser.scan.currentToken.iSourceLineNr, error
-					, parser.scan.sourceFileNm);
+					, parser.scan.sourceFileNm, "");
 		}
 		return res;
 	}
-	
+
 	public static ResultValue multiply(ParserObject parser, Numeric nOp1, Numeric nOp2) throws ParserException {
 		ResultValue res = new ResultValue();
 		res.type = nOp1.type;
@@ -43,11 +43,11 @@ public class Utility {
 		else {
 			String error = nOp1.strValue + " and/or " + nOp2.strValue + " are/is not a numeric type\n";
 			throw new ParserException(parser.scan.currentToken.iSourceLineNr, error
-					, parser.scan.sourceFileNm);
+					, parser.scan.sourceFileNm, "");
 		}
 		return res;
 	}
-	
+
 	public static ResultValue divide(ParserObject parser, Numeric nOp1, Numeric nOp2) throws ParserException {
 		ResultValue res = new ResultValue();
 		res.type = nOp1.type;
@@ -58,18 +58,18 @@ public class Utility {
 		else {
 			String error = nOp1.strValue + " and/or " + nOp2.strValue + " are/is not a numeric type\n";
 			throw new ParserException(parser.scan.currentToken.iSourceLineNr, error
-					, parser.scan.sourceFileNm);
+					, parser.scan.sourceFileNm, "");
 		}
 		return res;
 	}
-	
+
 	public static ResultValue concatNum(ParserObject parser, Numeric nOp1, Numeric nOp2) {
 		ResultValue res = new ResultValue();
 		res.type = nOp1.type;
 		res.value = nOp1.strValue + nOp2.strValue;
 		return res;
 	}
-	
+
 	public static ResultValue concatStr(ParserObject parser, String str1, String str2) {
 		ResultValue res = new ResultValue();
 		res.type = Token.STRING;

@@ -318,7 +318,7 @@ public class Scanner {
         	int lineNum = this.lines.length + 1;
         	// this loop is to print the blank lines at eof if any
     		for (i = 0; i <= this.blankLines; i++) {
-	        	System.out.print(lineNum + " \n");
+	        	//System.out.print(lineNum + " \n");       DEBUG PRINTLN
 	    		lineNum++;
 	    	}
     		// print the last line only if its a comment
@@ -346,7 +346,7 @@ public class Scanner {
             {
             	if (this.line != this.lastLine && this.line <= this.lines.length)
             	{
-            		System.out.printf("%d %s\n", this.line, this.lines[this.line - 1]);
+            		//System.out.printf("%d %s\n", this.line, this.lines[this.line - 1]);       DEBUG PRINTLN
             	}
                 this.lastLine = this.line;
             	this.line++;
@@ -359,7 +359,7 @@ public class Scanner {
                 finCom = true;
             	if (this.line != this.lastLine && this.line <= this.lines.length)
             	{
-            		System.out.printf("%d %s\n", this.line, this.lines[this.line - 1]);
+            		//System.out.printf("%d %s\n", this.line, this.lines[this.line - 1]);     DEBUG PRINTLN
             	}
 
             	this.lastLine = this.line;
@@ -472,7 +472,7 @@ public class Scanner {
             // print out the current line num and the line itself using String array of lines
             try
             {
-                System.out.printf("%d %s\n", this.line, this.lines[this.line - 1]);
+                //System.out.printf("%d %s\n", this.line, this.lines[this.line - 1]);   THIS IS A DEBUG STATEMENT!!
             }
             catch (ArrayIndexOutOfBoundsException e)
             {

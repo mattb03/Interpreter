@@ -21,9 +21,6 @@ public class HavaBol
 {
     public static void main(String[] args)
     {
-        // Create the SymbolTable
-        //SymbolTable symbolTable = new SymbolTable();
-
         try
         {
             // Print a column heading
@@ -32,7 +29,6 @@ public class HavaBol
                     , "subClassif"
                     , "tokenStr");*/
 
-            //Scanner scan = new Scanner(args[0]);
             Parser parser = new Parser(args[0]);
             parser.statements();
             /*while (! scan.getNext().isEmpty())

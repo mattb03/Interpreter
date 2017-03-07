@@ -6,9 +6,9 @@ public class Numeric {
 	public double doubleValue;
 	public String strValue;		// display value
 	public int type;			// INTEGER, FLOAT
-	
+
 	public Numeric(ParserObject parser, ResultValue res, String op, String opPos) throws ParserException {
-		
+
 		try {
 			doubleValue = Double.parseDouble(res.value);
 			integerValue = (int) doubleValue;
@@ -21,7 +21,7 @@ public class Numeric {
 			} catch (Exception f) {
 				String error = opPos + " of " + op + " operand isn't a valid numeric type\n";
 				throw new ParserException(parser.scan.currentToken.iSourceLineNr,  error
-						, parser.scan.sourceFileNm);
+						, parser.scan.sourceFileNm, "");
 			}
 		}
 	}

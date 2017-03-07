@@ -8,6 +8,6 @@ public class ResultValue {
         							// (e.g., a list of statements might be terminated by "endwhile")
 
     public ResultValue() {
-    
+
     }
 }
