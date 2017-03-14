@@ -10,4 +10,4 @@ print(z);
 
 Int a;
 a = 100;
-print(a);
+print("a = ", a);
