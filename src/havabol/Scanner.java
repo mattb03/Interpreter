@@ -117,7 +117,9 @@ public class Scanner {
         if (this.opCombine)
         {
             String str = this.currentToken.tokenStr;
-            if ((str.length() > 1 ) && (str.equals("<=") || str.equals(">=") || str.equals("!=") || str.equals("==")))
+            if ((str.length() > 1 ) && (str.equals("<=") || str.equals(">=") ||
+                str.equals("!=") || str.equals("==") || str.equals("-=") ||
+                str.equals("+=") ))
             {
                 this.opCombine = false;
             }

@@ -14,11 +14,10 @@ public class Parser {
         }
         this.st = st;
     }
-    
+
     public void statements() throws Exception, ParserException {
         while (! scan.getNext().isEmpty()) {
-            //System.out.println(scan.currentToken.tokenStr);
-
+            //  come across print statement
             if (scan.currentToken.tokenStr.toLowerCase().equals("print")) {
                 if (scan.nextToken.tokenStr.equals("(")) {
                     scan.getNext();  // on '('
@@ -33,19 +32,36 @@ public class Parser {
                             } else {
                                 System.out.println(arg.value);
                             }
-
-                            //this.st.putSymbol(val.tokenStr, new STEntry(
-                                        //val.tokenStr, val.primClassif,
-                                        //val.subClassif));
                         } else {
                             throw new ParserException(
                                 scan.currentToken.iSourceLineNr,
                                  "Expected ';' ", scan.sourceFileNm,"");
                         }
-                    } else {
-                        throw new ParserException(
-                            scan.currentToken.iSourceLineNr,
-                             "Expected ')' ", scan.sourceFileNm, "");
+                    }else{   // more than one string literal or identifier . i.e. print("b=", 100);
+                        if (scan.nextToken.tokenStr.equals(",")) {
+                            String out = "";
+                            scan.getNext(); // on ','
+                            scan.getNext(); // on second arg in print
+                            Token val2 = scan.currentToken;
+                            STEntry arg1 = st.getSymbol(val.tokenStr);
+                            STEntry arg2 = st.getSymbol(val2.tokenStr);
+                            if (arg1 == null) {
+                                out += val.tokenStr;
+                            } else {
+                                out += arg1.value;
+                            }
+                            if (arg2 == null) {
+                                out += val2.tokenStr;
+                            } else {
+                                out += arg2.value;
+                            System.out.println(out);
+                        }
+
+                        } else if (scan == null) {
+                            throw new ParserException(
+                                scan.currentToken.iSourceLineNr,
+                                "Expected ')' ", scan.sourceFileNm, "");
+                        }
                     }
                 }
             // if we come across a declare statement. i.e. Int, String, Bool ...
@@ -86,7 +102,15 @@ public class Parser {
                         assign(scan.currentToken);
                     }
                 }
-
+            } else if (scan.currentToken.subClassif == 1) { // if token is an identifier
+                //check if curToken is in symbol table, if not throw an error
+                STEntry entry = st.getSymbol(scan.currentToken.tokenStr);
+                if (entry == null) {
+                    throw new Exception();
+                }
+                if (scan.nextToken.tokenStr.equals("=")) {
+                    assign(scan.currentToken);
+                }
             } else if (scan.currentToken.tokenStr.toLowerCase().equals("if")) {
                 ifStmt();
             } else if (scan.currentToken.tokenStr.toLowerCase().equals("while")) {
@@ -104,8 +128,11 @@ public class Parser {
 
     public void assign(Token curSymbol) throws Exception {
         int type = st.getSymbol(curSymbol.tokenStr).type;
-        scan.getNext();
-        scan.getNext();
+        scan.getNext(); // get equals sign
+        if (!scan.currentToken.tokenStr.equals("=")) {
+            throw new Exception();
+        }
+        scan.getNext(); // get val
         if (scan.nextToken.tokenStr.equals(";")) {
             if (type != scan.currentToken.subClassif) {
                 throw new ParserException(scan.currentToken.iSourceLineNr,
@@ -145,7 +172,7 @@ public class Parser {
 		Numeric nOp1;
 		Numeric nOp2;
 		// products caused currentToken to be on +, - or neither
-		while (scan.currentToken.tokenStr.equals("+") 
+		while (scan.currentToken.tokenStr.equals("+")
 				|| scan.currentToken.tokenStr.equals("-")) {	// rule 2.1 and .2
 			// get the next token, should be an operand
 			// functions aren't being handled yet
@@ -168,14 +195,14 @@ public class Parser {
 		*/
 		return null;
 	}
-	
+
 	// Assumption: currently on an operand
 	private ResultValue products() throws Exception {
 		ResultValue res = operand();				// rule 3
 		ResultValue temp = new ResultValue("");
 		Numeric nOp1;
 		Numeric nOp2;
-		
+
 		while (scan.currentToken.tokenStr.equals("*")	// rule 4.1 and .2
 				|| scan.currentToken.tokenStr.equals("/")) {
 			scan.getNext();
@@ -195,7 +222,7 @@ public class Parser {
 		}
 		return res;
 	}
-	
+
 	// Assumption: currently on an operand
 	private ResultValue operand() throws Exception {
 		ResultValue res;				// rule 3
@@ -223,7 +250,7 @@ public class Parser {
 				, scan.currentToken.tokenStr);
 		return null;
 	}
-	
+
 	public void error(String fmt, Object... varArgs) throws Exception {
 		String diagnosticTxt = String.format(fmt, varArgs);
 		throw new ParserException(scan.currentToken.iSourceLineNr
