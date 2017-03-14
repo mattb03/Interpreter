@@ -153,6 +153,11 @@ public class Parser {
 
     public void assign(Token curSymbol) throws Exception {
         int type = st.getSymbol(curSymbol.tokenStr).type;
+        // set the datatype in the symbol table
+        STIdentifier tempIdent = (STIdentifier)st.getSymbol(curSymbol.tokenStr);
+        tempIdent.dataType = type;
+
+
         scan.getNext(); // get equals sign
         if (!scan.currentToken.tokenStr.equals("=")) {
         	System.out.println(scan.currentToken.tokenStr);
@@ -165,6 +170,7 @@ public class Parser {
                     "Incompatible type.", scan.sourceFileNm, scan.lines[scan.line-1]);
             } else {
                 st.getSymbol(curSymbol.tokenStr).value = scan.currentToken.tokenStr;
+                
             }
         } else {
             //expr(curSymbol, parse);
@@ -267,8 +273,15 @@ public class Parser {
     	STIdentifier leftIdent = (STIdentifier)st.getSymbol(leftOp.tokenStr);
     	
     	// the literal value of the left operand
-    	st.putValue(leftIdent, "38383");
-    	String leftVal = getTokenValue(leftOp);
+    	String leftVal;
+    	if (leftIdent != null)
+    	{
+    		leftVal = leftIdent.value;
+    	}
+    	else 
+    	{
+    		leftVal = getTokenValue(leftOp);
+    	}
     	
     	if (leftIdent != null)
     		leftOpType = leftIdent.dataType;
@@ -283,15 +296,20 @@ public class Parser {
     	// get the right operand
     	scan.getNext();
     	Token rightOp = scan.currentToken;
-    	rightOp.tokenStr = rightOp.tokenStr.trim();
-    	rightOp.tokenStr = "TX";
 
     	// symbol table entry for the right operand
     	STIdentifier rightIdent = (STIdentifier)st.getSymbol(rightOp.tokenStr);
     	
     	// the literal value of the right operand
-    	String rightVal = getTokenValue(rightOp);
-
+    	String rightVal;
+    	if (rightIdent != null)
+    	{
+    		rightVal = rightIdent.value;
+    	}
+    	else 
+    	{
+    		rightVal = getTokenValue(rightOp);
+    	}
     	if (rightIdent != null)
     		rightOpType = rightIdent.dataType;
     	// get the datatype of the literal right operand if not in ST
@@ -334,11 +352,13 @@ public class Parser {
     	// types are valid if theyre the same, or if the left maps to the right
     	if (leftOpType != rightOpType)
     	{
-    		if (validDataTypes.get(leftOpType) == null ||
+    		if (validDataTypes.get(leftOpType) != rightOpType ||
     			(leftOpType == 4 && !rightVal.equals("T") && !rightVal.equals("F")))
+    		{
     		// throw error
-            throw new ParserException(rightOp.iSourceLineNr,
+    			throw new ParserException(rightOp.iSourceLineNr,
                     "Right datatype cannot be compared to the left", scan.sourceFileNm, scan.lines[scan.line-1]); 
+    		}
     	}
     	
     	// now evaluate
@@ -354,23 +374,23 @@ public class Parser {
     	{
     		// were evaluating integers
     		case 2:
-    			flag = evalIntegers(leftIdent, operator.tokenStr, rightIdent);
+    			flag = evalIntegers(leftVal, operator.tokenStr, rightVal);
     			if (flag == true)
     			{
-    				System.out.println(leftIdent.value + " not equal to " + rightIdent.value);
+    				System.out.println(leftVal + " not equal to " + rightVal);
 
     				return resVal;
     			}
     			else 
     			{
     				resVal.value = "false";
-    				System.out.println(leftIdent.value + " not equal to " + rightIdent.value);
+    				System.out.println(leftVal + " not equal to " + rightVal);
     				return resVal;
     			}
     			
     		// were evaluating floats 
     		case 3:
-    			flag = evalFloats(leftIdent, operator.tokenStr, rightIdent);
+    			flag = evalFloats(leftVal, operator.tokenStr, rightVal);
     			if (flag == true)
     			{
     				return resVal;
@@ -457,7 +477,12 @@ public class Parser {
     	return resVal;
     }
 
-    // getTokenValue(Token) assumes that the Token being passed in is one of the following:
+    private boolean evalIntegers(String leftVal, String tokenStr, String rightVal) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	// getTokenValue(Token) assumes that the Token being passed in is one of the following:
     // an identifier, a numeric constant, a string literal, or a bool string literal
     // its purpose is to return the value of the Token being passed in
     public String getTokenValue(Token tok) throws ParserException
@@ -596,11 +621,11 @@ public class Parser {
     	
     }
     
-    public boolean evalFloats (STIdentifier leftIdent, String operator, STIdentifier rightIdent)
+    public boolean evalFloats (String leftOp, String operator, String rightOp)
     {
 
-    	float fLeft = Float.parseFloat(leftIdent.value);
-    	float fRight = Float.parseFloat(rightIdent.value);
+    	float fLeft = Float.parseFloat(leftOp);
+    	float fRight = Float.parseFloat(rightOp);
     	switch (operator) 
     	{
 			case "==":
