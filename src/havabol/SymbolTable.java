@@ -6,7 +6,7 @@ public class SymbolTable
 {
     public static final String reservedSymbols = "def enddef";
     public static final String functionSymbols = "print LENGTH";
-    public HashMap<String, STEntry> table;
+    public Map<String, STEntry> table;
 
     public SymbolTable()
     {
@@ -77,6 +77,20 @@ public class SymbolTable
         {
             table.put(symbol, entry);
         }
+    }
+    
+    public void setDataType (STIdentifier ident, int type)
+    {
+    	String symbol = ident.symbol;
+    	
+    	ident.setDataType(type);
+
+    }
+    
+    public void putValue (STIdentifier ident, String value)
+    {
+    	//table.get(symbol).value = "TX";
+    	ident.putValue(ident, value);
     }
 
 	private void initGlobal ()
