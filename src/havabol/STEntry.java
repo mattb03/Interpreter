@@ -16,7 +16,8 @@ public class STEntry
     public String subClassifStr = "VOID";
     public String value = "NO VALUE";
     public int type = VOID;
-
+    
+    
     public STEntry(String symbol, int primClassif, int subClassif)
     {
         this.symbol = symbol;

@@ -31,9 +31,10 @@ public class HavaBol
         	SymbolTable st = new SymbolTable();
 
             Parser parser = new Parser(args[0], st);
-            parser.statements();
-            /*while (! scan.getNext().isEmpty())
+            while (! parser.scan.getNext().isEmpty())
             {
+                parser.statements(true);
+                /*
                 try
                 {
                   // call putSymbol(String symbol, STEntry entry)
@@ -46,8 +47,8 @@ public class HavaBol
                 catch (NullPointerException e)
                 {
                   continue;
-                }
-            }*/
+                }*/
+            }
             // symbolTable.printTable();
         }
         catch (Exception e)

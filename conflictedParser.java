@@ -30,20 +30,11 @@ public class Parser {
         validDataTypes.put(5, 4); // String -> bool
         p = Pattern.compile("[^0-9.]");
     }
+<<<<<<< HEAD
 
-    public void statements(boolean bExec) throws Exception, ParserException {
-        //while (! scan.getNext().isEmpty()) {
+    public void statements() throws Exception, ParserException {
+        while (! scan.getNext().isEmpty()) {
             //  come across print statement
-    	if (bExec == false) {
-    		while (! scan.getNext().equals("endif")) {
-    			// loop until we get an 'endif'
-    			// were also gonna need an error case to throw if we find
-    			// a new statement but dont find an 'endif'
-    		}
-    		bExec = true;
-			scan.getNext();
-    	}
-    	if (bExec == true) {
             if (scan.currentToken.tokenStr.toLowerCase().equals("print")) {
                 if (scan.nextToken.tokenStr.equals("(")) {
                     scan.getNext();  // on '('
@@ -138,7 +129,7 @@ public class Parser {
                     assign(scan.currentToken);
                 }
             } else if (scan.currentToken.tokenStr.toLowerCase().equals("if")) {
-                ifStmt(bExec);
+                ifStmt();
             } else if (scan.currentToken.tokenStr.toLowerCase().equals("while")) {
                 whileStmt();
             } else if (scan.currentToken.subClassif == 1) {
@@ -148,17 +139,145 @@ public class Parser {
                         "is not in Symbol Table.", scan.sourceFileNm, "");
                 }
             }
-    	}
-	}
+        }
+=======
+    
+    public void statements(boolean bExec) throws Exception, ParserException {
+        //while (! scan.getNext().isEmpty()) {
+            //System.out.println(scan.currentToken.tokenStr);
+        
+        	if (bExec == false) {
+        		while (! scan.getNext().equals("endif")) {
+        			// loop until we get an 'endif'
+        			// were also gonna need an error case to throw if we find
+        			// a new statement but dont find an 'endif' first
+        		}
+        		bExec = true;
+        		scan.getNext();
+        	}
+        	
+        	if (bExec == true) {
+	        	// all the lines below represent the execution of a single statement
+	            if (scan.currentToken.tokenStr.toLowerCase().equals("print")) {
+	            	System.out.println("token: " + scan.currentToken.tokenStr);
+
+	                if (scan.nextToken.tokenStr.equals("(")) {
+	                	// TODO: 
+	                	// figure out why it doesnt print the string literal inside the ()
+	                    scan.getNext();  // on '('
+    	            	System.out.println("token: " + scan.currentToken.tokenStr);
+
+	                    scan.getNext(); // on value inside print( )
+    	            	System.out.println("token: " + scan.currentToken.tokenStr);
+
+	                    Token val = scan.currentToken;  // assigned this to val
+	                    if (scan.nextToken.tokenStr.equals(")")) {
+	                        scan.getNext();  // on ')'
+	                        if (scan.nextToken.tokenStr.equals(";")) {
+	                            STEntry arg = st.getSymbol(val.tokenStr);
+	                            if (arg == null) {  // NOT in symbol table, thus a string literal
+	                                System.out.println(val.tokenStr);
+
+	                            } else {
+	                                System.out.println(arg.value);
+	                            }
+	
+	                            //this.st.putSymbol(val.tokenStr, new STEntry(
+	                                        //val.tokenStr, val.primClassif,
+	                                        //val.subClassif));
+	                        } else {
+	                            throw new ParserException(
+	                                scan.currentToken.iSourceLineNr,
+	                                 "Expected ';' ", scan.sourceFileNm,"");
+	                        }
+	                    } else {
+	                        throw new ParserException(
+	                            scan.currentToken.iSourceLineNr,
+	                             "Expected ')' ", scan.sourceFileNm, "");
+	                    }
+	                }
+	            // if we come across a declare statement. i.e. Int, String, Bool ...
+	            } else if (scan.currentToken.subClassif == 12) {
+	                // if nextToken is not an identifier throw an error
+	                if (scan.nextToken.subClassif != 1) {
+	                    throw new ParserException(scan.nextToken.iSourceLineNr,
+	                        "Identifier expected after declare statement:",
+	                        scan.sourceFileNm, "");
+	                } else {
+	                        //INTEGER = 2;
+	                        //FLOAT = 3;
+	                        //BOOLEAN = 4;
+	                        //STRING = 5;
+	                        //DATE = 6;
+	                    int type = 7;
+	                    String token = scan.currentToken.tokenStr;
+	                    if (token.equals("Int"))
+	                        type = 2;
+	                    else if (token.equals("Float"))
+	                        type = 3;
+	                    else if (token.equals("Bool"))
+	                        type = 4;
+	                    else if (token.equals("String"))
+	                        type = 5;
+	                    else if (token.equals("Date"))
+	                        type = 6;
+	                    scan.getNext();
+	                    //put this token into symbol table
+	                    STIdentifier entry = new STIdentifier(scan.currentToken.tokenStr,
+	                    							scan.currentToken.primClassif,
+	                    							scan.currentToken.subClassif);
+	                    entry.dataType = type;
+	                    st.putSymbol(scan.currentToken.tokenStr, entry);
+	                    // set the type in the symbol table for the identifier
+	
+	                    st.setDataType((STIdentifier)st.getSymbol(scan.currentToken.tokenStr), type);
+	                    if (scan.nextToken.tokenStr.equals("=")) {
+	                        assign(scan.currentToken);
+	                    }
+	                }
+	
+	            } else if (scan.currentToken.tokenStr.toLowerCase().equals("if")) {
+	                ifStmt(bExec);
+	            } else if (scan.currentToken.tokenStr.toLowerCase().equals("while")) {
+	                whileStmt();
+	            } else if (scan.currentToken.subClassif == 1) {
+	                if (st.getSymbol(scan.currentToken.tokenStr) == null) {
+	                    throw new ParserException(scan.currentToken.iSourceLineNr,
+	                        "Symbol "+scan.currentToken.tokenStr+
+	                        "is not in Symbol Table.", scan.sourceFileNm, "");
+	                } 
+	                if (scan.nextToken.tokenStr.equals("=")) {
+	                    assign(scan.currentToken);
+	                }
+	            }
+        	}
+        //}
+>>>>>>> edfe6fd290e99ad55b7cc6369820bcf3780efca2
+        //this.st.printTable();
+    }
 
     public void assign(Token curSymbol) throws Exception {
         int type = st.getSymbol(curSymbol.tokenStr).type;
+<<<<<<< HEAD
         scan.getNext(); // get equals sign
         if (!scan.currentToken.tokenStr.equals("=")) {
-        	System.out.println(scan.currentToken.tokenStr);
-            throw new ParserException(scan.currentToken.iSourceLineNr,
-                    "syntax error: ", scan.sourceFileNm, scan.lines[scan.line-1]);        }
+            throw new Exception();
+        }
         scan.getNext(); // get val
+=======
+        /* this needs to be debugged. it skips string assignment tokens
+        System.out.println("current before: " + scan.currentToken.tokenStr);
+        System.out.println("next before: " + scan.nextToken.tokenStr);
+
+        scan.getNext();
+        System.out.println("current between: " + scan.currentToken.tokenStr);
+        System.out.println("next between: " + scan.nextToken.tokenStr);
+
+        scan.getNext();
+        System.out.println("current after: " + scan.currentToken.tokenStr);
+        System.out.println("next after: " + scan.nextToken.tokenStr);
+		*/
+>>>>>>> edfe6fd290e99ad55b7cc6369820bcf3780efca2
         if (scan.nextToken.tokenStr.equals(";")) {
             if (type != scan.currentToken.subClassif) {
                 throw new ParserException(scan.currentToken.iSourceLineNr,
@@ -180,13 +299,14 @@ public class Parser {
         System.out.println("iPrimClassif=" + scan.currentToken.primClassif);
         System.out.println("iSubClassif=" + scan.currentToken.subClassif);
         
+        
         Object resTrueStmts;
         Object resFalseStmts;
         // Do we need to evaluate the condition?
         if (bExec == true)
         {
         	// we are executing (not ignoring)
-        	ResultValue resCond = evalCond(); //new ResultValue("true"); // you can test this condition in expr
+        	ResultValue resCond = new ResultValue("true"); // you can test this condition in expr
         	// Did the condition return True?
         	if (resCond.value == "true")
         	{
@@ -347,9 +467,6 @@ public class Parser {
     	// we left off here. need to figure out how to put a new value into
     	// the symbol table. once we can do that, we can determine whether
     	// this function is done (it should be done).
-    	// begin test
-    	System.out.println("left ooperator: " + leftIdent + "\toperator: " + 
-    			operator + "\tright operator: " + rightIdent);
     	switch (leftOpType)
     	{
     		// were evaluating integers
