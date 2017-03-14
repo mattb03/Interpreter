@@ -277,17 +277,14 @@ public class Parser {
     	if (leftIdent != null)
     	{
     		leftVal = leftIdent.value;
+    		leftOpType = leftIdent.dataType;
+
     	}
     	else 
     	{
     		leftVal = getTokenValue(leftOp);
-    	}
-    	
-    	if (leftIdent != null)
-    		leftOpType = leftIdent.dataType;
-    	// get the datatype of the literal left operand if not in ST
-    	else 
     		leftOpType = getLiteralType(leftVal);
+    	}
     	
     	// now get the operator
     	scan.getNext();
@@ -305,19 +302,15 @@ public class Parser {
     	if (rightIdent != null)
     	{
     		rightVal = rightIdent.value;
+    		rightOpType = rightIdent.dataType;
+
     	}
     	else 
     	{
     		rightVal = getTokenValue(rightOp);
-    	}
-    	if (rightIdent != null)
-    		rightOpType = rightIdent.dataType;
-    	// get the datatype of the literal right operand if not in ST
-    	else 
     		rightOpType = getLiteralType(rightVal);
+    	}
     	
-    	System.out.println("?? " + rightOp.tokenStr);
-
     	System.out.println("leftOp: " + leftOp.tokenStr +
     			"\topeator: " + operator.tokenStr +
     			"\trightOp: " + rightOp.tokenStr);
