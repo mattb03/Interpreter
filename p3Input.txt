@@ -1,46 +1,11 @@
-String name = "Chris\t\tBuckner\a";
-print("Hello World!\n\n", name);
-String loc;
-loc = "San Antonio, TX 78247";
-print(loc);
-
-Int z = 5;
-
-print(z);
-
-Int a;
-a = 100;
-print("a = ", a);
 
 // Simple if
-Int i = 0;
-print(">>> First If");
-String loc;
-loc = "TX";
+Int i = 5;
 
 
+print ("before if");
 if i >= 5:
-    print ("snake eyes");
-    print("\t2nd if true, i >= 5, i =", i);
-else:
-    print("\t2nd if false, i >= 5, i =", i);
-endif;
-
-
-if loc == "TX": // check for TX
-    // It is TX
-    // it is ok to have this statement on multiple lines.  
-    // That is why we have a semicolon
-    i 
-       = 
-          i 
-          + 1;
-endif;
-print("\tDone with first if");
-
-print(">>> Second If");
-// if then else
-if i >= 5:
+    print ("yadda yadda");
     print("\t2nd if true, i >= 5, i =", i);
 else:
     print("\t2nd if false, i >= 5, i =", i);

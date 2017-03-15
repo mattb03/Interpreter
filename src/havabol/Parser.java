@@ -34,15 +34,16 @@ public class Parser {
     public void statements(boolean bExec) throws Exception, ParserException {
         //while (! scan.getNext().isEmpty()) {
             //  come across print statement
-    	if (bExec == false) {
-    		while (! scan.getNext().equals("endif")) {
+    	/*if (bExec == false) {
+    		while (! scan.getNext().equals("endif") && ! scan.getNext().equals("else")) {
     			// loop until we get an 'endif'
     			// were also gonna need an error case to throw if we find
     			// a new statement but dont find an 'endif'
+    			System.out.println("long as ufck");
     		}
     		bExec = true;
 			scan.getNext();
-    	}
+    	}*/
     	if (bExec == true) {
             if (scan.currentToken.tokenStr.toLowerCase().equals("print")) {
                 if (scan.nextToken.tokenStr.equals("(")) {
@@ -138,7 +139,9 @@ public class Parser {
                     assign(scan.currentToken);
                 }
             } else if (scan.currentToken.tokenStr.toLowerCase().equals("if")) {
-                ifStmt(bExec);
+            	ifStmt(bExec);
+            }
+
             } else if (scan.currentToken.tokenStr.toLowerCase().equals("while")) {
                 whileStmt();
             } else if (scan.currentToken.subClassif == 1) {
@@ -148,7 +151,6 @@ public class Parser {
                         "is not in Symbol Table.", scan.sourceFileNm, "");
                 }
             }
-    	}
 	}
 
     public void assign(Token curSymbol) throws Exception {
@@ -179,12 +181,6 @@ public class Parser {
     }
 
     public void ifStmt(boolean bExec) throws Exception {
-        System.out.println("Im an if statement!!!");
-        System.out.println("the token is: " + scan.currentToken.tokenStr);
-        System.out.println("iLineNr=" + scan.currentToken.iSourceLineNr);
-        System.out.println("szTokStr: " + scan.currentToken.tokenStr);
-        System.out.println("iPrimClassif=" + scan.currentToken.primClassif);
-        System.out.println("iSubClassif=" + scan.currentToken.subClassif);
         
         Object resTrueStmts;
         Object resFalseStmts;
@@ -203,6 +199,8 @@ public class Parser {
         		// 1. skip over the rest of the statements until we hit an 'endif'
         		// 2. finish off the rest of this function
         		scan.getNext();
+        		scan.getNext();
+        		
         		statements(true); // you need to keep evaluating until you hit an 'else' or 'endif'
         		// has an else so ignore these statements
         		statements(false);
@@ -310,13 +308,13 @@ public class Parser {
     		rightVal = getTokenValue(rightOp);
     		rightOpType = getLiteralType(rightVal);
     	}
-    	
+    	/*
     	System.out.println("leftOp: " + leftOp.tokenStr +
     			"\topeator: " + operator.tokenStr +
     			"\trightOp: " + rightOp.tokenStr);
     	System.out.println("entry in the st: " + st.table.get(leftOp.tokenStr));
     	System.out.println("entry in the st: " + st.table.get(rightOp.tokenStr));
-
+		*/
     	
     	// throw an error if theres no terminating colon
     	if (! scan.nextToken.tokenStr.equals(":"))
@@ -327,20 +325,7 @@ public class Parser {
 
     	// now we have the value of each operand in string format
     	// so now get the datatypes of each operand
-    	System.out.println(this.validDataTypes);
     	
-    	// begin getLiteralType test
-    	int i;
-    	String[] szArray = {"TX", "34.56A", "34.A38", "34", "3", "34.0", "0.34", "3.4", "T", "!#$"};
-    	for (i = 0; i < szArray.length; i++)
-    	{
-    		int iType = getLiteralType(szArray[i]);
-    		System.out.println(szArray[i] + "= " + iType);
-    		
-    	}
-    	// end getLiteralType test
-
-    	System.out.println(leftVal + " " + leftOpType + "\t" + rightVal + " " + rightOpType);
 
     	// types are valid if theyre the same, or if the left maps to the right
     	if (leftOpType != rightOpType)
@@ -360,9 +345,6 @@ public class Parser {
     	// we left off here. need to figure out how to put a new value into
     	// the symbol table. once we can do that, we can determine whether
     	// this function is done (it should be done).
-    	// begin test
-    	System.out.println("left ooperator: " + leftIdent + "\toperator: " + 
-    			operator + "\tright operator: " + rightIdent);
     	switch (leftOpType)
     	{
     		// were evaluating integers
@@ -370,14 +352,12 @@ public class Parser {
     			flag = evalIntegers(leftVal, operator.tokenStr, rightVal);
     			if (flag == true)
     			{
-    				System.out.println(leftVal + " not equal to " + rightVal);
 
     				return resVal;
     			}
     			else 
     			{
     				resVal.value = "false";
-    				System.out.println(leftVal + " not equal to " + rightVal);
     				return resVal;
     			}
     			
@@ -399,8 +379,6 @@ public class Parser {
     			switch (operator.tokenStr) 
     			{
     				case "==":
-						System.out.println("ran thru this shieeet");
-						System.out.println(leftVal + "\t" + rightVal);
     					if (leftVal.equals(rightVal))
     					{
     						// return true
@@ -427,7 +405,6 @@ public class Parser {
     					
     				// bool only
     				case "&&":
-    					System.out.println(operator.tokenStr);
     					// throw error if both are not bools
     					if (leftOpType != 4 && rightOpType != 4)
     					{
@@ -470,11 +447,6 @@ public class Parser {
     	return resVal;
     }
 
-    private boolean evalIntegers(String leftVal, String tokenStr, String rightVal) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
 	// getTokenValue(Token) assumes that the Token being passed in is one of the following:
     // an identifier, a numeric constant, a string literal, or a bool string literal
     // its purpose is to return the value of the Token being passed in
@@ -489,12 +461,10 @@ public class Parser {
     	// so it must be a numeric constant, string literal, or bool string literal
     	if (ident == null)
     	{
-    		System.out.println(tok.tokenStr + " is not in the table");
     		return tok.tokenStr;
     	}
     	
     	// if we hit here, we know its in the table ie. its an identifier
-    	System.out.println("ident= " + ident);
     	
     	// if its an identifier, get its value
 		if (! st.getSymbol(tok.tokenStr).value.equals("NO VALUE"))
@@ -547,11 +517,11 @@ public class Parser {
     }
     
 
-    public boolean evalIntegers (STIdentifier leftIdent, String operator, STIdentifier rightIdent)
+    public boolean evalIntegers (String leftOp, String operator, String rightOp)
     {
 
-    	int iLeft = 3;//Integer.parseInt(leftIdent.value);
-    	int iRight = 5;//Integer.parseInt(rightIdent.value);
+    	int iLeft = Integer.parseInt(leftOp);
+    	int iRight = Integer.parseInt(rightOp);
     	switch (operator) 
     	{
 			case "==":
