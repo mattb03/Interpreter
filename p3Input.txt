@@ -1,3 +1,4 @@
+print ("cant wait");
 
 // Simple if
 Int i = 5;
@@ -5,9 +6,12 @@ Int i = 5;
 
 print ("before if");
 if i >= 5:
-    print ("yadda yadda");
     print("\t2nd if true, i >= 5, i =", i);
+    print ("yadda yadda");
 else:
     print("\t2nd if false, i >= 5, i =", i);
 endif;
 
+Int zed = 10;
+print ("printing again");
+print ("zed= ", zed);

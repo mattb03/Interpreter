@@ -43,7 +43,8 @@ public class Parser {
             bExec = true;
             scan.getNext();
         }*/
-        if (bExec == true) {
+
+        while (bExec == true) {
             if (scan.currentToken.tokenStr.toLowerCase().equals("print")) {
                 ArrayList<Token> arglist = new ArrayList<Token>();
                 if (scan.nextToken.tokenStr.equals("(")) {
@@ -70,7 +71,7 @@ public class Parser {
                             Token token = arglist.get(i);
                             STEntry arg = st.getSymbol(token.tokenStr);
                             if (arg == null) {  // NOT in symbol table, thus a string literal
-                                System.out.print(token.tokenStr);
+                                System.out.print(token.tokenStr.trim());
                             } else {
                                 System.out.print(arg.value);
                             }
@@ -141,7 +142,23 @@ public class Parser {
                         "is not in Symbol Table.", scan.sourceFileNm, "");
                 }
             }
+            // if (token == 'else' or token == 'endif')
+            //     bExec = false
+            
+            scan.getNext();
+            // if we found an 'else' or 'endif' we know weve hit the end of the statement block
+            // so set bExec to false to exit the function
+            if (scan.nextToken.tokenStr.equals("else") || scan.nextToken.tokenStr.equals("endif")) {
+            	bExec = false;
+            }
+            else if (scan.getNext().isEmpty()) {
+            	bExec = false;
+            }
+            
         }
+
+        //System.out.println(bExec + " myCurr: " + scan.currentToken.tokenStr + "\tmyNext: " + scan.nextToken.tokenStr);
+
     }
 
 
