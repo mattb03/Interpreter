@@ -1,13 +1,8 @@
-String name = "Chris\t\tBuckner\a";
-print("Hello World!\n\n", name);
-String loc;
-loc = "San Antonio, TX 78247";
-print(loc);
-
-Int z = 5;
-
-print(z);
-
-Int a;
+Int a; 
 a = 100;
-print("a = ", a);
+Int b = 100;
+String name = "Chris\t\tBuckner";
+print(name, " goes to", " UTSA ", "arg1", "arg2");
+
+if a >= b:
+    print("A is the greater one!!!!\n\n\n\a");
