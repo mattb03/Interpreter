@@ -2,16 +2,22 @@ print ("cant wait");
 
 // Simple if
 Int i = 5;
-
+Float fNum = 3.9;
 
 print ("before if");
 if i >= 5:
     print("\t2nd if true, i >= 5, i =", i);
     print ("yadda yadda");
+    i = 1;
 else:
     print("\t2nd if false, i >= 5, i =", i);
+    i = 3;
+    fNum = 2.1;
+    
 endif;
 
 Int zed = 10;
 print ("printing again");
 print ("zed= ", zed);
+print ("i= ", i);
+print ("fNum= ", fNum);

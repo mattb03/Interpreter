@@ -34,16 +34,10 @@ public class Parser {
     public void statements(boolean bExec) throws Exception, ParserException {
         //while (! scan.getNext().isEmpty()) {
             //  come across print statement
-        /*if (bExec == false) {
-            while (! scan.getNext().equals("endif")) {
-                // loop until we get an 'endif'
-                // were also gonna need an error case to throw if we find
-                // a new statement but dont find an 'endif'
-            }
-            bExec = true;
-            scan.getNext();
-        }*/
-
+        if (bExec == false) {
+        	skipTo("endif", ";");
+        }
+    	
         while (bExec == true) {
             if (scan.currentToken.tokenStr.toLowerCase().equals("print")) {
                 ArrayList<Token> arglist = new ArrayList<Token>();
@@ -262,9 +256,12 @@ public class Parser {
         System.out.println("Im a while statement!!");
     }
 
-    public void skipTo(String stmt, String terminatingStr)
+    public void skipTo(String stmt, String terminatingStr) throws Exception
     {
-        System.out.println("vSkipTo func");
+        while (!scan.currentToken.tokenStr.equals(stmt))
+        {
+        	scan.getNext();
+        }
     }
 
     public ResultValue evalCond() throws Exception
