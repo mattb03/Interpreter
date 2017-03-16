@@ -66,10 +66,9 @@ public class Parser {
                             Token token = arglist.get(i);
                             STEntry arg = st.getSymbol(token.tokenStr);
                             if (arg == null) {  // NOT in symbol table, thus a string literal
-                            	/*** the lines  below only prints with the .trim() on the end ***/
                                 System.out.print(token.tokenStr);
                             } else {
-                                System.out.print(arg.value.trim());
+                                System.out.print(arg.value);
                             }
                         }
                         System.out.println();

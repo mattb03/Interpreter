@@ -1,9 +1,9 @@
 Int a; 
 a = 100;
 Int b = 1000;
-String name = "Chris\tBuckner\n";
-print(name, " goes to", " UTSA ", "arg1 ", "arg2");
+String name = "Chris\nBuckner\n\n";
+print(name);
 
-if a >= b:
+if a < b:
     print("A is the greater one!!!!\n\n\n\a");
 endif;
