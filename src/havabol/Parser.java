@@ -32,12 +32,17 @@ public class Parser {
     }
 
     public void statements(boolean bExec) throws Exception, ParserException {
-        //while (! scan.getNext().isEmpty()) {
-            //  come across print statement
+
         if (bExec == false) {
-        	 //if (scan.nextToken.tokenStr.equals("else")) {
+        	
+        	if (scan.nextToken.tokenStr.equals("else")) {
         		skipTo("endif", ";");
-        	//}
+        	}
+        	else {
+        		// if nextToken is not an 'else' then its an 'endif'
+        		// so call getNext() once to skip over it.
+        		scan.getNext();
+        	}        		
         }
     	
         while (bExec == true) {
@@ -66,8 +71,10 @@ public class Parser {
                             Token token = arglist.get(i);
                             STEntry arg = st.getSymbol(token.tokenStr);
                             if (arg == null) {  // NOT in symbol table, thus a string literal
+                            	/*** take off this .trim() before pushing to github ***/
                                 System.out.print(token.tokenStr);
                             } else {
+                            	/*** take off this .trim() before pushing to github ***/
                                 System.out.print(arg.value);
                             }
                         }
@@ -128,6 +135,7 @@ public class Parser {
                 }
             } else if (scan.currentToken.tokenStr.toLowerCase().equals("if")) {
                 ifStmt(bExec);
+                skipTo("endif", ";");
                 bExec = false;
             } else if (scan.currentToken.tokenStr.toLowerCase().equals("while")) {
                 whileStmt();
@@ -147,7 +155,7 @@ public class Parser {
             if (scan.nextToken.tokenStr.equals("else") || scan.nextToken.tokenStr.equals("endif")) {
             	bExec = false;
             }
-            else if (scan.getNext().isEmpty()) {
+            else if (scan.nextToken.tokenStr.isEmpty()) {
             	bExec = false;
             }
             
@@ -158,7 +166,12 @@ public class Parser {
 
 
 
-    public void assign(Token curSymbol) throws Exception {
+    @Override
+	public String toString() {
+		return "Parser [scan=" + scan + "]";
+	}
+
+	public void assign(Token curSymbol) throws Exception {
         int type = st.getSymbol(curSymbol.tokenStr).type;
         // set the datatype in the symbol table
         //STIdentifier tempIdent = (STIdentifier)st.getSymbol(curSymbol.tokenStr);
@@ -261,7 +274,7 @@ public class Parser {
 
     public void skipTo(String stmt, String terminatingStr) throws Exception
     {
-        while (!scan.currentToken.tokenStr.equals("else") && !scan.currentToken.tokenStr.equals("endif"))
+        while (!scan.currentToken.tokenStr.equals(stmt))
         {
         	scan.getNext();
         }

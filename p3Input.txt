@@ -1,5 +1,5 @@
 
-Int i = 0;
+Int i = 10;
 Float fNum = 3.9;
 
 print ("before if");
