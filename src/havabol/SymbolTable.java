@@ -84,7 +84,6 @@ public class SymbolTable
     	String symbol = ident.symbol;
     	
     	ident.setDataType(type);
-
     }
     
     public void putValue (STIdentifier ident, String value)
