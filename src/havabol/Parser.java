@@ -14,7 +14,7 @@ public class Parser {
     // this map is for identifying if 2 operands are compatible datatypes
     public Map<Integer, Integer> validDataTypes;
     public Pattern p;
-
+    public boolean show = false;
 
     public Parser(String SourceFileNm, SymbolTable st) {
         try {
@@ -34,16 +34,12 @@ public class Parser {
     public void statements(boolean bExec) throws Exception, ParserException {
         //while (! scan.getNext().isEmpty()) {
             //  come across print statement
-        /*if (bExec == false) {
-            while (! scan.getNext().equals("endif")) {
-                // loop until we get an 'endif'
-                // were also gonna need an error case to throw if we find
-                // a new statement but dont find an 'endif'
-            }
-            bExec = true;
-            scan.getNext();
-        }*/
-
+        if (bExec == false) {
+        	 //if (scan.nextToken.tokenStr.equals("else")) {
+        		skipTo("endif", ";");
+        	//}
+        }
+    	
         while (bExec == true) {
             if (scan.currentToken.tokenStr.toLowerCase().equals("print")) {
                 ArrayList<Token> arglist = new ArrayList<Token>();
@@ -64,14 +60,13 @@ public class Parser {
                             ;
                         }
                         scan.getNext();
-
                     }
                     if (scan.nextToken.tokenStr.equals(";")) {
                         for (int i=0; i < arglist.size(); i++) {
                             Token token = arglist.get(i);
                             STEntry arg = st.getSymbol(token.tokenStr);
                             if (arg == null) {  // NOT in symbol table, thus a string literal
-                                System.out.print(token.tokenStr.trim());
+                                System.out.print(token.tokenStr);
                             } else {
                                 System.out.print(arg.value);
                             }
@@ -124,7 +119,7 @@ public class Parser {
                 }
             } else if (scan.currentToken.subClassif == 1) { // if token is an identifier
                 //check if curToken is in symbol table, if not throw an error
-                STEntry entry = st.getSymbol(scan.currentToken.tokenStr);
+                STIdentifier entry = (STIdentifier)st.getSymbol(scan.currentToken.tokenStr);
                 if (entry == null) {
                     throw new Exception();
                 }
@@ -133,6 +128,7 @@ public class Parser {
                 }
             } else if (scan.currentToken.tokenStr.toLowerCase().equals("if")) {
                 ifStmt(bExec);
+                bExec = false;
             } else if (scan.currentToken.tokenStr.toLowerCase().equals("while")) {
                 whileStmt();
             } else if (scan.currentToken.subClassif == 1) {
@@ -157,8 +153,6 @@ public class Parser {
             
         }
 
-        //System.out.println(bExec + " myCurr: " + scan.currentToken.tokenStr + "\tmyNext: " + scan.nextToken.tokenStr);
-
     }
 
 
@@ -167,9 +161,8 @@ public class Parser {
     public void assign(Token curSymbol) throws Exception {
         int type = st.getSymbol(curSymbol.tokenStr).type;
         // set the datatype in the symbol table
-        STIdentifier tempIdent = (STIdentifier)st.getSymbol(curSymbol.tokenStr);
-        tempIdent.dataType = type;
-
+        //STIdentifier tempIdent = (STIdentifier)st.getSymbol(curSymbol.tokenStr);
+        //tempIdent.dataType = type;
 
         scan.getNext(); // get equals sign
         if (!scan.currentToken.tokenStr.equals("=")) {
@@ -183,7 +176,9 @@ public class Parser {
                     "Incompatible type.", scan.sourceFileNm, scan.lines[scan.line-1]);
             } else {
                 st.getSymbol(curSymbol.tokenStr).value = scan.currentToken.tokenStr;
-
+                // set the type here
+                // but first we need to find out how to reference a child/subclass value in a hash table
+                st.setDataType((STIdentifier)st.getSymbol(curSymbol.tokenStr), type);
             }
         } else {
             //expr(curSymbol, parse);
@@ -219,10 +214,12 @@ public class Parser {
             }
             else
             {
+            	scan.getNext();
                 // Cond returned False, ignore true part
                 statements(false);
                 // check for 'else'
                 statements(true);
+
             }
 
         }
@@ -262,9 +259,12 @@ public class Parser {
         System.out.println("Im a while statement!!");
     }
 
-    public void skipTo(String stmt, String terminatingStr)
+    public void skipTo(String stmt, String terminatingStr) throws Exception
     {
-        System.out.println("vSkipTo func");
+        while (!scan.currentToken.tokenStr.equals("else") && !scan.currentToken.tokenStr.equals("endif"))
+        {
+        	scan.getNext();
+        }
     }
 
     public ResultValue evalCond() throws Exception
