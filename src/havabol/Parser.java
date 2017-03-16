@@ -67,7 +67,7 @@ public class Parser {
                             STEntry arg = st.getSymbol(token.tokenStr);
                             if (arg == null) {  // NOT in symbol table, thus a string literal
                             	/*** the lines  below only prints with the .trim() on the end ***/
-                                System.out.print(token.tokenStr.trim());
+                                System.out.print(token.tokenStr);
                             } else {
                                 System.out.print(arg.value.trim());
                             }

@@ -1,8 +1,8 @@
 Int a; 
 a = 100;
-Int b = 100;
-String name = "Chris\t\tBuckner";
-print(name, " goes to", " UTSA ", "arg1", "arg2");
+Int b = 1000;
+String name = "Chris\tBuckner\n";
+print(name, " goes to", " UTSA ", "arg1 ", "arg2");
 
 if a >= b:
     print("A is the greater one!!!!\n\n\n\a");
