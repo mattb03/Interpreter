@@ -10,3 +10,9 @@ else:
     print("B is the greater one.\n\a");
 endif;
 
+Int c;
+
+c = a;
+
+print("c = ", c, "\n\a");
+
