@@ -666,8 +666,7 @@ public class Parser {
     // 1 + 2;
     // 
     public ResultValue expr() throws Exception {
-    	/*
-    	Stack<Token> mainStack = new Stack<Token>();
+    	/*Stack<Token> mainStack = new Stack<Token>();
     	Stack<Token> postfixStack = new Stack<Token>();
     	Token tok = new Token();
     	Token popped = new Token();
