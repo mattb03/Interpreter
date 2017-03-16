@@ -9,6 +9,8 @@ public class Token
     public int subClassif = 0;
     public int iSourceLineNr = 0;
     public int iColPos = 0;
+    public int normPreced = 0;
+    public int stkPreced = 0;
     // Constants for primClassif
     public static final int OPERAND = 1;    // constants, identifier
     public static final int OPERATOR = 2;   // + - * / < > = !
@@ -163,6 +165,38 @@ public class Token
 
     public ResultValue toResult() {
     	return null;
+    }
+    
+    public void setPrecedence() {
+    	String conditionals = "<><=>===!=";
+    	
+    	if (primClassif == SEPARATOR) {
+    		normPreced = 15;
+    		stkPreced = 2;
+    	} else if (tokenStr.equals("u-")) {
+    		normPreced = stkPreced = 12;
+    		// TODO: unary minus symbol in scanner "u-"
+    	} else if (tokenStr.equals("^")) {
+    		normPreced = 11;
+    		stkPreced = 10;
+    	} else if (tokenStr.equals("*")
+    			|| tokenStr.equals("/")) {
+    		normPreced = stkPreced = 9;
+    	} else if (tokenStr.equals("+")
+    			|| tokenStr.equals("-")) {
+    		normPreced = stkPreced = 8;
+    	} else if (tokenStr.equals("#")) {
+    		normPreced = stkPreced = 7;
+    	} else if (conditionals.contains(tokenStr)
+    			|| tokenStr.equals("in")
+    			|| tokenStr.equals("notin")) {
+    		normPreced = stkPreced = 6;
+    	} else if (tokenStr.equals("not")) {
+    		normPreced = stkPreced = 5;
+    	} else if (tokenStr.equals("and")
+    			|| tokenStr.equals("or")) {
+    		normPreced = stkPreced = 4;
+    	}
     }
 
     private String parseString(Token tok)

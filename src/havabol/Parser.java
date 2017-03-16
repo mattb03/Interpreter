@@ -662,99 +662,80 @@ public class Parser {
 
     }
 
-    /* 1   expr := products expr'
-     * 2.1 expr':= '+' products expr'
-     * 2.2       |  empty
-     * 3   products := operand products'
-     * 4.1 products':= '*' operand products'
-     * 4.2       |  empty
-     * 5.1 operand := intConst
-     * 5.2       |  variable
-     */
+    // assumes that this is called when currentToken = to the first operand
+    // 1 + 2;
+    // 
     public ResultValue expr() throws Exception {
-        /*
-        scan.getNext();
-        ResultValue res = products();               // rule 1
-        ResultValue temp = new ResultValue("");
-        Numeric nOp1;
-        Numeric nOp2;
-        // products caused currentToken to be on +, - or neither
-        while (scan.currentToken.tokenStr.equals("+")
-                || scan.currentToken.tokenStr.equals("-")) {    // rule 2.1 and .2
-            // get the next token, should be an operand
-            // functions aren't being handled yet
-            scan.getNext();
-            if (scan.currentToken.primClassif != Token.OPERAND)
-                error("Within expression, expected operand. Found: '%s'"
-                        , scan.currentToken.tokenStr);
-            temp = products();                              // rule 2.1
-            if (scan.currentToken.equals("+")) {
-                nOp1 = new Numeric(this, res, "+", "1st operand");
-                nOp2 = new Numeric(this, temp, "+", "2nd operand");
-                res = Utility.add(this, nOp1, nOp2);
-            } else {
-                nOp1 = new Numeric(this, res, "-", "1st operand");
-                nOp2 = new Numeric(this, temp, "-", "2nd operand");
-                res = Utility.subtract(this, nOp1, nOp2);
-            }
-        }
-        return res;
-        */
-        return null;
-    }
-
-    // Assumption: currently on an operand
-    private ResultValue products() throws Exception {
-        ResultValue res = operand();                // rule 3
-        ResultValue temp = new ResultValue("");
-        Numeric nOp1;
-        Numeric nOp2;
-
-        while (scan.currentToken.tokenStr.equals("*")   // rule 4.1 and .2
-                || scan.currentToken.tokenStr.equals("/")) {
-            scan.getNext();
-            if (scan.currentToken.primClassif != Token.OPERAND)
-                error("Within expression, expected operand. Found: '%s'"
-                        , scan.currentToken.tokenStr);
-            temp = operand();
-            if (scan.currentToken.tokenStr.equals("*")) {
-                nOp1 = new Numeric(this, res, "*", "1st operand");
-                nOp2 = new Numeric(this, temp, "*", "2nd operand");
-                res = Utility.multiply(this, nOp1, nOp2);
-            } else {
-                nOp1 = new Numeric(this, res, "/", "1st operand");
-                nOp2 = new Numeric(this, temp, "/", "2nd operand");
-                res = Utility.divide(this, nOp1, nOp2);
-            }
-        }
-        return res;
-    }
-
-    // Assumption: currently on an operand
-    private ResultValue operand() throws Exception {
-        ResultValue res;                // rule 3
-        if (scan.currentToken.primClassif == Token.OPERAND) {
-            switch (scan.currentToken.subClassif) {
-            case Token.IDENTIFIER:
-                // get variable value from symboltable
-                STEntry var = st.getSymbol(scan.currentToken.tokenStr);
-                scan.getNext();
-                res = new ResultValue(var.symbol);
-                res.type = var.subClassif;
-                res.structure.add("variable");
-                return res;
-            case Token.INTEGER:
-            case Token.FLOAT:
-            case Token.DATE:
-            case Token.STRING:
-            case Token.BOOLEAN:
-                res = scan.currentToken.toResult();
-                scan.getNext();
-                return res;
-            }
-        }
-        error("Within operand, found '%s'"
-                , scan.currentToken.tokenStr);
+    	/*
+    	Stack<Token> mainStack = new Stack<Token>();
+    	Stack<Token> postfixStack = new Stack<Token>();
+    	Token tok = new Token();
+    	Token popped = new Token();
+    	
+    	boolean bFound;
+    	
+    	tok = scan.currentToken;
+    	
+    	// go through the expr and end if there isn't a token
+    	// that can be in a expr
+    	while (tok.primClassif == Token.OPERAND
+    			|| tok.primClassif == Token.OPERATOR 
+    			|| tok.tokenStr.equals("(")
+    			|| tok.tokenStr.equals(")")) {
+    		tok.setPrecedence();
+    		switch (tok.primClassif) {
+    			case Token.OPERAND:
+    				postfixStack.push(tok);
+    				break;
+    			case Token.OPERATOR:
+    				while (! mainStack.isEmpty()) {
+    					// equal to or less than operators
+    					if (tok.normPreced
+    							> mainStack.peek().stkPreced)
+    						break;
+    					popped = mainStack.pop();
+    					postfixStack.push(popped);
+    				}
+    				mainStack.push(tok);
+    				break;
+    			case Token.SEPARATOR:
+    				switch (tok.tokenStr) {
+    					case "(":
+    						mainStack.push(tok);
+    						break;
+    					case ")":
+    						bFound = false;
+    						while (! mainStack.isEmpty()) {
+    							popped = mainStack.pop();
+    							if (popped.tokenStr.equals("(")) {
+    								bFound = true;
+    								break;
+    							}
+    							postfixStack.push(popped);
+    						}
+    						if (!bFound) {
+    							// TODO: call errors for missing "("
+    							// TODO: add function implementations here
+    						}
+    						break;
+    					default:
+    						error("Invalid separator in expression");
+    						break;
+    				}
+    				break;
+    			default:
+    				error("Invalid operator/operand in expression");
+    		}
+    		scan.getNext();
+    		tok = scan.currentToken;
+    	}
+    	while (! mainStack.isEmpty()) {
+    		popped = mainStack.pop();
+    		if (popped.tokenStr.equals("("))
+    			error("Missing ')' separator");
+    		
+    		postfixStack.push(popped);
+    	}*/
         return null;
     }
 
