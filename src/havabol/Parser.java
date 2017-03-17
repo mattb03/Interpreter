@@ -246,7 +246,14 @@ public class Parser {
                 statements(true); // you need to keep evaluating until you hit an 'else' or 'endif'
                 // has an else so ignore these statements
                 statements(false);
-
+                // at this point we already executed the true if block before
+                // the 'else' block, so we need to skip over all statements 
+                // until we are at the end of the entire if block if we are not
+                // already there.
+                if (! scan.currentToken.tokenStr.equals("endif"))
+                {
+                	skipTo("endif", ";");
+                }
             }
             else
             {
@@ -261,6 +268,7 @@ public class Parser {
         }
         else
         {
+        	skipTo("endif", ";");
             /* well come back to this
             // we are ignoring execution
             // we want to ignore the conditional, true part, and false part
@@ -295,6 +303,8 @@ public class Parser {
         System.out.println("Im a while statement!!");
     }
 
+    // skipTo(...) will skip tokens until your currentToken.tokenStr = stmt
+    // so when the function exits, currentToken.tokenStr = stmt
     public void skipTo(String stmt, String terminatingStr) throws Exception
     {
         while (!scan.currentToken.tokenStr.equals(stmt))
