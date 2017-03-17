@@ -1,34 +1,26 @@
-// Simple if
-Int i = 0;
-print(">>> First If");
-String loc;
-loc = "TX";
 
-
-if i >= 5:
-    print ("snake eyes");
-    print("\t2nd if true, i >= 5, i =", i);
-else:
-    print("\t2nd if false, i >= 5, i =", i);
-endif;
-
-
-if loc == "TX": // check for TX
-    // It is TX
-    // it is ok to have this statement on multiple lines.  
-    // That is why we have a semicolon
-    i 
-       = 
-          i 
-          + 1;
-endif;
-print("\tDone with first if");
-
-print(">>> Second If");
-// if then else
+Int i = 2;
+Float fNum = 5.0;
 if i >= 5:
     print("\t2nd if true, i >= 5, i =", i);
-else:
+    i = 1;
+else if i == 4:
     print("\t2nd if false, i >= 5, i =", i);
+    i = 3;    
+    fNum = 2.1;
+    print ("line before endif");
+else if fNum == 4.0:
+	print ("2nd else if block");
+	fNum = 24.2;
+	print ("new fNum val= ", fNum);
+else: 
+	print ("almost done");
+	i = 100;
+	print ("cant wait");
 endif;
 
+Int zed;
+zed = 10;
+print ("zed= ", zed);
+print ("i= ", i);
+print ("fNum= ", fNum);

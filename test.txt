@@ -1,11 +1,23 @@
-String name = "Chris\t\tBuckner\a";
-print(name);
+Int a = 1;
+Float b = 2.0;
+a = b;
 
-Int a = 1000;
+print("a = ",a, "\a");  // this should print out 'a = 2' because of automatic cast to Int
+print("b = ", b);
+String name = "Chris\tBuckner\n\a";
+print(name, "Matt Benavides\n\a", "Miguel Cardenas\n\a" );
 
-print(a);
+Bool flag = T;
 
+if a == b:
+    print("a = ", a, "\nb = ", b, "\n");
+    a = 3;
+    if a == 3:
+    	print ("now a is ", a);
+    else if b == 2.0:
+    	print ("nested else if b is ", b);
+    endif;
+else:
+    print(a, " not equal to ", b);
+endif;
 
-print("Hello World!");
-Int b = 3;
-print(b);
