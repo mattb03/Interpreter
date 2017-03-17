@@ -34,17 +34,22 @@ public class Parser {
     public void statements(boolean bExec) throws Exception, ParserException {
 
         if (bExec == false) {
-
+        	
         	if (scan.nextToken.tokenStr.equals("else")) {
         		skipTo("endif", ";");
         	}
         	else {
         		// if nextToken is not an 'else' then its an 'endif'
         		// so call getNext() once to skip over it.
-        		scan.getNext();
-        	}
+        		if (scan.nextToken.tokenStr.equals("endif")) {
+        			scan.getNext();
+        		}
+        		else {
+        			skipTo("else", ":");
+        		}
+        	}        		
         }
-
+    	
         while (bExec == true) {
             if (scan.currentToken.tokenStr.toLowerCase().equals("print")) {
                 ArrayList<Token> arglist = new ArrayList<Token>();
@@ -72,10 +77,10 @@ public class Parser {
                             STEntry arg = st.getSymbol(token.tokenStr);
                             if (arg == null) {  // NOT in symbol table, thus a string literal
                             	/*** take off this .trim() before pushing to github ***/
-                                System.out.print(token.tokenStr);
+                                System.out.print(token.tokenStr.trim());
                             } else {
                             	/*** take off this .trim() before pushing to github ***/
-                                System.out.print(arg.value);
+                                System.out.print(arg.value.trim());
                             }
                         }
                         System.out.println();
@@ -111,7 +116,7 @@ public class Parser {
                         type = 5;
                     else if (token.equals("Date"))
                         type = 6;
-                    scan.getNext(); // now on identifier (left op)
+                    scan.getNext();
                     //put this token into symbol table!!!
                     st.putSymbol(scan.currentToken.tokenStr,
                             new STEntry(scan.currentToken.tokenStr,
@@ -135,7 +140,9 @@ public class Parser {
                 }
             } else if (scan.currentToken.tokenStr.toLowerCase().equals("if")) {
                 ifStmt(bExec);
-                skipTo("endif", ";");
+                // if currentToken.tokenStr != ";"
+                
+                //skipTo("endif", ";");
                 bExec = false;
             } else if (scan.currentToken.tokenStr.toLowerCase().equals("while")) {
                 whileStmt();
@@ -148,8 +155,9 @@ public class Parser {
             }
             // if (token == 'else' or token == 'endif')
             //     bExec = false
-
-            scan.getNext();
+            if (bExec == true)
+            	scan.getNext();
+            
             // if we found an 'else' or 'endif' we know weve hit the end of the statement block
             // so set bExec to false to exit the function
             if (scan.nextToken.tokenStr.equals("else") || scan.nextToken.tokenStr.equals("endif")) {
@@ -158,7 +166,8 @@ public class Parser {
             else if (scan.nextToken.tokenStr.isEmpty()) {
             	bExec = false;
             }
-
+            
+            
         }
 
     }
@@ -172,42 +181,31 @@ public class Parser {
 	}
 
 	public void assign(Token curSymbol) throws Exception {
-        int ltype = st.getSymbol(curSymbol.tokenStr).type;  // get type of left op
+        int type = st.getSymbol(curSymbol.tokenStr).type;
+        // set the datatype in the symbol table
+        //STIdentifier tempIdent = (STIdentifier)st.getSymbol(curSymbol.tokenStr);
+        //tempIdent.dataType = type;
+
         scan.getNext(); // get equals sign
         if (!scan.currentToken.tokenStr.equals("=")) {
             System.out.println(scan.currentToken.tokenStr);
             throw new ParserException(scan.currentToken.iSourceLineNr,
                     "syntax error: ", scan.sourceFileNm, scan.lines[scan.line-1]);        }
-        scan.getNext(); // get val (right op)
-        Token rToken = scan.currentToken;
-        // check if rToken is an identifier or something else
-        if (rToken.subClassif == Token.IDENTIFIER) {
-            // get right op type
-            int rtype = st.getSymbol(rToken.tokenStr).type;
-            if (scan.nextToken.tokenStr.equals(";")) {  // only one identifier
-                if (ltype != rtype) {
-                    throw new ParserException(scan.currentToken.iSourceLineNr,
-                        "Incompatible type.", scan.sourceFileNm, scan.lines[scan.line-1]);
-                } else {
-                    // set make left idents value equal to right idents value
-                    st.getSymbol(curSymbol.tokenStr).value = st.getSymbol(rToken.tokenStr).value;
-                }
-            } else {  // next token not a ';'  possible valid expression
-                expr();
+        scan.getNext(); // get val
+        if (scan.nextToken.tokenStr.equals(";")) {
+            if (type != scan.currentToken.subClassif) {
+                throw new ParserException(scan.currentToken.iSourceLineNr,
+                    "Incompatible type.", scan.sourceFileNm, scan.lines[scan.line-1]);
+            } else {
+                st.getSymbol(curSymbol.tokenStr).value = scan.currentToken.tokenStr;
+                // set the type here
+                // but first we need to find out how to reference a child/subclass value in a hash table
+                st.setDataType((STIdentifier)st.getSymbol(curSymbol.tokenStr), type);
             }
-        } else { // rToken is not an identifier
-            if (scan.nextToken.tokenStr.equals(";")) {
-                if (ltype != rToken.subClassif) {
-                    throw new ParserException(scan.currentToken.iSourceLineNr,
-                        "Incompatible type.", scan.sourceFileNm, scan.lines[scan.line-1]);
-                } else {
-                    st.getSymbol(curSymbol.tokenStr).value = scan.currentToken.tokenStr;
-                }
-            } else {  // next token not a ';', possible expression
-                expr();
-            }
+        } else {
+            //expr(curSymbol, parse);
+            expr();
         }
-
     }
 
     public void ifStmt(boolean bExec) throws Exception {
@@ -688,21 +686,21 @@ public class Parser {
 
     // assumes that this is called when currentToken = to the first operand
     // 1 + 2;
-    //
+    // 
     public ResultValue expr() throws Exception {
     	/* Stack<Token> mainStack = new Stack<Token>();
     	Stack<Token> postfixStack = new Stack<Token>();
     	Token tok = new Token();
     	Token popped = new Token();
-
+    	
     	boolean bFound;
-
+    	
     	tok = scan.currentToken;
-
+    	
     	// go through the expr and end if there isn't a token
     	// that can be in a expr
     	while (tok.primClassif == Token.OPERAND
-    			|| tok.primClassif == Token.OPERATOR
+    			|| tok.primClassif == Token.OPERATOR 
     			|| tok.tokenStr.equals("(")
     			|| tok.tokenStr.equals(")")) {
     		tok.setPrecedence();
@@ -756,7 +754,7 @@ public class Parser {
     		popped = mainStack.pop();
     		if (popped.tokenStr.equals("("))
     			error("Missing ')' separator");
-
+    		
     		postfixStack.push(popped);
     	}*/
         return null;
