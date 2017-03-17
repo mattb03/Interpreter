@@ -1,18 +1,15 @@
-Int a; 
-a = 1000;
-Int b = 100;
+Int a = 1;
+Float b = 2.0;
+a = b;
+
+print("a = ",a, "\a");  // this should print out 'a = 2' because of automatic cast to Int
+print("b = ", b);
 String name = "Chris\tBuckner\n\a";
 print(name, "Matt Benavides\n\a", "Miguel Cardenas\n\a" );
 
-if a > b:
-    print("A is the greater one.\n\aa = ", a, "\nb = ", b, "\n");
+if a == b:
+    print("a = ", a, "\nb = ", b, "\n");
 else:
-    print("B is the greater one.\n\a");
+    print("blah");
 endif;
-
-Int c;
-
-c = a;
-
-print("c = ", c, "\n\a");
 

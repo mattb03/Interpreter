@@ -393,7 +393,7 @@ public class Scanner {
 
         	// this loop is to print blank lines at eof if any
     		for (i = 0; i <= this.blankLines; i++) {
-	        	System.out.print(lineNum + " \n");
+	        	//System.out.print(lineNum + " \n");
 	    		lineNum++;
 	    	}
     		// print the last line only if its a comment
