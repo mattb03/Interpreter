@@ -77,10 +77,10 @@ public class Parser {
                             STEntry arg = st.getSymbol(token.tokenStr);
                             if (arg == null) {  // NOT in symbol table, thus a string literal
                             	/*** take off this .trim() before pushing to github ***/
-                                System.out.print(token.tokenStr.trim());
+                                System.out.print(token.tokenStr);
                             } else {
                             	/*** take off this .trim() before pushing to github ***/
-                                System.out.print(arg.value.trim());
+                                System.out.print(arg.value);
                             }
                         }
                         System.out.println();
