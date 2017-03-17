@@ -396,6 +396,12 @@ public class Parser {
         {
             // were evaluating integers
             case 2:
+            	// if the right is an integer and the right is a float
+            	// the truncate the decimal portion
+            	if (leftOpType != rightOpType) 
+            	{
+            		rightVal = rightVal.substring(0, rightVal.indexOf('.'));
+            	}
                 flag = evalIntegers(leftVal, operator.tokenStr, rightVal);
                 if (flag == true)
                 {
@@ -410,6 +416,12 @@ public class Parser {
 
             // were evaluating floats
             case 3:
+            	// if the left is a float and the right is an integer
+            	// add a .0 to the end of the integer
+            	if (leftOpType != rightOpType) 
+            	{
+            		rightVal = rightVal + ".0";
+            	}
                 flag = evalFloats(leftVal, operator.tokenStr, rightVal);
                 if (flag == true)
                 {

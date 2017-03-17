@@ -10,6 +10,6 @@ print(name, "Matt Benavides\n\a", "Miguel Cardenas\n\a" );
 if a == b:
     print("a = ", a, "\nb = ", b, "\n");
 else:
-    print("blah");
+    print(a, " not equal to ", b);
 endif;
 
