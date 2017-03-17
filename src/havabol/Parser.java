@@ -204,6 +204,7 @@ public class Parser {
                         "Incompatible type.", scan.sourceFileNm, scan.lines[scan.line-1]);
                 } else {
                     st.getSymbol(curSymbol.tokenStr).value = scan.currentToken.tokenStr;
+                    st.setDataType((STIdentifier)st.getSymbol(curSymbol.tokenStr), ltype);
                 }
             } else {  // next token not a ';', possible expression
                 expr();
