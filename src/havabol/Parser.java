@@ -318,7 +318,6 @@ public class Parser {
     }
 
     public void whileStmt() throws Exception  {
-        System.out.println("Im a while statement!!");
         // make the first pass over the loop to store it in a while buffer
         // right now were assuming theres no nested loops
         int i = scan.buffer.indexOf("endwhile");
