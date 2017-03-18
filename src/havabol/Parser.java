@@ -276,6 +276,8 @@ public class Parser {
             	scan.getNext();
                 // Cond returned False, ignore true part
                 statements(false);
+                skipTo("endif", ";");
+                skipTo("else", ":");
                 // check for 'else'
                 statements(true);
 
@@ -341,10 +343,10 @@ public class Parser {
         	scan.buffer = whileBuffer + scan.buffer;
         	scan.getNext();
         	resCond = evalCond();
-        	
         }
-        
-        		
+        // reset the buffer to where it should be after the 'endwhile'
+        i = scan.buffer.indexOf("endwhile");
+        scan.buffer = scan.buffer.substring(i + "endwhile".length() + 1);
     }
 
     // skipTo(...) will skip tokens until your currentToken.tokenStr = stmt
