@@ -1,13 +1,14 @@
-Int a = 1;
+Int a = 5;
 Float b = 2.0;
-a = b;
+//a = b;
 
-print("a = ",a, "\a");  // this should print out 'a = 2' because of automatic cast to Int
+print("a = ",a, "\a");  // this should print out 'a = 5' because of automatic cast to Int
 print("b = ", b);
-String name = "Chris\tBuckner\n\a";
-print(name, "Matt Benavides\n\a", "Miguel Cardenas\n\a" );
 
-Bool flag = T;
+while a > 3:
+	print ("loop deee loooop a = ", a);
+	a = a - 1;	
+endwhile;
 
 if a == b:
     print("a = ", a, "\nb = ", b, "\n");

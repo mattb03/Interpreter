@@ -1,4 +1,5 @@
 package havabol;
+import java.nio.file.Files;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -152,6 +153,9 @@ public class Parser {
             if (scan.nextToken.tokenStr.equals("else") || scan.nextToken.tokenStr.equals("endif")) {
             	bExec = false;
             }
+            else if (scan.currentToken.tokenStr.equals("endwhile")) {
+            	bExec = false;
+            }
             else if (scan.nextToken.tokenStr.isEmpty()) {
             	bExec = false;
             }
@@ -195,7 +199,19 @@ public class Parser {
                     st.getSymbol(curSymbol.tokenStr).value = st.getSymbol(rToken.tokenStr).value;
                 }
             } else {  // next token not a ';'  possible valid expression
-                expr();
+            	// if the next token is an operator
+            	// get the operator
+            	// if the next token is a number get the number
+            	if (scan.nextToken.tokenStr.equals("-")) {
+            		scan.getNext();
+            		int left = Integer.parseInt(st.getSymbol(rToken.tokenStr).value);
+            		int right = Integer.parseInt(scan.nextToken.tokenStr);
+            		int diff = left - right;
+            		st.getSymbol(rToken.tokenStr).value = Integer.toString(diff);
+            	}
+            	else {
+            		expr();
+            	}
             }
         } else { // rToken is not an identifier
             if (scan.nextToken.tokenStr.equals(";")) {
@@ -299,8 +315,36 @@ public class Parser {
         }
     }
 
-    public void whileStmt() {
+    public void whileStmt() throws Exception  {
         System.out.println("Im a while statement!!");
+        // make the first pass over the loop to store it in a while buffer
+        // right now were assuming theres no nested loops
+        int i = scan.buffer.indexOf("endwhile");
+        // if we didnt find an 'endwhile' symbol throw error
+        if (i == -1) {
+            throw new ParserException(scan.currentToken.iSourceLineNr,
+                    "No terminating 'endwhile' token for while loop", scan.sourceFileNm, "");
+        } 
+        
+        String whileBuffer = scan.nextToken.tokenStr + 
+        		scan.buffer.substring(0, (i + "endwhile".length() + 1));
+
+        // check for error
+        if (whileBuffer.charAt(whileBuffer.length()-1) != ';') {
+            throw new ParserException(scan.currentToken.iSourceLineNr,
+                    "No semicolon ';' to terminate 'endwhile'", scan.sourceFileNm, "");
+        }
+        ResultValue resCond = evalCond();
+        String remBuffer = scan.buffer;
+        while (resCond.value.equals("true")) {
+        	statements(true);
+        	scan.buffer = whileBuffer + scan.buffer;
+        	scan.getNext();
+        	resCond = evalCond();
+        	
+        }
+        
+        		
     }
 
     // skipTo(...) will skip tokens until your currentToken.tokenStr = stmt
