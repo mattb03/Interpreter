@@ -54,7 +54,11 @@ public class Scanner {
         this.getNext();
 
     }
-    /**
+    @Override
+	public String toString() {
+		return "Scanner [currentToken=" + currentToken + ", nextToken=" + nextToken + "]";
+	}
+	/**
     *This method provides the logic after a token is grabbed. The logic is for
     *deciding how to classify the token or to throw an exception if it is
     *malformed.  i.e.  23.4.6
@@ -389,7 +393,7 @@ public class Scanner {
 
         	// this loop is to print blank lines at eof if any
     		for (i = 0; i <= this.blankLines; i++) {
-	        	System.out.print(lineNum + " \n");
+	        	//System.out.print(lineNum + " \n");
 	    		lineNum++;
 	    	}
     		// print the last line only if its a comment

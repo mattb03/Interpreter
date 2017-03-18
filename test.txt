@@ -1,9 +1,26 @@
-Int a; 
-a = 100;
-Int b = 1000;
-String name = "Chris\nBuckner\n\n";
-print(name);
+Int a = 5;
+Float b = 2.0;
+//a = b;
 
-if a < b:
-    print("A is the greater one!!!!\n\n\n\a");
+print("a = ",a, "\a");  // this should print out 'a = 5' because of automatic cast to Int
+print("b = ", b);
+
+while a > 3:
+	print ("loop deee loooop a = ", a);
+	a = a - 1;	
+endwhile;
+
+print ("a is ", a);
+
+if a == b:
+    print("a = ", a, "\nb = ", b, "\n");
+    a = 3;
+    if a == 3:
+    	print ("now a is ", a);
+    else if b == 2.0:
+    	print ("nested else if b is ", b);
+    endif;
+else:
+    print(a, " not equal to ", b);
 endif;
+

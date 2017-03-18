@@ -9,7 +9,13 @@ public class Token
     public int subClassif = 0;
     public int iSourceLineNr = 0;
     public int iColPos = 0;
-    public int normPreced = 0;
+    
+    @Override
+	public String toString() {
+		return "Token [tokenStr=" + tokenStr + "]";
+	}
+
+	public int normPreced = 0;
     public int stkPreced = 0;
     // Constants for primClassif
     public static final int OPERAND = 1;    // constants, identifier

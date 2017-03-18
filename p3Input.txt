@@ -1,21 +1,26 @@
 
-Int i = 0;
-Float fNum = 3.9;
-
-print ("before if");
+Int i = 2;
+Float fNum = 5.0;
 if i >= 5:
     print("\t2nd if true, i >= 5, i =", i);
-    print ("yadda yadda");
     i = 1;
-else:
+else if i == 4:
     print("\t2nd if false, i >= 5, i =", i);
     i = 3;    
-    print ("inside else i= ", i);
     fNum = 2.1;
+    print ("line before endif");
+else if fNum == 4.0:
+	print ("2nd else if block");
+	fNum = 24.2;
+	print ("new fNum val= ", fNum);
+else: 
+	print ("almost done");
+	i = 100;
+	print ("cant wait");
 endif;
 
-Int zed = 10;
-print ("after endif;");
+Int zed;
+zed = 10;
 print ("zed= ", zed);
 print ("i= ", i);
 print ("fNum= ", fNum);
