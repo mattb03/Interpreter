@@ -664,10 +664,10 @@ public class Parser {
 
     // assumes that this is called when currentToken = to the first operand
     // 1 + 2;
-    // 
+    // stops at the next token after the expression
     public ResultValue expr() throws Exception {
-    	/* Stack<Token> mainStack = new Stack<Token>();
-    	Stack<Token> postfixStack = new Stack<Token>();
+    	Stack<Token> mainStack = new Stack<Token>();
+    	ArrayList<Token> postAList = new ArrayList<Token>();
     	Token tok = new Token();
     	Token popped = new Token();
     	
@@ -678,13 +678,13 @@ public class Parser {
     	// go through the expr and end if there isn't a token
     	// that can be in a expr
     	while (tok.primClassif == Token.OPERAND
-    			|| tok.primClassif == Token.OPERATOR 
+    			|| tok.primClassif == Token.OPERATOR
     			|| tok.tokenStr.equals("(")
     			|| tok.tokenStr.equals(")")) {
     		tok.setPrecedence();
     		switch (tok.primClassif) {
     			case Token.OPERAND:
-    				postfixStack.push(tok);
+    				postAList.add(tok);
     				break;
     			case Token.OPERATOR:
     				while (! mainStack.isEmpty()) {
@@ -693,7 +693,7 @@ public class Parser {
     							> mainStack.peek().stkPreced)
     						break;
     					popped = mainStack.pop();
-    					postfixStack.push(popped);
+    					postAList.add(popped);
     				}
     				mainStack.push(tok);
     				break;
@@ -710,7 +710,7 @@ public class Parser {
     								bFound = true;
     								break;
     							}
-    							postfixStack.push(popped);
+    							postAList.add(popped);
     						}
     						if (!bFound) {
     							// TODO: call errors for missing "("
@@ -733,12 +733,230 @@ public class Parser {
     		if (popped.tokenStr.equals("("))
     			error("Missing ')' separator");
     		
-    		postfixStack.push(popped);
-    	}*/
-        return null;
+    		postAList.add(popped);
+    	}
+    	
+    	
+        return evaluateExpr(postAList);
+    }
+    
+    // TODO: Edit error messages so they're more useful to end users.
+    // TODO: create a new error method that can deal with the currentToken (Not where the Scanner is at)
+    public ResultValue evaluateExpr(ArrayList list) throws ParserException {
+    	Stack<Token> stk = new Stack<Token>(); // a stack that will be used to do the math
+    	
+    	Token currToken = new Token(); // Iterative token for the passed ArrayList
+    	Token extraToken1 = new Token(); // Extra token used to add values to the expression stack
+    	Token extraToken2 = new Token(); // Extra token used to check for leftover/single stack items
+    	Token tokOp1 = new Token(); // contains the left operand
+    	Token tokOp2 = new Token(); // contains the right operand
+    	
+    	Numeric nOp1; // contains the left operand in Numeric form
+    	Numeric nOp2; // contains the right operand in Numeric form
+    	
+    	ResultValue resOp1; // contains the left operand in ResultValue form
+    	ResultValue resOp2; // contains the right operand in ResultValue form
+    	ResultValue resMain = new ResultValue(""); // the main returned resultValue
+    	ResultValue resTemp = new ResultValue(""); // the temp resultValue used for holding calculated expressions
+    	
+    	// Because we're doing postfix, we need to read through the expression
+    	// left to right (stacks don't have that functionality so using an ArrayList
+    	// is the best solution
+    	for (int i = 0; i < list.size(); i++) {
+    		currToken = (Token) list.get(i); // get the current Token from the ArrayList
+    		switch (currToken.primClassif) {
+	    		case Token.OPERAND:
+	    			// TODO: add functionality to properly accept arrays and functions
+	    			stk.push(currToken); // add the operand onto the stack for future use
+	    			break;
+	    		case Token.OPERATOR:
+	    			// since we have an operator we need to evaluate the top two operands
+	    			// and because we are using a stack, the righthand operand
+	    			// appears before the lefthand operand on a stack
+	    			try {
+	    				tokOp2 = (Token) stk.pop(); // grab the right operand
+	    			} catch (EmptyStackException a) {
+	    				error("Missing right expression operand.");
+	    			}
+	    			try {
+	    				tokOp1 = (Token) stk.pop(); // grab the left operand
+	    			} catch (EmptyStackException b) {
+	    				error("Missing left expression operand.");
+	    			}
+	    			
+	    			// set the ResultValue objects of the operands
+	    			
+	    			// check if its a variable if so, we need its real value and dataType
+	    			if (tokOp1.subClassif == Token.IDENTIFIER) {
+	    				STEntry stEnt1 = st.getSymbol(tokOp1.tokenStr);
+	    				resOp1 = new ResultValue(stEnt1.value);
+	    				resOp1.type = ((STIdentifier)stEnt1).dataType;
+	    			} else {
+		    			resOp1 = new ResultValue(tokOp1.tokenStr);
+		    			resOp1.type = tokOp1.subClassif;
+	    			}
+	    			// we however will keep it as an identifier in our structure
+	    			resOp1.structure.add(Token.strSubClassifM[tokOp1.subClassif]);
+	    			
+	    			// do the same for the second possible variable
+	    			if (tokOp2.subClassif == Token.IDENTIFIER) {
+	    				STEntry stEnt2 = st.getSymbol(tokOp2.tokenStr);
+	    				resOp2 = new ResultValue(stEnt2.value);
+	    				resOp2.type = ((STIdentifier)stEnt2).dataType;
+	    			} else {
+		    			resOp2 = new ResultValue(tokOp2.tokenStr);
+		    			resOp2.type = tokOp2.subClassif;
+	    			}
+	    			resOp2.structure.add(Token.strSubClassifM[tokOp2.subClassif]);
+	    			
+	    			// Numerical operands have different operators and need to have
+	    			// new Numeric variables associated with them as well.
+	    			// thus a fork in the code is made and a path is chosen based off of
+	    			// the type of the first operand.
+	    			if (resOp1.type == Token.INTEGER
+	    					|| resOp1.type == Token.FLOAT) {
+	    				// set the Numeric values of the operands
+		    			nOp1 = new Numeric(this, resOp1, currToken.tokenStr, "1st Operand");
+		    			nOp2 = new Numeric(this, resOp2, currToken.tokenStr, "2nd Operand");
+		    			
+		    			// these operators only work on Numeric types
+		    			switch (currToken.tokenStr) {
+			    			case "+":
+			    				resTemp = Utility.add(this, nOp1, nOp2);
+			    				break;
+			    			case "-":
+			    				resTemp = Utility.subtract(this, nOp1, nOp2);
+			    				break;
+			    			case "*":
+			    				resTemp = Utility.multiply(this, nOp1, nOp2);
+			    				break;
+			    			case "/":
+			    				resTemp = Utility.divide(this, nOp1, nOp2);
+			    				break;
+			    			case "^":
+			    				resTemp = Utility.expo(this, nOp1, nOp2);
+			    				break;
+			    			case "#":
+			    				resTemp = Utility.concat(this, resOp1, resOp2);
+			    				break;
+			    			case "<":
+			    				resTemp = Utility.lessThan(this, resOp1, resOp2, false);
+			    				break;
+			    			case ">":
+			    				resTemp = Utility.greaterThan(this, resOp1, resOp2, false);
+			    				break;
+			    			case "<=":
+			    				resTemp = Utility.lessThan(this, resOp1, resOp2, true);
+			    				break;
+			    			case ">=":
+			    				resTemp = Utility.greaterThan(this, resOp1, resOp2, true);
+			    				break;
+			    			case "==":
+			    				resTemp = Utility.equals(this, resOp1, resOp2, false);
+			    				break;
+			    			case "!=":
+			    				resTemp = Utility.equals(this, resOp1, resOp2, true);
+			    			default:
+			    				error("Invalid Numeric operator in expression.");
+		    			}
+	    			} else {
+	    				// String and Boolean related operations
+		    			switch (currToken.tokenStr) {
+			    			case "#":
+			    				resTemp = Utility.concat(this, resOp1, resOp2);
+			    				break;
+			    			case "<":
+			    				resTemp = Utility.lessThan(this, resOp1, resOp2, false);
+			    				break;
+			    			case ">":
+			    				resTemp = Utility.greaterThan(this, resOp1, resOp2, false);
+			    				break;
+			    			case "<=":
+			    				resTemp = Utility.lessThan(this, resOp1, resOp2, true);
+			    				break;
+			    			case ">=":
+			    				resTemp = Utility.greaterThan(this, resOp1, resOp2, true);
+			    				break;
+			    			case "==":
+			    				resTemp = Utility.equals(this, resOp1, resOp2, false);
+			    				break;
+			    			case "!=":
+			    				resTemp = Utility.equals(this, resOp1, resOp2, true);
+			    				break;
+			    			case "in":
+			    				// TODO: add string subscript functionality
+			    				break;
+			    			case "notin":
+			    				// TODO: add string subscript functionality
+			    				break;
+			    			case "not":
+			    				resTemp = Utility.booleanConditionals(this, resOp1, resOp2, "not");
+			    				break;
+			    			case "and":
+			    				resTemp = Utility.booleanConditionals(this, resOp1, resOp2, "and");
+			    				break;
+			    			case "or":
+			    				resTemp = Utility.booleanConditionals(this, resOp1, resOp2, "or");
+			    				break;
+							default:
+								error("Invalid operator in expression.");
+		    			} // end of inner Operator switch
+	    			} // end of else
+	    			
+	    			// add our new value to the stack
+	    			extraToken1 = tokOp1; // get the most accurate values for the line and column # as possible
+	    			extraToken1.tokenStr = resTemp.value;
+	    			extraToken1.primClassif = Token.OPERAND;
+	    			extraToken1.subClassif = resTemp.type;
+	    			stk.push(extraToken1);
+	    			
+	    			// building the main structure before returning
+	    			for (int j = 0; j < resOp1.structure.size(); j++) {
+	        			resMain.structure.add(resOp1.structure.get(j));
+	        		}
+	    			resMain.structure.add(currToken.tokenStr);
+	    			for (int j = 0; j < resOp2.structure.size(); j++) {
+	    				resMain.structure.add(resOp2.structure.get(j));
+	    			}
+		    		break; // end of operator case
+		    		default:
+		    			error("Invalid operand in expression.");
+    		} // end of primClassif switch
+    		
+    	} // end of ArrayList loop
+    	
+    	// check if the stack is empty or if it has one item.
+    	// if it has more than one item, there is a bad expression
+    	// that has a missing operand or operator.
+    	// if it has none then there was an error. (shouldn't happen normally)
+    	
+    	if (! stk.isEmpty()) { // everything went as planned
+    		if (stk.size() == 1) { // see if the stack only has one value
+    			// is has only one value (which is the desired amount)
+    			
+    			extraToken2 = stk.pop(); // get the last value
+    			if (extraToken2.subClassif == Token.IDENTIFIER) { // test to see if it's just a variable
+    				STEntry stExtra = st.getSymbol(extraToken2.tokenStr);
+    				resMain.value = stExtra.value;
+    				resMain.type = ((STIdentifier)stExtra).dataType;
+    				// since the above algorithm doesn't allow for variables to exist in the stack
+    				// resMain's structure is set here for the first time.
+    				resMain.structure.add(Token.strSubClassifM[extraToken2.subClassif]);
+    			} else {
+        			resMain.value = extraToken2.tokenStr;
+        			resMain.type = extraToken2.subClassif;
+    			} // end of identifier check
+    		} else {
+    			error("Invalid expression length"); // this error should have been caught by all the other checks
+    		} // end of size check
+    	} else {
+    		error("Invalid expression"); // this error should have been caught by all the other checks
+    	} // end of empty check
+    	
+    	return resMain; // return your brand new value!
     }
 
-    public void error(String fmt, Object... varArgs) throws Exception {
+    public void error(String fmt, Object... varArgs) throws ParserException {
         String diagnosticTxt = String.format(fmt, varArgs);
         throw new ParserException(scan.currentToken.iSourceLineNr
                 , diagnosticTxt, scan.sourceFileNm, "");
