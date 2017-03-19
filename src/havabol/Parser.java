@@ -75,11 +75,14 @@ public class Parser {
                         for (int i=0; i < arglist.size(); i++) {
                             Token token = arglist.get(i);
                             STIdentifier arg = (STIdentifier)st.getSymbol(token.tokenStr);
-                            if (arg == null) {  // NOT in symbol table, thus a string literal
-                            	/*** take off this .trim() before pushing to github ***/
-                                System.out.print(token.tokenStr);
+                            if (arg == null) {  // NOT in symbol table, possible string literal or possible ident not in table!
+                                if (token.subClassif == Token.STRING) { 
+                                    System.out.print(token.tokenStr);
+                                } else {
+                                    System.err.println("Identifier not in symbol table!");
+                                    throw new Exception();
+                                }
                             } else {
-                            	/*** take off this .trim() before pushing to github ***/
                                 System.out.print(arg.value);
                             }
                         }
@@ -128,6 +131,7 @@ public class Parser {
                 //check if curToken is in symbol table, if not throw an error
                 STIdentifier entry = (STIdentifier)st.getSymbol(scan.currentToken.tokenStr);
                 if (entry == null) {
+                    System.err.println("not in symbol table!");
                     throw new Exception();
                 }
                 if (scan.nextToken.tokenStr.equals("=")) {
