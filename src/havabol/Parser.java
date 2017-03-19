@@ -132,7 +132,9 @@ public class Parser {
                 STIdentifier entry = (STIdentifier)st.getSymbol(scan.currentToken.tokenStr);
                 if (entry == null) {
                     System.err.println("not in symbol table!");
-                    throw new Exception();
+                    throw new ParserException(scan.currentToken.iSourceLineNr,
+                            "Symbol "+scan.currentToken.tokenStr+
+                            " is not in Symbol Table.", scan.sourceFileNm, "");
                 }
                 if (scan.nextToken.tokenStr.equals("=")) {
                     assign(scan.currentToken);
@@ -206,16 +208,20 @@ public class Parser {
             	// if the next token is an operator
             	// get the operator
             	// if the next token is a number get the number
-            	if (scan.nextToken.tokenStr.equals("-")) {
+            	/*if (scan.nextToken.tokenStr.equals("-")) {
             		scan.getNext();
             		int left = Integer.parseInt(st.getSymbol(rToken.tokenStr).value);
             		int right = Integer.parseInt(scan.nextToken.tokenStr);
             		int diff = left - right;
             		st.getSymbol(rToken.tokenStr).value = Integer.toString(diff);
-            	}
-            	else {
-            		expr();
-            	}
+            	}*/
+            	ResultValue resExpr = expr();
+            	int assignType = getLiteralType(resExpr.value);
+            	//st.getSymbol(curSymbol.tokenStr).value = resExpr.value;
+            	STIdentifier ident = (STIdentifier)st.getSymbol(curSymbol.tokenStr);
+            	ident.value = resExpr.value;
+            	ident.dataType = assignType;
+            	//System.out.println(st.getSymbol(curSymbol.tokenStr));
             }
         } else { // rToken is not an identifier
             if (scan.nextToken.tokenStr.equals(";")) {
@@ -236,7 +242,7 @@ public class Parser {
                     st.setDataType((STIdentifier)st.getSymbol(curSymbol.tokenStr), ltype);
                 }
             } else {  // next token not a ';', possible expression
-                expr();
+                ResultValue resExpr = expr();
             }
         }
 
@@ -1004,7 +1010,10 @@ public class Parser {
 			    				resTemp = Utility.booleanConditionals(this, resOp1, resOp2, "or");
 			    				break;
 							default:
-								error("Invalid operator in expression.");
+								//error("Invalid operator in expression.");
+					            throw new ParserException(scan.currentToken.iSourceLineNr,
+					                    "Invalid operator in expression " + currToken.tokenStr, 
+					                    scan.sourceFileNm, scan.lines[scan.line-1]);
 		    			} // end of inner Operator switch
 	    			} // end of else
 	    			

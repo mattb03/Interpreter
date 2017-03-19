@@ -8,9 +8,12 @@ print("\n\n\n\n");
 while a > 3:
 	print ("loop deee loooop a = ", a);
 	a = a - 1;	
+	c = c + 1;
 endwhile;
 
 print ("a is ", a);
+print("c = ", c);
+
 
 if a == b:
     print("a = ", a, "\nb = ", b, "\n");
@@ -23,4 +26,4 @@ if a == b:
 else:
     print(a, " not equal to ", b);
 endif;
-z = "blah";
+
