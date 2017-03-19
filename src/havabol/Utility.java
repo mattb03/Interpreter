@@ -86,6 +86,18 @@ public class Utility {
 		return res;
 	}
 	
+	public static ResultValue negative(Parser parser, Numeric nOp2) throws ParserException {
+		ResultValue res = new ResultValue("");
+		res.type = nOp2.type;
+		if (nOp2.type == Token.INTEGER)
+			res.value = Integer.toString(-nOp2.integerValue);
+		else if (nOp2.type == Token.FLOAT)
+			res.value = Double.toString(-nOp2.doubleValue);
+		else
+			parser.error(nOp2.strValue + "is not a numeric type.");
+		return res;
+	}
+	
 	public static ResultValue lessThan(Parser parser, ResultValue resOp1, ResultValue resOp2, boolean equals) throws ParserException {
 		ResultValue res = new ResultValue("");
 		res.type = Token.BOOLEAN;
