@@ -9,9 +9,14 @@ while a > 3:
 	print ("loop deee loooop a = ", a);
 	a = a - 1;	
 	c = c + 1;
+	while b <= 5:
+		print ("b is ", b);
+		b = b + 1;
+	endwhile;
 endwhile;
 
 print ("a is ", a);
+print("b = ", b);
 print("c = ", c);
 
 
@@ -23,6 +28,16 @@ if a == b:
     else if b == 2.0:
     	print ("nested else if b is ", b);
     endif;
+else if c == 17:
+	print ("c is ", c);
+	if b <= c:
+		print (b, " is <= ", c);
+	else if a == 3:
+		print ("this shouldnt run");
+		print ("please dont run");
+	else:
+		print ("once again please dont run");
+	endif;
 else:
     print(a, " not equal to ", b);
 endif;

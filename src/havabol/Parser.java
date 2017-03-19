@@ -205,23 +205,12 @@ public class Parser {
                     st.getSymbol(curSymbol.tokenStr).value = st.getSymbol(rToken.tokenStr).value;
                 }
             } else {  // next token not a ';'  possible valid expression
-            	// if the next token is an operator
-            	// get the operator
-            	// if the next token is a number get the number
-            	/*if (scan.nextToken.tokenStr.equals("-")) {
-            		scan.getNext();
-            		int left = Integer.parseInt(st.getSymbol(rToken.tokenStr).value);
-            		int right = Integer.parseInt(scan.nextToken.tokenStr);
-            		int diff = left - right;
-            		st.getSymbol(rToken.tokenStr).value = Integer.toString(diff);
-            	}*/
             	ResultValue resExpr = expr();
             	int assignType = getLiteralType(resExpr.value);
             	//st.getSymbol(curSymbol.tokenStr).value = resExpr.value;
             	STIdentifier ident = (STIdentifier)st.getSymbol(curSymbol.tokenStr);
             	ident.value = resExpr.value;
             	ident.dataType = assignType;
-            	//System.out.println(st.getSymbol(curSymbol.tokenStr));
             }
         } else { // rToken is not an identifier
             if (scan.nextToken.tokenStr.equals(";")) {
