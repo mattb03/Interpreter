@@ -70,6 +70,18 @@ public class Scanner {
     public void process(String value) throws Exception
     {
         //System.out.println(this.nextToken.tokenStr);
+
+       // check for unary minus
+        if (this.currentToken != null) {
+            String curVal = this.currentToken.tokenStr;
+            if ( ( (operators.indexOf(curVal.charAt(0)) != -1) || curVal.equals("if") ||
+                curVal.equals("while") || curVal.equals(",") || curVal.equals("(")) && value.equals("-") ) {
+                this.nextToken.primClassif = Token.OPERATOR;
+                this.nextToken.subClassif = Token.VOID;
+                this.nextToken.tokenStr = "u-";
+                return;
+            }
+        }
         // first val of token a quote? then its a string
         if (value.charAt(0) == '"' || value.charAt(0) == '\'')
         {
@@ -410,7 +422,12 @@ public class Scanner {
         // start running thru rest of buffer
         for (i = 0; i < this.buffer.length(); i++)
         {
+            // take care of carraige returns
             char c = this.buffer.charAt(i);
+            if (c == '\r') {
+                this.buffer = this.buffer.substring(1);
+                return "";
+            }
             retVal += c;
 
             // if char is a delimiter
