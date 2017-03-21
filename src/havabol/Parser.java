@@ -201,7 +201,8 @@ public class Parser {
         scan.getNext(); // get equals sign
         if (!scan.currentToken.tokenStr.equals("=")) {
             throw new ParserException(scan.currentToken.iSourceLineNr,
-                    "syntax error: ", scan.sourceFileNm, scan.lines[scan.line-1]);        }
+                    "syntax error: ", scan.sourceFileNm, scan.lines[scan.line-1]);
+        }
         scan.getNext(); // get val (right op)
         Token rToken = scan.currentToken;
         // check if rToken is an identifier or something else
@@ -216,26 +217,48 @@ public class Parser {
                             int index = val.indexOf(".");
                             val = val.substring(0, index);
                             st.getSymbol(curSymbol.tokenStr).value = val;
+                            int assignType = getLiteralType(val);
+                            st.setDataType((STIdentifier)st.getSymbol(curSymbol.tokenStr), assignType);
+                            if (show) {
+                                System.out.println("*DEBUG*: "+curSymbol.tokenStr+" = "+val);
+                            }
                         } else { // left type is a float and right type is an integer
                             String val = st.getSymbol(rToken.tokenStr).value;   // get the int val from rside , must cast to a float 2 -> 2.0
                             val += ".00";
                             st.getSymbol(curSymbol.tokenStr).value = val;
+                            int assignType = getLiteralType(val);
+                            st.setDataType((STIdentifier)st.getSymbol(curSymbol.tokenStr), assignType);
+                            if (show) {
+                                System.out.println("*DEBUG*: "+curSymbol.tokenStr+" = "+val);
+                            }
                         }
+
                     } else {
                         throw new ParserException(scan.currentToken.iSourceLineNr,
                             "Incompatible type.", scan.sourceFileNm, scan.lines[scan.line-1]);
                     }
+
                 } else {
                     // set make left idents value equal to right idents value
-                    st.getSymbol(curSymbol.tokenStr).value = st.getSymbol(rToken.tokenStr).value;
+                    String val = st.getSymbol(rToken.tokenStr).value;
+                    st.getSymbol(curSymbol.tokenStr).value = val;
+                    int assignType = getLiteralType(val);
+                    st.setDataType((STIdentifier)st.getSymbol(curSymbol.tokenStr), assignType);
+                    if (show) {
+                        System.out.println("*DEBUG*: "+curSymbol.tokenStr+" = "+val);
+                    }
                 }
             } else {  // next token not a ';'  possible valid expression
             	ResultValue resExpr = expr();
             	int assignType = getLiteralType(resExpr.value);
             	//st.getSymbol(curSymbol.tokenStr).value = resExpr.value;
             	STIdentifier ident = (STIdentifier)st.getSymbol(curSymbol.tokenStr);
-            	ident.value = resExpr.value;
+                ident.value = resExpr.value;
+                String val = ident.value;
             	ident.dataType = assignType;
+                if (show) {
+                    System.out.println("*DEBUG*: "+curSymbol.tokenStr+" = "+val);
+                }
             }
         } else { // rToken is not an identifier
             if (scan.nextToken.tokenStr.equals(";")) {
@@ -246,7 +269,11 @@ public class Parser {
                             rToken.tokenStr = rToken.tokenStr.substring(0, index);
                         }
                         st.getSymbol(curSymbol.tokenStr).value = rToken.tokenStr + ".00";
+                        String val = st.getSymbol(curSymbol.tokenStr).value;
                         st.setDataType((STIdentifier)st.getSymbol(curSymbol.tokenStr), ltype);
+                        if (show) {
+                            System.out.println("*DEBUG* :"+curSymbol.tokenStr+" = "+val);
+                        }
                     } else {
                         throw new ParserException(scan.currentToken.iSourceLineNr,
                             "Incompatible type.", scan.sourceFileNm, scan.lines[scan.line-1]);
@@ -254,6 +281,10 @@ public class Parser {
                 } else {
                     st.getSymbol(curSymbol.tokenStr).value = rToken.tokenStr;
                     st.setDataType((STIdentifier)st.getSymbol(curSymbol.tokenStr), ltype);
+                    String val = st.getSymbol(curSymbol.tokenStr).value = rToken.tokenStr;
+                    if (show) {
+                        System.out.println("*DEBUG* :"+curSymbol.tokenStr+" = "+val);
+                    }
                 }
             } else {  // next token not a ';', possible expression
                 ResultValue resExpr = expr();
