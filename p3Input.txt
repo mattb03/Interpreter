@@ -1,3 +1,4 @@
+debug Assign on;
 print("p3Input.txt");
 Int i;
 Float pi;

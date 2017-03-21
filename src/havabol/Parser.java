@@ -97,14 +97,19 @@ public class Parser {
                 }
 
 
-            } else if (scan.currentToken.equals("debug")) {
-                    String type = scan.getNext(); // got type
-                    String state = scan.getNext();  // got state; // 'on' or 'off'
+            } else if (scan.currentToken.tokenStr.equals("debug")) {
+                    System.out.println("curr = "+scan.currentToken.tokenStr);
+                    scan.getNext();
+                    String type = scan.currentToken.tokenStr; // got type
+                    scan.getNext();
+                    String state = scan.currentToken.tokenStr;  // got state; // 'on' or 'off'
                 if (state.equals("on")) {
                     debugger.turnOn(type);
                 } else if (state.equals("off")) {
                     debugger.turnOff(type);
                 } else {
+                    System.out.println("state = "+state);
+                    System.out.println("type = "+type);
                     throw new ParserException(
                         scan.currentToken.iSourceLineNr,
                         "Invalid debug state. ", scan.sourceFileNm,"");
@@ -220,7 +225,7 @@ public class Parser {
                             int assignType = getLiteralType(val);
                             st.setDataType((STIdentifier)st.getSymbol(curSymbol.tokenStr), assignType);
                             if (show) {
-                                System.out.println("*DEBUG*: "+curSymbol.tokenStr+" = "+val);
+                                System.out.println("*DEBUG* : "+curSymbol.tokenStr+" = "+val);
                             }
                         } else { // left type is a float and right type is an integer
                             String val = st.getSymbol(rToken.tokenStr).value;   // get the int val from rside , must cast to a float 2 -> 2.0
