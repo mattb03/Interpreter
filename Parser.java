@@ -6,6 +6,7 @@ import java.util.regex.Pattern;
 
 import javax.management.RuntimeErrorException;
 import javax.print.attribute.standard.RequestingUserName;
+import javax.xml.stream.events.EndDocument;
 
 public class Parser {
 
@@ -78,10 +79,12 @@ public class Parser {
                             if (arg == null) {  // NOT in symbol table, possible string literal or possible ident not in table!
                                 if (token.subClassif == Token.STRING) { 
                                     System.out.print(token.tokenStr);
-                                } else {
-                                    System.err.println("Identifier not in symbol table!");
-                                    throw new Exception();
-                                }
+                                } /* this else block may be unnecessary
+                                else {
+                                    throw new ParserException(scan.currentToken.iSourceLineNr,
+                                            "Symbol "+scan.currentToken.tokenStr+
+                                            " is not in Symbol Table.", scan.sourceFileNm, "");
+                                }*/
                             } else {
                                 System.out.print(arg.value);
                             }
@@ -202,7 +205,10 @@ public class Parser {
                     }
                 } else {
                     // set make left idents value equal to right idents value
-                    st.getSymbol(curSymbol.tokenStr).value = st.getSymbol(rToken.tokenStr).value;
+                    //st.getSymbol(curSymbol.tokenStr).value = st.getSymbol(rToken.tokenStr).value;
+                	STIdentifier ident = (STIdentifier)st.getSymbol(curSymbol.tokenStr);
+                	ident.value = st.getSymbol(rToken.tokenStr).value;
+                	ident.dataType = rtype;
                 }
             } else {  // next token not a ';'  possible valid expression
             	ResultValue resExpr = expr();
@@ -275,11 +281,10 @@ public class Parser {
             	scan.getNext();
                 // Cond returned False, ignore true part
                 statements(false);
-
+                skipTo("endif", ";");
+                skipTo("else", ":");
                 // check for 'else'
                 statements(true);
-                skipTo("endif", ";");
-                //skipTo("else", ":");
 
             }
 
@@ -342,14 +347,8 @@ public class Parser {
         }*/
         ResultValue resCond = evalCond();
         String remBuffer = scan.buffer;
-    	int lastEndIndex = scan.buffer.indexOf("endwhile") + 
-    			"endwhile".length() + 1;
-    	//scan.buffer = scan.buffer.substring(lastEndIndex);
         while (resCond.value.equals("true")) {
-        	while (! scan.currentToken.tokenStr.equals("endwhile")) {
-        		statements(true);
-        	}        	
-
+        	statements(true);
         	scan.buffer = whileBuffer + scan.buffer;
         	scan.getNext();
         	//if (scan.currentToken instanceof STControl) {
@@ -372,7 +371,6 @@ public class Parser {
 		//scan.buffer = scan.buffer.substring(i);
 		scan.buffer = scan.buffer.substring(whileBuffer.length()-1);
     }
-
 
     public String getWhileBuffer () {
     	// get the number of while loops both nested and parent
@@ -456,7 +454,6 @@ public class Parser {
         {
             rightVal = rightIdent.value;
             rightOpType = rightIdent.dataType;
-
         }
         else
         {
@@ -485,6 +482,7 @@ public class Parser {
         // types are valid if theyre the same, or if the left maps to the right
         if (leftOpType != rightOpType)
         {
+        	
             if (validDataTypes.get(leftOpType) != rightOpType ||
                 (leftOpType == 4 && !rightVal.equals("T") && !rightVal.equals("F")))
             {
@@ -927,186 +925,154 @@ public class Parser {
 	    			// since we have an operator we need to evaluate the top two operands
 	    			// and because we are using a stack, the righthand operand
 	    			// appears before the lefthand operand on a stack
+	    			try {
+	    				tokOp2 = (Token) stk.pop(); // grab the right operand
+	    			} catch (EmptyStackException a) {
+	    				error("Missing right expression operand.");
+	    			}
+	    			try {
+	    				tokOp1 = (Token) stk.pop(); // grab the left operand
+	    			} catch (EmptyStackException b) {
+	    				error("Missing left expression operand.");
+	    			}
 	    			
-	    			if (currToken.tokenStr.equals("u-")) { // unary minus is handled differently
-	    				try {
-		    				tokOp2 = (Token) stk.pop(); // grab the right operand (the only operand)
-		    			} catch (EmptyStackException a) {
-		    				error("Missing right expression operand.");
-		    			}
-	    				if (tokOp2.subClassif == Token.IDENTIFIER) {
-	    					STEntry stEnt2 = st.getSymbol(tokOp2.tokenStr);
-	    					resOp2 = new ResultValue(stEnt2.value);
-	    					resOp2.type = ((STIdentifier)stEnt2).dataType;
-	    				} else {
-	    					resOp2 = new ResultValue(tokOp2.tokenStr);
-	    					resOp2.type = tokOp2.subClassif;
-	    				}
-	    				resOp2.structure.add(Token.strSubClassifM[tokOp2.subClassif]);
-	    				
-	    				nOp2 = new Numeric(this, resOp2, currToken.tokenStr, "2nd Operand"); // must be a number
-	    				resTemp = Utility.negative(this, nOp2);
-	    				
-	    				extraToken1 = tokOp2; // get the most accurate values for the line and column # as possible
-		    			extraToken1.tokenStr = resTemp.value;
-		    			extraToken1.primClassif = Token.OPERAND;
-		    			extraToken1.subClassif = resTemp.type;
-		    			stk.push(extraToken1);
+	    			// set the ResultValue objects of the operands
+	    			
+	    			// check if its a variable if so, we need its real value and dataType
+	    			if (tokOp1.subClassif == Token.IDENTIFIER) {
+	    				STEntry stEnt1 = st.getSymbol(tokOp1.tokenStr);
+	    				resOp1 = new ResultValue(stEnt1.value);
+	    				resOp1.type = ((STIdentifier)stEnt1).dataType;
+	    			} else {
+		    			resOp1 = new ResultValue(tokOp1.tokenStr);
+		    			resOp1.type = tokOp1.subClassif;
+	    			}
+	    			// we however will keep it as an identifier in our structure
+	    			resOp1.structure.add(Token.strSubClassifM[tokOp1.subClassif]);
+	    			
+	    			// do the same for the second possible variable
+	    			if (tokOp2.subClassif == Token.IDENTIFIER) {
+	    				STEntry stEnt2 = st.getSymbol(tokOp2.tokenStr);
+	    				resOp2 = new ResultValue(stEnt2.value);
+	    				resOp2.type = ((STIdentifier)stEnt2).dataType;
+	    			} else {
+		    			resOp2 = new ResultValue(tokOp2.tokenStr);
+		    			resOp2.type = tokOp2.subClassif;
+	    			}
+	    			resOp2.structure.add(Token.strSubClassifM[tokOp2.subClassif]);
+	    			
+	    			// Numerical operands have different operators and need to have
+	    			// new Numeric variables associated with them as well.
+	    			// thus a fork in the code is made and a path is chosen based off of
+	    			// the type of the first operand.
+	    			if (resOp1.type == Token.INTEGER
+	    					|| resOp1.type == Token.FLOAT) {
+	    				// set the Numeric values of the operands
+		    			nOp1 = new Numeric(this, resOp1, currToken.tokenStr, "1st Operand");
+		    			nOp2 = new Numeric(this, resOp2, currToken.tokenStr, "2nd Operand");
 		    			
-		    			resMain.structure.add(currToken.tokenStr);
-		    			for (int j = 0; j < resOp2.structure.size(); j++) {
-		    				resMain.structure.add(resOp2.structure.get(j));
+		    			// these operators only work on Numeric types
+		    			switch (currToken.tokenStr) {
+			    			case "+":
+			    				resTemp = Utility.add(this, nOp1, nOp2);
+			    				break;
+			    			case "-":
+			    				resTemp = Utility.subtract(this, nOp1, nOp2);
+			    				break;
+			    			case "*":
+			    				resTemp = Utility.multiply(this, nOp1, nOp2);
+			    				break;
+			    			case "/":
+			    				resTemp = Utility.divide(this, nOp1, nOp2);
+			    				break;
+			    			case "^":
+			    				resTemp = Utility.expo(this, nOp1, nOp2);
+			    				break;
+			    			case "#":
+			    				resTemp = Utility.concat(this, resOp1, resOp2);
+			    				break;
+			    			case "<":
+			    				resTemp = Utility.lessThan(this, resOp1, resOp2, false);
+			    				break;
+			    			case ">":
+			    				resTemp = Utility.greaterThan(this, resOp1, resOp2, false);
+			    				break;
+			    			case "<=":
+			    				resTemp = Utility.lessThan(this, resOp1, resOp2, true);
+			    				break;
+			    			case ">=":
+			    				resTemp = Utility.greaterThan(this, resOp1, resOp2, true);
+			    				break;
+			    			case "==":
+			    				resTemp = Utility.equals(this, resOp1, resOp2, false);
+			    				break;
+			    			case "!=":
+			    				resTemp = Utility.equals(this, resOp1, resOp2, true);
+			    			default:
+			    				error("Invalid Numeric operator in expression.");
 		    			}
 	    			} else {
-		    			try {
-		    				tokOp2 = (Token) stk.pop(); // grab the right operand
-		    			} catch (EmptyStackException a) {
-		    				error("Missing right expression operand.");
-		    			}
-		    			try {
-		    				tokOp1 = (Token) stk.pop(); // grab the left operand
-		    			} catch (EmptyStackException b) {
-		    				error("Missing left expression operand.");
-		    			}
-		    			
-		    			// set the ResultValue objects of the operands
-		    			
-		    			// check if its a variable if so, we need its real value and dataType
-		    			if (tokOp1.subClassif == Token.IDENTIFIER) {
-		    				STEntry stEnt1 = st.getSymbol(tokOp1.tokenStr);
-		    				resOp1 = new ResultValue(stEnt1.value);
-		    				resOp1.type = ((STIdentifier)stEnt1).dataType;
-		    			} else {
-			    			resOp1 = new ResultValue(tokOp1.tokenStr);
-			    			resOp1.type = tokOp1.subClassif;
-		    			}
-		    			// we however will keep it as an identifier in our structure
-		    			resOp1.structure.add(Token.strSubClassifM[tokOp1.subClassif]);
-		    			
-		    			// do the same for the second possible variable
-		    			if (tokOp2.subClassif == Token.IDENTIFIER) {
-		    				STEntry stEnt2 = st.getSymbol(tokOp2.tokenStr);
-		    				resOp2 = new ResultValue(stEnt2.value);
-		    				resOp2.type = ((STIdentifier)stEnt2).dataType;
-		    			} else {
-			    			resOp2 = new ResultValue(tokOp2.tokenStr);
-			    			resOp2.type = tokOp2.subClassif;
-		    			}
-		    			resOp2.structure.add(Token.strSubClassifM[tokOp2.subClassif]);
-		    			
-		    			// Numerical operands have different operators and need to have
-		    			// new Numeric variables associated with them as well.
-		    			// thus a fork in the code is made and a path is chosen based off of
-		    			// the type of the first operand.
-		    			if (resOp1.type == Token.INTEGER
-		    					|| resOp1.type == Token.FLOAT) {
-		    				// set the Numeric values of the operands
-			    			nOp1 = new Numeric(this, resOp1, currToken.tokenStr, "1st Operand");
-			    			nOp2 = new Numeric(this, resOp2, currToken.tokenStr, "2nd Operand");
-			    			
-			    			// these operators only work on Numeric types
-			    			switch (currToken.tokenStr) {
-				    			case "+":
-				    				resTemp = Utility.add(this, nOp1, nOp2);
-				    				break;
-				    			case "-":
-				    				resTemp = Utility.subtract(this, nOp1, nOp2);
-				    				break;
-				    			case "*":
-				    				resTemp = Utility.multiply(this, nOp1, nOp2);
-				    				break;
-				    			case "/":
-				    				resTemp = Utility.divide(this, nOp1, nOp2);
-				    				break;
-				    			case "^":
-				    				resTemp = Utility.expo(this, nOp1, nOp2);
-				    				break;
-				    			case "#":
-				    				resTemp = Utility.concat(this, resOp1, resOp2);
-				    				break;
-				    			case "<":
-				    				resTemp = Utility.lessThan(this, resOp1, resOp2, false);
-				    				break;
-				    			case ">":
-				    				resTemp = Utility.greaterThan(this, resOp1, resOp2, false);
-				    				break;
-				    			case "<=":
-				    				resTemp = Utility.lessThan(this, resOp1, resOp2, true);
-				    				break;
-				    			case ">=":
-				    				resTemp = Utility.greaterThan(this, resOp1, resOp2, true);
-				    				break;
-				    			case "==":
-				    				resTemp = Utility.equals(this, resOp1, resOp2, false);
-				    				break;
-				    			case "!=":
-				    				resTemp = Utility.equals(this, resOp1, resOp2, true);
-				    			default:
-				    				error("Invalid Numeric operator in expression.");
-			    			}
-		    			} else {
-		    				// String and Boolean related operations
-			    			switch (currToken.tokenStr) {
-				    			case "#":
-				    				resTemp = Utility.concat(this, resOp1, resOp2);
-				    				break;
-				    			case "<":
-				    				resTemp = Utility.lessThan(this, resOp1, resOp2, false);
-				    				break;
-				    			case ">":
-				    				resTemp = Utility.greaterThan(this, resOp1, resOp2, false);
-				    				break;
-				    			case "<=":
-				    				resTemp = Utility.lessThan(this, resOp1, resOp2, true);
-				    				break;
-				    			case ">=":
-				    				resTemp = Utility.greaterThan(this, resOp1, resOp2, true);
-				    				break;
-				    			case "==":
-				    				resTemp = Utility.equals(this, resOp1, resOp2, false);
-				    				break;
-				    			case "!=":
-				    				resTemp = Utility.equals(this, resOp1, resOp2, true);
-				    				break;
-				    			case "in":
-				    				// TODO: add string subscript functionality
-				    				break;
-				    			case "notin":
-				    				// TODO: add string subscript functionality
-				    				break;
-				    			case "not":
-				    				resTemp = Utility.booleanConditionals(this, resOp1, resOp2, "not");
-				    				break;
-				    			case "and":
-				    				resTemp = Utility.booleanConditionals(this, resOp1, resOp2, "and");
-				    				break;
-				    			case "or":
-				    				resTemp = Utility.booleanConditionals(this, resOp1, resOp2, "or");
-				    				break;
-								default:
-									//error("Invalid operator in expression.");
-						            throw new ParserException(scan.currentToken.iSourceLineNr,
-						                    "Invalid operator in expression " + currToken.tokenStr, 
-						                    scan.sourceFileNm, scan.lines[scan.line-1]);
-			    			} // end of inner Operator switch
-		    			} // end of else
-		    			
-		    			// add our new value to the stack
-		    			extraToken1 = tokOp1; // get the most accurate values for the line and column # as possible
-		    			extraToken1.tokenStr = resTemp.value;
-		    			extraToken1.primClassif = Token.OPERAND;
-		    			extraToken1.subClassif = resTemp.type;
-		    			stk.push(extraToken1);
-		    			
-		    			// building the main structure before returning
-		    			for (int j = 0; j < resOp1.structure.size(); j++) {
-		        			resMain.structure.add(resOp1.structure.get(j));
-		        		}
-		    			resMain.structure.add(currToken.tokenStr);
-		    			for (int j = 0; j < resOp2.structure.size(); j++) {
-		    				resMain.structure.add(resOp2.structure.get(j));
-		    			}
-	    			} // end of unary if
+	    				// String and Boolean related operations
+		    			switch (currToken.tokenStr) {
+			    			case "#":
+			    				resTemp = Utility.concat(this, resOp1, resOp2);
+			    				break;
+			    			case "<":
+			    				resTemp = Utility.lessThan(this, resOp1, resOp2, false);
+			    				break;
+			    			case ">":
+			    				resTemp = Utility.greaterThan(this, resOp1, resOp2, false);
+			    				break;
+			    			case "<=":
+			    				resTemp = Utility.lessThan(this, resOp1, resOp2, true);
+			    				break;
+			    			case ">=":
+			    				resTemp = Utility.greaterThan(this, resOp1, resOp2, true);
+			    				break;
+			    			case "==":
+			    				resTemp = Utility.equals(this, resOp1, resOp2, false);
+			    				break;
+			    			case "!=":
+			    				resTemp = Utility.equals(this, resOp1, resOp2, true);
+			    				break;
+			    			case "in":
+			    				// TODO: add string subscript functionality
+			    				break;
+			    			case "notin":
+			    				// TODO: add string subscript functionality
+			    				break;
+			    			case "not":
+			    				resTemp = Utility.booleanConditionals(this, resOp1, resOp2, "not");
+			    				break;
+			    			case "and":
+			    				resTemp = Utility.booleanConditionals(this, resOp1, resOp2, "and");
+			    				break;
+			    			case "or":
+			    				resTemp = Utility.booleanConditionals(this, resOp1, resOp2, "or");
+			    				break;
+							default:
+								//error("Invalid operator in expression.");
+					            throw new ParserException(scan.currentToken.iSourceLineNr,
+					                    "Invalid operator in expression " + currToken.tokenStr, 
+					                    scan.sourceFileNm, scan.lines[scan.line-1]);
+		    			} // end of inner Operator switch
+	    			} // end of else
+	    			
+	    			// add our new value to the stack
+	    			extraToken1 = tokOp1; // get the most accurate values for the line and column # as possible
+	    			extraToken1.tokenStr = resTemp.value;
+	    			extraToken1.primClassif = Token.OPERAND;
+	    			extraToken1.subClassif = resTemp.type;
+	    			stk.push(extraToken1);
+	    			
+	    			// building the main structure before returning
+	    			for (int j = 0; j < resOp1.structure.size(); j++) {
+	        			resMain.structure.add(resOp1.structure.get(j));
+	        		}
+	    			resMain.structure.add(currToken.tokenStr);
+	    			for (int j = 0; j < resOp2.structure.size(); j++) {
+	    				resMain.structure.add(resOp2.structure.get(j));
+	    			}
 		    		break; // end of operator case
 		    		default:
 		    			error("Invalid operand in expression.");

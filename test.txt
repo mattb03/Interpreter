@@ -28,7 +28,7 @@ if a == b:
     else if b == 2.0:
     	print ("nested else if b is ", b);
     endif;
-else if c > 17:
+else if c == 17:
 	print ("c is ", c);
 	if b <= c:
 		print (b, " is <= ", c);
