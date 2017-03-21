@@ -9,14 +9,16 @@ public class Numeric {
 	
 	public Numeric(Parser parser, ResultValue res, String op, String opPos) throws ParserException {
 		try {
-			doubleValue = Double.parseDouble(res.value);
-			integerValue = (int) doubleValue;
-			strValue = Double.toString(doubleValue);
+			integerValue = Integer.parseInt(res.value);
+			doubleValue = (double) integerValue;
+			strValue = Integer.toString(integerValue);
+			type = Token.INTEGER;
 		} catch (Exception e) {
 			try {
-				integerValue = Integer.parseInt(res.value);
-				doubleValue = (double) integerValue;
-				strValue = Integer.toString(integerValue);
+				doubleValue = Double.parseDouble(res.value);
+				integerValue = (int) doubleValue;
+				strValue = Double.toString(doubleValue);
+				type = Token.FLOAT;
 			} catch (Exception f) {
 				String error = opPos + " of " + op + " operand isn't a valid numeric type\n";
 				throw new ParserException(parser.scan.currentToken.iSourceLineNr,  error

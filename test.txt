@@ -1,13 +1,24 @@
-Int a = 1;
+Int a = 5;
 Float b = 2.0;
-a = b;
-
-print("a = ",a, "\a");  // this should print out 'a = 2' because of automatic cast to Int
+Int c = a + 10;
+print("a = ",a, "\a");  // this should print out 'a = 5' because of automatic cast to Int
 print("b = ", b);
-String name = "Chris\tBuckner\n\a";
-print(name, "Matt Benavides\n\a", "Miguel Cardenas\n\a" );
+print("c = ", c);
+print("\n\n\n\n");
+while a > 3:
+	print ("loop deee loooop a = ", a);
+	a = a - 1;	
+	c = c + 1;
+	while b <= 5:
+		print ("b is ", b);
+		b = b + 1;
+	endwhile;
+endwhile;
 
-Bool flag = T;
+print ("a is ", a);
+print("b = ", b);
+print("c = ", c);
+
 
 if a == b:
     print("a = ", a, "\nb = ", b, "\n");
@@ -17,6 +28,16 @@ if a == b:
     else if b == 2.0:
     	print ("nested else if b is ", b);
     endif;
+else if c > 17:
+	print ("c is ", c);
+	if b <= c:
+		print (b, " is <= ", c);
+	else if a == 3:
+		print ("this shouldnt run");
+		print ("please dont run");
+	else:
+		print ("once again please dont run");
+	endif;
 else:
     print(a, " not equal to ", b);
 endif;

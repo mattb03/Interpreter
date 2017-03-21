@@ -12,7 +12,7 @@ test2:
 	$(JAVA) $(JFLAGS) havabol.HavaBol test.txt.bak
 
 test3:
-	$(JAVA) $(JFLAGS) havabol.HavaBol p3Input.txt
+	$(JAVA) $(JFLAGS) havabol.HavaBol p3Input\(2\).txt
 
 run:
 	$(JAVA) $(JFLAGS) havabol.HavaBol p2Input.txt

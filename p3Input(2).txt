@@ -1,0 +1,19 @@
+Int i;
+i = 1;
+Int j;
+Bool bFlag;
+bFlag = T;
+while i < 5:
+    j = i;
+    print("\ttop of while, i=", i, "j=", j);
+    print("\t>>> Inner while j <= 3");
+    while  j <= 3:
+        print("\t\tinner while, j=", j);
+        j = j + 1;
+    endwhile;
+    bFlag = F;
+    print("\tbottom of while, i=", i, "j=", j);
+    i = i + 1;
+endwhile;
+print("\tAfter outer while");
+        
