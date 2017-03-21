@@ -283,30 +283,31 @@ public class Parser {
                 // has an else so ignore these statements
                 statements(false);
                 // at this point we already executed the true if block before
-                // the 'else' block, so we need to skip over all statements
+                // the 'else' block, so we need to skip over all statements 
                 // until we are at the end of the entire if block if we are not
                 // already there.
                 if (! scan.currentToken.tokenStr.equals("endif"))
                 {
-                	skipTo("endif", ";");
+                    skipTo("endif", ";");
                 }
             }
             else
             {
-            	scan.getNext();
+                scan.getNext();
                 // Cond returned False, ignore true part
                 statements(false);
-                skipTo("endif", ";");
-                skipTo("else", ":");
+
                 // check for 'else'
                 statements(true);
+                skipTo("endif", ";");
+                //skipTo("else", ":");
 
             }
 
         }
         else
         {
-        	skipTo("endif", ";");
+            skipTo("endif", ";");
             /* well come back to this
             // we are ignoring execution
             // we want to ignore the conditional, true part, and false part
@@ -338,6 +339,10 @@ public class Parser {
     }
 
     public void whileStmt() throws Exception  {
+        // store the number of loops inside this one
+        
+        String[] whileMatches = scan.buffer.split("(\\s*while\\s+)+");
+
         // make the first pass over the loop to store it in a while buffer
         // right now were assuming theres no nested loops
         int i = scan.buffer.indexOf("endwhile");
@@ -345,36 +350,85 @@ public class Parser {
         if (i == -1) {
             throw new ParserException(scan.currentToken.iSourceLineNr,
                     "No terminating 'endwhile' token for while loop", scan.sourceFileNm, "");
-        }
-
-        String whileBuffer = scan.nextToken.tokenStr +
-        		scan.buffer.substring(0, (i + "endwhile".length() + 1));
+        } 
+        
+        String whileBuffer = getWhileBuffer();
+        //String whileBuffer = scan.nextToken.tokenStr + 
+        //        scan.buffer.substring(0, (i + "endwhile".length() + 1));
 
         // check for error
-        if (whileBuffer.charAt(whileBuffer.length()-1) != ';') {
+        /*if (whileBuffer.charAt(whileBuffer.length()-1) != ';') {
             throw new ParserException(scan.currentToken.iSourceLineNr,
                     "No semicolon ';' to terminate 'endwhile'", scan.sourceFileNm, "");
-        }
+        }*/
         ResultValue resCond = evalCond();
         String remBuffer = scan.buffer;
+        int lastEndIndex = scan.buffer.indexOf("endwhile") + 
+                "endwhile".length() + 1;
+        //scan.buffer = scan.buffer.substring(lastEndIndex);
         while (resCond.value.equals("true")) {
-        	statements(true);
-        	scan.buffer = whileBuffer + scan.buffer;
-        	scan.getNext();
-        	resCond = evalCond();
+            while (! scan.currentToken.tokenStr.equals("endwhile")) {
+                statements(true);
+            }            
+
+            scan.buffer = whileBuffer + scan.buffer;
+            scan.getNext();
+            //if (scan.currentToken instanceof STControl) {
+                scan.getNext();
+            //}
+            resCond = evalCond();
         }
         // reset the buffer to where it should be after the 'endwhile'
-        i = scan.buffer.indexOf("endwhile");
-        scan.buffer = scan.buffer.substring(i + "endwhile".length() + 1);
+        int endCount = 0;
+        int chopOff = whileBuffer.indexOf(":") + 1;
+        whileBuffer = whileBuffer.substring(chopOff);
+        while (endCount != whileMatches.length) {
+            i = scan.buffer.indexOf("endwhile");
+            if (i != -1) {
+                endCount++;
+                i += "endwhile".length();
+            }
+        }
+        //scan.buffer = scan.buffer.substring(i + "endwhile".length() + 1);
+        //scan.buffer = scan.buffer.substring(i);
+        scan.buffer = scan.buffer.substring(whileBuffer.length()-1);
     }
 
+
+    public String getWhileBuffer () {
+        // get the number of while loops both nested and parent
+        String[] whileMatches = scan.buffer.split("(\\s*while\\s+)+");
+        int index = scan.buffer.indexOf("endwhile"); // first occurrence
+        index += "endwhile".length(); // move cursor over
+        int endCount = 0;
+        if (index != -1)
+            endCount = 1;
+
+        int finalIndex = index; 
+        String temp = scan.buffer.substring(finalIndex); // placeholder
+        while (index != -1 && endCount != whileMatches.length) {
+            index = scan.buffer.indexOf("endwhile", finalIndex);
+            if (index != -1) {
+                index += "endwhile".length();
+                finalIndex = index;
+                endCount++;
+
+
+            }
+        }
+        String buffer = scan.currentToken.tokenStr + " " +
+                scan.nextToken.tokenStr + 
+                scan.buffer.substring(0, (finalIndex + 1));
+        return buffer;
+    }
+    
     // skipTo(...) will skip tokens until your currentToken.tokenStr = stmt
     // so when the function exits, currentToken.tokenStr = stmt
     public void skipTo(String stmt, String terminatingStr) throws Exception
     {
         while (!scan.currentToken.tokenStr.equals(stmt))
         {
-        	scan.getNext();
+            scan.getNext();
         }
     }
 
