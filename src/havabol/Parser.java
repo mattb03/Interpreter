@@ -267,12 +267,12 @@ public class Parser {
                 // already there.
                 if (! scan.currentToken.tokenStr.equals("endif"))
                 {
-                	skipTo("endif", ";");
+                    skipTo("endif", ";");
                 }
             }
             else
             {
-            	scan.getNext();
+                scan.getNext();
                 // Cond returned False, ignore true part
                 statements(false);
 
@@ -286,7 +286,7 @@ public class Parser {
         }
         else
         {
-        	skipTo("endif", ";");
+            skipTo("endif", ";");
             /* well come back to this
             // we are ignoring execution
             // we want to ignore the conditional, true part, and false part
@@ -318,9 +318,8 @@ public class Parser {
     }
 
     public void whileStmt() throws Exception  {
-    	// store the number of loops inside this one
-    	
-    	String[] whileMatches = scan.buffer.split("(\\s*while\\s+)+");
+        // store the number of loops inside this one
+        String[] whileMatches = scan.buffer.split("(\\s*while\\s+)+");
 
         // make the first pass over the loop to store it in a while buffer
         // right now were assuming theres no nested loops
@@ -333,7 +332,7 @@ public class Parser {
         
         String whileBuffer = getWhileBuffer();
         //String whileBuffer = scan.nextToken.tokenStr + 
-        //		scan.buffer.substring(0, (i + "endwhile".length() + 1));
+        //        scan.buffer.substring(0, (i + "endwhile".length() + 1));
 
         // check for error
         /*if (whileBuffer.charAt(whileBuffer.length()-1) != ';') {
@@ -342,64 +341,64 @@ public class Parser {
         }*/
         ResultValue resCond = evalCond();
         String remBuffer = scan.buffer;
-    	int lastEndIndex = scan.buffer.indexOf("endwhile") + 
-    			"endwhile".length() + 1;
-    	//scan.buffer = scan.buffer.substring(lastEndIndex);
+        int lastEndIndex = scan.buffer.indexOf("endwhile") + 
+                "endwhile".length() + 1;
+        //scan.buffer = scan.buffer.substring(lastEndIndex);
         while (resCond.value.equals("true")) {
-        	while (! scan.currentToken.tokenStr.equals("endwhile")) {
-        		statements(true);
-        	}        	
+            while (! scan.currentToken.tokenStr.equals("endwhile")) {
+                statements(true);
+            }            
 
-        	scan.buffer = whileBuffer + scan.buffer;
-        	scan.getNext();
-        	//if (scan.currentToken instanceof STControl) {
-        		scan.getNext();
-        	//}
-        	resCond = evalCond();
+            scan.buffer = whileBuffer + scan.buffer;
+            scan.getNext();
+            //if (scan.currentToken instanceof STControl) {
+                scan.getNext();
+            //}
+            resCond = evalCond();
         }
         // reset the buffer to where it should be after the 'endwhile'
-    	int endCount = 0;
-    	int chopOff = whileBuffer.indexOf(":") + 1;
-    	whileBuffer = whileBuffer.substring(chopOff);
-    	while (endCount != whileMatches.length) {
-    		i = scan.buffer.indexOf("endwhile");
-    		if (i != -1) {
-    			endCount++;
-    			i += "endwhile".length();
-    		}
-    	}
-		//scan.buffer = scan.buffer.substring(i + "endwhile".length() + 1);
-		//scan.buffer = scan.buffer.substring(i);
-		scan.buffer = scan.buffer.substring(whileBuffer.length()-1);
+        int endCount = 0;
+        int chopOff = whileBuffer.indexOf(":") + 1;
+        whileBuffer = whileBuffer.substring(chopOff);
+        while (endCount != whileMatches.length) {
+            i = scan.buffer.indexOf("endwhile");
+            if (i != -1) {
+                endCount++;
+                i += "endwhile".length();
+            }
+        }
+        //scan.buffer = scan.buffer.substring(i + "endwhile".length() + 1);
+        //scan.buffer = scan.buffer.substring(i);
+        scan.buffer = scan.buffer.substring(whileBuffer.length()-1);
     }
 
 
     public String getWhileBuffer () {
-    	// get the number of while loops both nested and parent
-    	String[] whileMatches = scan.buffer.split("(\\s*while\\s+)+");
-    	int index = scan.buffer.indexOf("endwhile"); // first occurrence
-    	index += "endwhile".length(); // move cursor over
-    	int endCount = 0;
-    	if (index != -1)
-        	endCount = 1;
+        // get the number of while loops both nested and parent
+        String[] whileMatches = scan.buffer.split("(\\s*while\\s+)+");
+        int index = scan.buffer.indexOf("endwhile"); // first occurrence
+        index += "endwhile".length(); // move cursor over
+        int endCount = 0;
+        if (index != -1)
+            endCount = 1;
 
-		int finalIndex = index; 
-		String temp = scan.buffer.substring(finalIndex); // placeholder
-    	while (index != -1 && endCount != whileMatches.length) {
-    		index = scan.buffer.indexOf("endwhile", finalIndex);
-    		if (index != -1) {
-    			index += "endwhile".length();
-    			finalIndex = index;
-    			endCount++;
+        int finalIndex = index; 
+        String temp = scan.buffer.substring(finalIndex); // placeholder
+        while (index != -1 && endCount != whileMatches.length) {
+            index = scan.buffer.indexOf("endwhile", finalIndex);
+            if (index != -1) {
+                index += "endwhile".length();
+                finalIndex = index;
+                endCount++;
 
 
-    		}
-    	}
-    	String buffer = scan.currentToken.tokenStr + " " +
-    			scan.nextToken.tokenStr + 
-    			scan.buffer.substring(0, (finalIndex + 1));
-    	return buffer;
-	}
+            }
+        }
+        String buffer = scan.currentToken.tokenStr + " " +
+                scan.nextToken.tokenStr + 
+                scan.buffer.substring(0, (finalIndex + 1));
+        return buffer;
+    }
     
     // skipTo(...) will skip tokens until your currentToken.tokenStr = stmt
     // so when the function exits, currentToken.tokenStr = stmt
@@ -407,7 +406,7 @@ public class Parser {
     {
         while (!scan.currentToken.tokenStr.equals(stmt))
         {
-        	scan.getNext();
+            scan.getNext();
         }
     }
 
