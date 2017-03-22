@@ -2,10 +2,14 @@
 
 debug Token on;
 debug Assign on;
+debug Expr on;
 
 Int a = 5;
 Float b = 2.0;
 Int c = a + 10;
+
+debug Token off;
+
 print("a = ",a, "\a");  // this should print out 'a = 5' because of automatic cast to Int
 print("b = ", b);
 print("c = ", c);

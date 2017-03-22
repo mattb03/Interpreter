@@ -521,8 +521,10 @@ public class Scanner {
         this.nextToken = new Token(value);
         this.nextToken.iSourceLineNr = this.line;
         this.nextToken.iColPos = this.col;
-        if (this.currentToken != null && debugger.token)
-            this.currentToken.printToken();;
+        if (this.currentToken != null && debugger.token) {
+            System.out.print("***** TOKEN ***** : ");
+            this.currentToken.printToken();
+        }
         this.process(value);
     }
 }

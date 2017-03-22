@@ -1,4 +1,7 @@
 debug Assign on;
+debug Expr on;
+debug Token on;
+
 print("p3Input.txt");
 Int i;
 Float pi;
@@ -84,7 +87,6 @@ print(">>> Second If");
 //endif;
 // while and if
 
-print("HERE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 
 print(">>> First while i < 5");    
 i = 1;

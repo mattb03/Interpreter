@@ -198,6 +198,7 @@ public class Parser {
 
     public void assign(Token curSymbol) throws Exception {
         Boolean show = debugger.assign;
+        Boolean expr = debugger.expr;
 
         int ltype = st.getSymbol(curSymbol.tokenStr).type;  // get type of left op
         scan.getNext(); // get equals sign
@@ -222,7 +223,7 @@ public class Parser {
                             int assignType = getLiteralType(val);
                             st.setDataType((STIdentifier)st.getSymbol(curSymbol.tokenStr), assignType);
                             if (show) {
-                                System.out.println("****** DEBUG ***** : "+curSymbol.tokenStr+" = "+val);
+                                System.out.println("****** ASSIGN ***** : "+curSymbol.tokenStr+" = "+val);
                             }
                         } else { // left type is a float and right type is an integer
                             String val = st.getSymbol(rToken.tokenStr).value;   // get the int val from rside , must cast to a float 2 -> 2.0
@@ -231,7 +232,7 @@ public class Parser {
                             int assignType = getLiteralType(val);
                             st.setDataType((STIdentifier)st.getSymbol(curSymbol.tokenStr), assignType);
                             if (show) {
-                                System.out.println("****** DEBUG ****** : "+curSymbol.tokenStr+" = "+val);
+                                System.out.println("****** ASSIGN ****** : "+curSymbol.tokenStr+" = "+val);
                             }
                         }
 
@@ -247,19 +248,18 @@ public class Parser {
                     int assignType = getLiteralType(val);
                     st.setDataType((STIdentifier)st.getSymbol(curSymbol.tokenStr), assignType);
                     if (show) {
-                        System.out.println("***** DEBUG ***** : "+curSymbol.tokenStr+" = "+val);
+                        System.out.println("***** ASSIGN ***** : "+curSymbol.tokenStr+" = "+val);
                     }
                 }
             } else {  // next token not a ';'  possible valid expression
             	ResultValue resExpr = expr();
             	int assignType = getLiteralType(resExpr.value);
-            	//st.getSymbol(curSymbol.tokenStr).value = resExpr.value;
             	STIdentifier ident = (STIdentifier)st.getSymbol(curSymbol.tokenStr);
                 ident.value = resExpr.value;
                 String val = ident.value;
             	ident.dataType = assignType;
-                if (show) {
-                    System.out.println("***** DEBUG ***** : "+curSymbol.tokenStr+" = "+val);
+                if (expr) {
+                    System.out.println("***** EXPRESSION ***** : "+curSymbol.tokenStr+" = "+val);
                 }
             }
         } else { // rToken is not an identifier
@@ -274,7 +274,7 @@ public class Parser {
                         String val = st.getSymbol(curSymbol.tokenStr).value;
                         st.setDataType((STIdentifier)st.getSymbol(curSymbol.tokenStr), ltype);
                         if (show) {
-                            System.out.println("***** DEBUG ***** : "+curSymbol.tokenStr+" = "+val);
+                            System.out.println("***** ASSIGN ***** : "+curSymbol.tokenStr+" = "+val);
                         }
                     } else {
                         throw new ParserException(scan.currentToken.iSourceLineNr,
@@ -285,11 +285,19 @@ public class Parser {
                     st.setDataType((STIdentifier)st.getSymbol(curSymbol.tokenStr), ltype);
                     String val = st.getSymbol(curSymbol.tokenStr).value = rToken.tokenStr;
                     if (show) {
-                        System.out.println("***** DEBUG ***** : "+curSymbol.tokenStr+" = "+val);
+                        System.out.println("***** ASSIGN ***** : "+curSymbol.tokenStr+" = "+val);
                     }
                 }
             } else {  // next token not a ';', possible expression
                 ResultValue resExpr = expr();
+                int assignType = getLiteralType(resExpr.value);
+                STIdentifier ident = (STIdentifier)st.getSymbol(curSymbol.tokenStr);
+                ident.value = resExpr.value;
+                String val = ident.value;
+                ident.dataType = assignType;
+                if (expr) {
+                    System.out.println("***** EXPRESSION ***** : "+curSymbol.tokenStr+" = "+val);
+                }
             }
         }
 
