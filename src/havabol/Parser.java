@@ -34,7 +34,7 @@ public class Parser {
     }
 
     public void statements(boolean bExec) throws Exception, ParserException {
-
+        Boolean expr = debugger.expr;
         if (bExec == false) {
 
         	if (scan.nextToken.tokenStr.equals("else")) {
@@ -63,8 +63,12 @@ public class Parser {
                             if (scan.currentToken.subClassif == Token.STRING) { // one variable
                                 arglist.add(scan.currentToken.tokenStr);
                             } else {
-                                ResultValue res = expr();
+                                String curr = scan.currentToken.tokenStr;
+                                ResultValue res = expr(true);
                                 arglist.add(res.value);
+                                if (expr) {
+                                    System.out.println("***** EXPRESSION ***** : "+curr+" = "+res.value);
+                                }
                             }
 
                         } else if (scan.nextToken.tokenStr.equals(")")){
@@ -73,9 +77,14 @@ public class Parser {
                             throw new ParserException(
                                 scan.currentToken.iSourceLineNr,
                                 "Did not expect a comma. ", scan.sourceFileNm,"");
-                        } else {  //  handle expr logic
-                            ResultValue res = expr();
+                        } else if (scan.currentToken.tokenStr.equals(",")) {  //  handle expr logic
+                            scan.getNext(); // consume comma and call expr
+                            String curr = scan.currentToken.tokenStr;
+                            ResultValue res = expr(true);
                             arglist.add(res.value);
+                            if (expr) {
+                                System.out.println("***** EXPRESSION ***** : "+curr+" = "+res.value);
+                            }
                         }
                         scan.getNext();
                     }
@@ -249,7 +258,7 @@ public class Parser {
                     }
                 }
             } else {  // next token not a ';'  possible valid expression
-            	ResultValue resExpr = expr();
+            	ResultValue resExpr = expr(false);
             	int assignType = getLiteralType(resExpr.value);
             	STIdentifier ident = (STIdentifier)st.getSymbol(curSymbol.tokenStr);
                 ident.value = resExpr.value;
@@ -286,7 +295,7 @@ public class Parser {
                     }
                 }
             } else {  // next token not a ';', possible expression
-                ResultValue resExpr = expr();
+                ResultValue resExpr = expr(false);
                 int assignType = getLiteralType(resExpr.value);
                 STIdentifier ident = (STIdentifier)st.getSymbol(curSymbol.tokenStr);
                 ident.value = resExpr.value;
@@ -883,7 +892,7 @@ public class Parser {
 
     // assumes that this is called when currentToken = to the first operand
     // stops at the next token after the expression
-    public ResultValue expr() throws Exception {
+    public ResultValue expr(boolean funcCall) throws Exception {
     	Stack<Token> mainStack = new Stack<Token>();
     	ArrayList<Token> postAList = new ArrayList<Token>();
     	Token tok = new Token();
@@ -930,10 +939,18 @@ public class Parser {
     							}
     							postAList.add(popped);
     						}
-    						if (!bFound) {
+    						if (!bFound && funcCall) {   // no matching left paren but a func has been called ie print()
     							// TODO: call errors for missing "("
     							// TODO: add function implementations here
-    						}
+                                while (! mainStack.isEmpty()) {
+                                    popped = mainStack.pop();
+                                    if (popped.tokenStr.equals("("))
+                                        error("Missing ')' separator");
+
+                                    postAList.add(popped);
+                                }
+                                return evaluateExpr(postAList);
+    					    }
     						break;
     					default:
     						error("Invalid separator in expression");
@@ -945,7 +962,7 @@ public class Parser {
     		}
     		scan.getNext();
     		tok = scan.currentToken;
-    	}
+    	} // end while loop
     	while (! mainStack.isEmpty()) {
     		popped = mainStack.pop();
     		if (popped.tokenStr.equals("("))
@@ -953,7 +970,6 @@ public class Parser {
 
     		postAList.add(popped);
     	}
-
         return evaluateExpr(postAList);
     }
 

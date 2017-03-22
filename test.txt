@@ -1,7 +1,7 @@
 
-debug Token on;
-//debug Assign on;
-//debug Expr on;
+//debug Token on;
+debug Assign on;
+debug Expr on;
 
 Int a = 5;
 
