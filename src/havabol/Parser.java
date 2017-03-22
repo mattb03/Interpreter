@@ -516,7 +516,7 @@ public class Parser {
 
     public String getWhileBuffer () {
         // get the number of while loops both nested and parent
-        String[] whileMatches = scan.buffer.split("(\\s*while\\s+)+");
+        String[] whileMatches = scan.buffer.split("(?=.*?)[^end]while(?!.*?[^\"'])");
         int index = scan.buffer.indexOf("endwhile"); // first occurrence
         index += "endwhile".length(); // move cursor over
         int endCount = 0;

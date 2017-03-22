@@ -3,6 +3,7 @@ String loc;
 loc = "TX";
 print(">>> First while i < 5");    
 i = 5;
+while i < 5:
     print("\ttop of while, i=", i);
     if i < 3:
         print("\twhile first if true i<3, i=", i);
@@ -24,6 +25,7 @@ i = 5;
         print("\twhile first if false after inner if");
     endif;
     print("\tbottom of while, i=", i);
+endwhile;
 print("\tAfter first while");
 
 
