@@ -201,6 +201,7 @@ public class Parser {
     public void assign(Token curSymbol) throws Exception {
         Boolean show = debugger.assign;
         Boolean expr = debugger.expr;
+        String value = "";
 
         int ltype = st.getSymbol(curSymbol.tokenStr).type;  // get type of left op
         scan.getNext(); // get equals sign
@@ -254,7 +255,6 @@ public class Parser {
                     }
                 }
             } else {  // next token not a ';'  possible valid expression
-                String value = "";
                 ResultValue resExpr = expr(false);
                 int assignType = getLiteralType(resExpr.value);
                 if (ltype != assignType) {
@@ -270,6 +270,8 @@ public class Parser {
                             value += ".00";
                         }
                     }
+                } else {  // they are the same type
+                    value = resExpr.value;
                 }
             	STIdentifier ident = (STIdentifier)st.getSymbol(curSymbol.tokenStr);
                 ident.value = value;

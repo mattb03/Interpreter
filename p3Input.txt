@@ -1,6 +1,6 @@
-debug Assign on;
-debug Expr on;
-debug Token on;
+//debug Assign on;
+//debug Expr on;
+//debug Token on;
 
 print("p3Input.txt");
 Int i;
