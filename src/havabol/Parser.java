@@ -1151,106 +1151,81 @@ public class Parser {
 		    			// new Numeric variables associated with them as well.
 		    			// thus a fork in the code is made and a path is chosen based off of
 		    			// the type of the first operand.
-		    			if (resOp1.type == Token.INTEGER
-		    					|| resOp1.type == Token.FLOAT) {
-		    				// set the Numeric values of the operands
-			    			nOp1 = new Numeric(this, resOp1, currToken.tokenStr, "1st Operand");
-			    			nOp2 = new Numeric(this, resOp2, currToken.tokenStr, "2nd Operand");
-
-			    			// these operators only work on Numeric types
-			    			switch (currToken.tokenStr) {
-				    			case "+":
-				    				resTemp = Utility.add(this, nOp1, nOp2);
-				    				break;
-				    			case "-":
-				    				resTemp = Utility.subtract(this, nOp1, nOp2);
-				    				break;
-				    			case "*":
-				    				resTemp = Utility.multiply(this, nOp1, nOp2);
-				    				break;
-				    			case "/":
-				    				resTemp = Utility.divide(this, nOp1, nOp2);
-				    				break;
-				    			case "^":
-				    				resTemp = Utility.expo(this, nOp1, nOp2);
-				    				break;
-				    			case "#":
-				    				resTemp = Utility.concat(this, resOp1, resOp2);
-				    				break;
-				    			case "<":
-				    				resTemp = Utility.lessThan(this, resOp1, resOp2, false);
-				    				break;
-				    			case ">":
-				    				resTemp = Utility.greaterThan(this, resOp1, resOp2, false);
-				    				break;
-				    			case "<=":
-				    				resTemp = Utility.lessThan(this, resOp1, resOp2, true);
-				    				break;
-				    			case ">=":
-				    				resTemp = Utility.greaterThan(this, resOp1, resOp2, true);
-				    				break;
-				    			case "==":
-				    				resTemp = Utility.equals(this, resOp1, resOp2, false);
-				    				break;
-				    			case "!=":
-				    				resTemp = Utility.equals(this, resOp1, resOp2, true);
-				    			default:
-				    				error("Invalid Numeric operator in expression.");
-			    			}
-		    			} else {
-		    				// String and Boolean related operations
-			    			switch (currToken.tokenStr) {
-				    			case "#":
-				    				resTemp = Utility.concat(this, resOp1, resOp2);
-				    				break;
-				    			case "<":
-				    				resTemp = Utility.lessThan(this, resOp1, resOp2, false);
-				    				break;
-				    			case ">":
-				    				resTemp = Utility.greaterThan(this, resOp1, resOp2, false);
-				    				break;
-				    			case "<=":
-				    				resTemp = Utility.lessThan(this, resOp1, resOp2, true);
-				    				break;
-				    			case ">=":
-				    				resTemp = Utility.greaterThan(this, resOp1, resOp2, true);
-				    				break;
-				    			case "==":
-				    				resTemp = Utility.equals(this, resOp1, resOp2, false);
-				    				break;
-				    			case "!=":
-				    				resTemp = Utility.equals(this, resOp1, resOp2, true);
-				    				break;
-				    			case "in":
-				    				// TODO: add string subscript functionality
-				    				break;
-				    			case "notin":
-				    				// TODO: add string subscript functionality
-				    				break;
-				    			case "not":
-				    				resTemp = Utility.booleanConditionals(this, resOp1, resOp2, "not");
-				    				break;
-				    			case "and":
-				    				resTemp = Utility.booleanConditionals(this, resOp1, resOp2, "and");
-				    				break;
-				    			case "or":
-				    				resTemp = Utility.booleanConditionals(this, resOp1, resOp2, "or");
-				    				break;
-								default:
-									//error("Invalid operator in expression.");
-						            throw new ParserException(scan.currentToken.iSourceLineNr,
-						                    "Invalid operator in expression " + currToken.tokenStr,
-						                    scan.sourceFileNm, scan.lines[scan.line-1]);
-			    			} // end of inner Operator switch
-		    			} // end of else
-
+		    			switch (currToken.tokenStr) {
+			    			case "+":
+				    			nOp1 = new Numeric(this, resOp1, currToken.tokenStr, "1st Operand");
+				    			nOp2 = new Numeric(this, resOp2, currToken.tokenStr, "2nd Operand");
+			    				resTemp = Utility.add(this, nOp1, nOp2);
+			    				break;
+			    			case "-":
+				    			nOp1 = new Numeric(this, resOp1, currToken.tokenStr, "1st Operand");
+				    			nOp2 = new Numeric(this, resOp2, currToken.tokenStr, "2nd Operand");
+			    				resTemp = Utility.subtract(this, nOp1, nOp2);
+			    				break;
+			    			case "*":
+				    			nOp1 = new Numeric(this, resOp1, currToken.tokenStr, "1st Operand");
+				    			nOp2 = new Numeric(this, resOp2, currToken.tokenStr, "2nd Operand");
+			    				resTemp = Utility.multiply(this, nOp1, nOp2);
+			    				break;
+			    			case "/":
+				    			nOp1 = new Numeric(this, resOp1, currToken.tokenStr, "1st Operand");
+				    			nOp2 = new Numeric(this, resOp2, currToken.tokenStr, "2nd Operand");
+			    				resTemp = Utility.divide(this, nOp1, nOp2);
+			    				break;
+			    			case "^":
+				    			nOp1 = new Numeric(this, resOp1, currToken.tokenStr, "1st Operand");
+				    			nOp2 = new Numeric(this, resOp2, currToken.tokenStr, "2nd Operand");
+			    				resTemp = Utility.expo(this, nOp1, nOp2);
+			    				break;
+			    			case "#":
+			    				resTemp = Utility.concat(this, resOp1, resOp2);
+			    				break;
+			    			case "<":
+			    				resTemp = Utility.lessThan(this, resOp1, resOp2, false);
+			    				break;
+			    			case ">":
+			    				resTemp = Utility.greaterThan(this, resOp1, resOp2, false);
+			    				break;
+			    			case "<=":
+			    				resTemp = Utility.lessThan(this, resOp1, resOp2, true);
+			    				break;
+			    			case ">=":
+			    				resTemp = Utility.greaterThan(this, resOp1, resOp2, true);
+			    				break;
+			    			case "==":
+			    				resTemp = Utility.equals(this, resOp1, resOp2, false);
+			    				break;
+			    			case "!=":
+			    				resTemp = Utility.equals(this, resOp1, resOp2, true);
+			    			case "in":
+			    				// TODO: add string subscript functionality
+			    				break;
+			    			case "notin":
+			    				// TODO: add string subscript functionality
+			    				break;
+			    			case "not":
+			    				resTemp = Utility.booleanConditionals(this, resOp1, resOp2, "not");
+			    				break;
+			    			case "and":
+			    				resTemp = Utility.booleanConditionals(this, resOp1, resOp2, "and");
+			    				break;
+			    			case "or":
+			    				resTemp = Utility.booleanConditionals(this, resOp1, resOp2, "or");
+			    				break;
+							default:
+								//error("Invalid operator in expression.");
+					            throw new ParserException(scan.currentToken.iSourceLineNr,
+					                    "Invalid operator in expression: '" + currToken.tokenStr + "'",
+					                    scan.sourceFileNm, scan.lines[scan.line-1]);
+		    			} // end of inner Operator switch
+		    			
 		    			// add our new value to the stack
 		    			extraToken1 = tokOp1; // get the most accurate values for the line and column # as possible
 		    			extraToken1.tokenStr = resTemp.value;
 		    			extraToken1.primClassif = Token.OPERAND;
 		    			extraToken1.subClassif = resTemp.type;
 		    			stk.push(extraToken1);
-
+	
 		    			// building the main structure before returning
 		    			for (int j = 0; j < resOp1.structure.size(); j++) {
 		        			resMain.structure.add(resOp1.structure.get(j));
