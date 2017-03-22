@@ -77,12 +77,15 @@ print("\tDone with first if");
 
 print(">>> Second If");
 // if then else
-if i >= 5:
-    print("\t2nd if true, i >= 5, i =", i);
-else:
-    print("\t2nd if false, i >= 5, i =", i);
-endif;
-// while and if 
+//if i >= 5:
+//    print("\t2nd if true, i >= 5, i =", i);
+//else:
+//    print("\t2nd if false, i >= 5, i =", i);
+//endif;
+// while and if
+
+print("HERE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+
 print(">>> First while i < 5");    
 i = 1;
 while i < 5:

@@ -18,8 +18,9 @@ public class Parser {
     public Pattern p;
 
     public Parser(String SourceFileNm, SymbolTable st) {
+        debugger = new Debug(scan);
         try {
-            scan = new Scanner(SourceFileNm);
+            scan = new Scanner(SourceFileNm, debugger);
         }catch (Exception e) {
         }
         this.st = st;
@@ -30,7 +31,6 @@ public class Parser {
         validDataTypes.put(4, 5); // bool -> String
         validDataTypes.put(5, 4); // String -> bool
         p = Pattern.compile("[^0-9.]");
-        debugger = new Debug(scan);
     }
 
     public void statements(boolean bExec) throws Exception, ParserException {
@@ -98,7 +98,6 @@ public class Parser {
 
 
             } else if (scan.currentToken.tokenStr.equals("debug")) {
-                    System.out.println("curr = "+scan.currentToken.tokenStr);
                     scan.getNext();
                     String type = scan.currentToken.tokenStr; // got type
                     scan.getNext();
@@ -108,8 +107,6 @@ public class Parser {
                 } else if (state.equals("off")) {
                     debugger.turnOff(type);
                 } else {
-                    System.out.println("state = "+state);
-                    System.out.println("type = "+type);
                     throw new ParserException(
                         scan.currentToken.iSourceLineNr,
                         "Invalid debug state. ", scan.sourceFileNm,"");
@@ -225,7 +222,7 @@ public class Parser {
                             int assignType = getLiteralType(val);
                             st.setDataType((STIdentifier)st.getSymbol(curSymbol.tokenStr), assignType);
                             if (show) {
-                                System.out.println("*DEBUG* : "+curSymbol.tokenStr+" = "+val);
+                                System.out.println("****** DEBUG ***** : "+curSymbol.tokenStr+" = "+val);
                             }
                         } else { // left type is a float and right type is an integer
                             String val = st.getSymbol(rToken.tokenStr).value;   // get the int val from rside , must cast to a float 2 -> 2.0
@@ -234,7 +231,7 @@ public class Parser {
                             int assignType = getLiteralType(val);
                             st.setDataType((STIdentifier)st.getSymbol(curSymbol.tokenStr), assignType);
                             if (show) {
-                                System.out.println("*DEBUG*: "+curSymbol.tokenStr+" = "+val);
+                                System.out.println("****** DEBUG ****** : "+curSymbol.tokenStr+" = "+val);
                             }
                         }
 
@@ -250,7 +247,7 @@ public class Parser {
                     int assignType = getLiteralType(val);
                     st.setDataType((STIdentifier)st.getSymbol(curSymbol.tokenStr), assignType);
                     if (show) {
-                        System.out.println("*DEBUG*: "+curSymbol.tokenStr+" = "+val);
+                        System.out.println("***** DEBUG ***** : "+curSymbol.tokenStr+" = "+val);
                     }
                 }
             } else {  // next token not a ';'  possible valid expression
@@ -262,7 +259,7 @@ public class Parser {
                 String val = ident.value;
             	ident.dataType = assignType;
                 if (show) {
-                    System.out.println("*DEBUG*: "+curSymbol.tokenStr+" = "+val);
+                    System.out.println("***** DEBUG ***** : "+curSymbol.tokenStr+" = "+val);
                 }
             }
         } else { // rToken is not an identifier
@@ -277,7 +274,7 @@ public class Parser {
                         String val = st.getSymbol(curSymbol.tokenStr).value;
                         st.setDataType((STIdentifier)st.getSymbol(curSymbol.tokenStr), ltype);
                         if (show) {
-                            System.out.println("*DEBUG* :"+curSymbol.tokenStr+" = "+val);
+                            System.out.println("***** DEBUG ***** : "+curSymbol.tokenStr+" = "+val);
                         }
                     } else {
                         throw new ParserException(scan.currentToken.iSourceLineNr,
@@ -288,7 +285,7 @@ public class Parser {
                     st.setDataType((STIdentifier)st.getSymbol(curSymbol.tokenStr), ltype);
                     String val = st.getSymbol(curSymbol.tokenStr).value = rToken.tokenStr;
                     if (show) {
-                        System.out.println("*DEBUG* :"+curSymbol.tokenStr+" = "+val);
+                        System.out.println("***** DEBUG ***** : "+curSymbol.tokenStr+" = "+val);
                     }
                 }
             } else {  // next token not a ';', possible expression

@@ -1,3 +1,8 @@
+
+
+debug Token on;
+debug Assign on;
+
 Int a = 5;
 Float b = 2.0;
 Int c = a + 10;
@@ -14,7 +19,6 @@ while a > 3:
 		b = b + 1;
 	endwhile;
 endwhile;
-
 print ("a is ", a);
 print("b = ", b);
 print("c = ", c);

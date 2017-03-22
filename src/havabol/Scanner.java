@@ -8,6 +8,7 @@ public class Scanner {
     public String buffer;
     public Token currentToken;
     public Token nextToken;
+    public Debug debugger;
     public int col = 1;
     public int line = 1;
     public boolean exit;
@@ -27,8 +28,9 @@ public class Scanner {
     public static final String INVALID_OPERATOR = "INVALID_OPERATOR";
     public static final String INVALID_ESC = "ILLEGAL_ESCAPE_CHARACTER";
 
-    public Scanner(String SourceFileNm) throws IOException, Exception
+    public Scanner(String SourceFileNm, Debug debugger) throws IOException, Exception
     {
+        this.debugger = debugger;
     	this.sourceFileNm = SourceFileNm;
         // create our buffer to iterate thru
         this.buffer = new String(Files.readAllBytes(Paths.get(SourceFileNm)));
@@ -514,11 +516,13 @@ public class Scanner {
         return retVal;
     }
 
-    private void setToken(String value) throws Exception
+    public void setToken(String value) throws Exception
     {
         this.nextToken = new Token(value);
         this.nextToken.iSourceLineNr = this.line;
         this.nextToken.iColPos = this.col;
+        if (this.currentToken != null && debugger.token)
+            this.currentToken.printToken();;
         this.process(value);
     }
 }
