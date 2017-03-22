@@ -391,26 +391,35 @@ public class Parser {
             {
                 scan.getNext();
                 // Cond returned False, ignore true part
-                statements(false);
-
-                while ((ifCount-1) > endifCount)
+                ifCount--;
+                if (! scan.currentToken.tokenStr.equals("else"))
                 {
-                    statements(false);
-                    if (scan.currentToken.tokenStr.equals("endif")) 
-                    {
-                    	ifCount--;
-                    }
-                    scan.getNext();
-
+                	bExec = false;
                 }
-
-                // check for 'else'
-                /*if (scan.currentToken.tokenStr.equals("else"))
+                else { // the current token is an else
+                	bExec = true;
+                }
+                
+                while (bExec == false)
                 {
-                	scan.getNext();
-                }*/
-                statements(true);
-                skipTo("endif", ";");
+                	skipTo("endif", ";");
+                	if (ifCount == endifCount)
+                	{
+                		bExec = true;
+                	}
+                	else if (scan.currentToken.tokenStr.equals("endif"))
+                	{
+                		ifCount--;
+                	}
+                    scan.getNext();
+                }
+                scan.getNext();
+                while (! scan.currentToken.tokenStr.equals("endif"))
+                {
+                	statements(true);
+                }
+                scan.getNext();
+                //skipTo("endif", ";");
                 //skipTo("else", ":");
 
             }
