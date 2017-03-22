@@ -69,6 +69,7 @@ public class Parser {
                                 if (expr) {
                                     System.out.println("***** EXPRESSION ***** : "+curr+" = "+res.value);
                                 }
+                                continue;
                             }
 
                         } else if (scan.nextToken.tokenStr.equals(")")){
@@ -85,6 +86,7 @@ public class Parser {
                             if (expr) {
                                 System.out.println("***** EXPRESSION ***** : "+curr+" = "+res.value);
                             }
+                            continue;
                         }
                         scan.getNext();
                     }
@@ -173,12 +175,6 @@ public class Parser {
                 bExec = false;
             } else if (scan.currentToken.tokenStr.toLowerCase().equals("while")) {
                 whileStmt();
-            } else if (scan.currentToken.subClassif == 1) {
-                if (st.getSymbol(scan.currentToken.tokenStr) == null) {
-                    throw new ParserException(scan.currentToken.iSourceLineNr,
-                        "Symbol "+scan.currentToken.tokenStr+
-                        "is not in Symbol Table.", scan.sourceFileNm, "");
-                }
             }
             if (bExec == true)
             	scan.getNext();
@@ -258,14 +254,29 @@ public class Parser {
                     }
                 }
             } else {  // next token not a ';'  possible valid expression
-            	ResultValue resExpr = expr(false);
-            	int assignType = getLiteralType(resExpr.value);
+                String value = "";
+                ResultValue resExpr = expr(false);
+                int assignType = getLiteralType(resExpr.value);
+                if (ltype != assignType) {
+                    if ((ltype == Token.INTEGER && assignType == Token.FLOAT)
+                        || (ltype == Token.FLOAT && assignType == Token.INTEGER)) {
+
+                        if (ltype == Token.INTEGER) {
+                            value = resExpr.value;
+                            int index = value.indexOf(".");
+                            value = value.substring(index);
+                        } else {  // left side is Float
+                            value = resExpr.value;
+                            value += ".00";
+                        }
+                    }
+                }
             	STIdentifier ident = (STIdentifier)st.getSymbol(curSymbol.tokenStr);
-                ident.value = resExpr.value;
-                String val = ident.value;
-            	ident.dataType = assignType;
+                ident.value = value;
+                String val2 = ident.value;
+            	ident.dataType = ltype;
                 if (expr) {
-                    System.out.println("***** EXPRESSION ***** : "+curSymbol.tokenStr+" = "+val);
+                    System.out.println("***** EXPRESSION ***** : "+curSymbol.tokenStr+" = "+val2);
                 }
             }
         } else { // rToken is not an identifier
