@@ -9,7 +9,7 @@ public class Token
     public int subClassif = 0;
     public int iSourceLineNr = 0;
     public int iColPos = 0;
-    
+
     @Override
 	public String toString() {
 		return "Token [tokenStr=" + tokenStr + "]";
@@ -172,10 +172,10 @@ public class Token
     public ResultValue toResult() {
     	return null;
     }
-    
+
     public void setPrecedence() {
     	String conditionals = "<><=>===!=";
-    	
+
     	if (primClassif == SEPARATOR) {
     		normPreced = 15;
     		stkPreced = 2;

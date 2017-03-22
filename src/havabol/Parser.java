@@ -10,16 +10,19 @@ import javax.print.attribute.standard.RequestingUserName;
 public class Parser {
 
     public Scanner scan;
+    public Debug debugger;
     public SymbolTable st;
     public ParserException error;
     // this map is for identifying if 2 operands are compatible datatypes
     public Map<Integer, Integer> validDataTypes;
     public Pattern p;
-    public boolean show = false;
+    public int ifCount = 0;
+    public int endifCount = 0;
 
     public Parser(String SourceFileNm, SymbolTable st) {
+        debugger = new Debug(scan);
         try {
-            scan = new Scanner(SourceFileNm);
+            scan = new Scanner(SourceFileNm, debugger);
         }catch (Exception e) {
         }
         this.st = st;
@@ -33,58 +36,54 @@ public class Parser {
     }
 
     public void statements(boolean bExec) throws Exception, ParserException {
-
+        Boolean expr = debugger.expr;
         if (bExec == false) {
 
-        	if (scan.nextToken.tokenStr.equals("else")) {
-        		skipTo("endif", ";");
-        	}
-        	else {
-        		// if nextToken is not an 'else' then its an 'endif'
-        		// so call getNext() once to skip over it.
-        		if (scan.nextToken.tokenStr.equals("endif")) {
-        			scan.getNext();
-        		}
-        		else {
-        			skipTo("else", ":");
-        		}
-        	}
+        	skipTo("endif", ";");
         }
 
         while (bExec == true) {
             if (scan.currentToken.tokenStr.toLowerCase().equals("print")) {
-                ArrayList<Token> arglist = new ArrayList<Token>();
+                ArrayList<String> arglist = new ArrayList<String>();
                 if (scan.nextToken.tokenStr.equals("(")) {
                     scan.getNext();  // on '('
                     String tok = scan.getNext();
                     while (!scan.currentToken.tokenStr.equals(")")) {
                         if (scan.nextToken.tokenStr.equals(",")) {
-                            arglist.add(scan.currentToken);
+                            if (scan.currentToken.subClassif == Token.STRING) { // one variable
+                                arglist.add(scan.currentToken.tokenStr);
+                            } else {
+                                String curr = scan.currentToken.tokenStr;
+                                ResultValue res = expr(true);
+                                arglist.add(res.value);
+                                if (expr) {
+                                    System.out.println("***** EXPRESSION ***** : "+curr+" = "+res.value);
+                                }
+                                continue;
+                            }
+
                         } else if (scan.nextToken.tokenStr.equals(")")){
-                            arglist.add(scan.currentToken);
+                            arglist.add(scan.currentToken.tokenStr);
                         } else if (scan.currentToken.tokenStr.equals(",") && arglist.isEmpty()) {
                             throw new ParserException(
                                 scan.currentToken.iSourceLineNr,
                                 "Did not expect a comma. ", scan.sourceFileNm,"");
-                        } else {
-                            ;
+                        } else if (scan.currentToken.tokenStr.equals(",")) {  //  handle expr logic
+                            scan.getNext(); // consume comma and call expr
+                            String curr = scan.currentToken.tokenStr;
+                            ResultValue res = expr(true);
+                            arglist.add(res.value);
+                            if (expr) {
+                                System.out.println("***** EXPRESSION ***** : "+curr+" = "+res.value);
+                            }
+                            continue;
                         }
                         scan.getNext();
                     }
                     if (scan.nextToken.tokenStr.equals(";")) {
                         for (int i=0; i < arglist.size(); i++) {
-                            Token token = arglist.get(i);
-                            STIdentifier arg = (STIdentifier)st.getSymbol(token.tokenStr);
-                            if (arg == null) {  // NOT in symbol table, possible string literal or possible ident not in table!
-                                if (token.subClassif == Token.STRING) { 
-                                    System.out.print(token.tokenStr);
-                                } else {
-                                    System.err.println("Identifier not in symbol table!");
-                                    throw new Exception();
-                                }
-                            } else {
-                                System.out.print(arg.value);
-                            }
+                            String str = arglist.get(i);
+                            System.out.print(str);
                         }
                         System.out.println();
                     } else {
@@ -94,8 +93,30 @@ public class Parser {
 
                     }
                 }
+
+
+            } else if (scan.currentToken.tokenStr.equals("debug")) {
+                    scan.getNext();
+                    String type = scan.currentToken.tokenStr; // got type
+                    scan.getNext();
+                    String state = scan.currentToken.tokenStr;  // got state; // 'on' or 'off'
+                if (state.equals("on")) {
+                    debugger.turnOn(type);
+                } else if (state.equals("off")) {
+                    debugger.turnOff(type);
+                } else {
+                    throw new ParserException(
+                        scan.currentToken.iSourceLineNr,
+                        "Invalid debug state. ", scan.sourceFileNm,"");
+                }
+                scan.getNext(); // consume semicolon
+                if (scan.currentToken.equals(";")) {
+                    throw new ParserException(
+                        scan.currentToken.iSourceLineNr,
+                        "Expected ';' .  ", scan.sourceFileNm,"");
+                }
             // if we come across a declare statement. i.e. Int, String, Bool ...
-            } else if (scan.currentToken.subClassif == 12) {
+            } else if (scan.currentToken.subClassif == Token.DECLARE) {
                 // if nextToken is not an identifier throw an error
                 if (scan.nextToken.subClassif != 1) {
                     throw new ParserException(scan.nextToken.iSourceLineNr,
@@ -139,26 +160,28 @@ public class Parser {
                 if (scan.nextToken.tokenStr.equals("=")) {
                     assign(scan.currentToken);
                 }
-            } else if (scan.currentToken.tokenStr.toLowerCase().equals("if")) {
-                ifStmt(bExec);
+            } else if (scan.currentToken.tokenStr.equals("endif")) {
+            	bExec = false;
+            } 
+            else if (scan.currentToken.tokenStr.equals("else")) {
+            	bExec = false;
+            }
+            else if (scan.currentToken.tokenStr.toLowerCase().equals("if")) {
+                ifCount++;
+            	ifStmt(bExec);
                 bExec = false;
             } else if (scan.currentToken.tokenStr.toLowerCase().equals("while")) {
                 whileStmt();
-            } else if (scan.currentToken.subClassif == 1) {
-                if (st.getSymbol(scan.currentToken.tokenStr) == null) {
-                    throw new ParserException(scan.currentToken.iSourceLineNr,
-                        "Symbol "+scan.currentToken.tokenStr+
-                        "is not in Symbol Table.", scan.sourceFileNm, "");
-                }
             }
             if (bExec == true)
             	scan.getNext();
-
+            if (scan.nextToken.tokenStr.isEmpty())
+            	bExec = false;
             // if we found an 'else' or 'endif' we know weve hit the end of the statement block
             // so set bExec to false to exit the function
-            if (scan.nextToken.tokenStr.equals("else") || scan.nextToken.tokenStr.equals("endif")) {
+            /*if (scan.nextToken.tokenStr.equals("else") || scan.nextToken.tokenStr.equals("endif")) {
             	bExec = false;
-            }
+            }*/
             else if (scan.currentToken.tokenStr.equals("endwhile")) {
             	bExec = false;
             }
@@ -174,11 +197,16 @@ public class Parser {
 	}
 
     public void assign(Token curSymbol) throws Exception {
+        Boolean show = debugger.assign;
+        Boolean expr = debugger.expr;
+        String value = "";
+
         int ltype = st.getSymbol(curSymbol.tokenStr).type;  // get type of left op
         scan.getNext(); // get equals sign
         if (!scan.currentToken.tokenStr.equals("=")) {
             throw new ParserException(scan.currentToken.iSourceLineNr,
-                    "syntax error: ", scan.sourceFileNm, scan.lines[scan.line-1]);        }
+                    "syntax error: ", scan.sourceFileNm, scan.lines[scan.line-1]);
+        }
         scan.getNext(); // get val (right op)
         Token rToken = scan.currentToken;
         // check if rToken is an identifier or something else
@@ -189,28 +217,67 @@ public class Parser {
                 if (ltype != rtype) {
                     if ((ltype == Token.INTEGER && rtype == Token.FLOAT) || (ltype == Token.FLOAT && rtype == Token.INTEGER)) {
                         if (ltype == Token.INTEGER) {
-                            String val = st.getSymbol(rToken.tokenStr).value;
+                            String val = st.getSymbol(rToken.tokenStr).value; // get the float val from rside
                             int index = val.indexOf(".");
                             val = val.substring(0, index);
                             st.getSymbol(curSymbol.tokenStr).value = val;
-                        } else {
-                            st.getSymbol(curSymbol.tokenStr).value = st.getSymbol(rToken.tokenStr).value;
+                            int assignType = getLiteralType(val);
+                            st.setDataType((STIdentifier)st.getSymbol(curSymbol.tokenStr), assignType);
+                            if (show) {
+                                System.out.println("****** ASSIGN ***** : "+curSymbol.tokenStr+" = "+val);
+                            }
+                        } else { // left type is a float and right type is an integer
+                            String val = st.getSymbol(rToken.tokenStr).value;   // get the int val from rside , must cast to a float 2 -> 2.0
+                            val += ".00";
+                            st.getSymbol(curSymbol.tokenStr).value = val;
+                            int assignType = getLiteralType(val);
+                            st.setDataType((STIdentifier)st.getSymbol(curSymbol.tokenStr), assignType);
+                            if (show) {
+                                System.out.println("****** ASSIGN ****** : "+curSymbol.tokenStr+" = "+val);
+                            }
                         }
+
                     } else {
                         throw new ParserException(scan.currentToken.iSourceLineNr,
                             "Incompatible type.", scan.sourceFileNm, scan.lines[scan.line-1]);
                     }
+
                 } else {
                     // set make left idents value equal to right idents value
-                    st.getSymbol(curSymbol.tokenStr).value = st.getSymbol(rToken.tokenStr).value;
+                    String val = st.getSymbol(rToken.tokenStr).value;
+                    st.getSymbol(curSymbol.tokenStr).value = val;
+                    int assignType = getLiteralType(val);
+                    st.setDataType((STIdentifier)st.getSymbol(curSymbol.tokenStr), assignType);
+                    if (show) {
+                        System.out.println("***** ASSIGN ***** : "+curSymbol.tokenStr+" = "+val);
+                    }
                 }
             } else {  // next token not a ';'  possible valid expression
-            	ResultValue resExpr = expr();
-            	int assignType = getLiteralType(resExpr.value);
-            	//st.getSymbol(curSymbol.tokenStr).value = resExpr.value;
+                ResultValue resExpr = expr(false);
+                int assignType = getLiteralType(resExpr.value);
+                if (ltype != assignType) {
+                    if ((ltype == Token.INTEGER && assignType == Token.FLOAT)
+                        || (ltype == Token.FLOAT && assignType == Token.INTEGER)) {
+
+                        if (ltype == Token.INTEGER) {
+                            value = resExpr.value;
+                            int index = value.indexOf(".");
+                            value = value.substring(index);
+                        } else {  // left side is Float
+                            value = resExpr.value;
+                            value += ".00";
+                        }
+                    }
+                } else {  // they are the same type
+                    value = resExpr.value;
+                }
             	STIdentifier ident = (STIdentifier)st.getSymbol(curSymbol.tokenStr);
-            	ident.value = resExpr.value;
-            	ident.dataType = assignType;
+                ident.value = value;
+                String val2 = ident.value;
+            	ident.dataType = ltype;
+                if (expr) {
+                    System.out.println("***** EXPRESSION ***** : "+curSymbol.tokenStr+" = "+val2);
+                }
             }
         } else { // rToken is not an identifier
             if (scan.nextToken.tokenStr.equals(";")) {
@@ -220,8 +287,12 @@ public class Parser {
                             int index = rToken.tokenStr.indexOf(".");
                             rToken.tokenStr = rToken.tokenStr.substring(0, index);
                         }
-                        st.getSymbol(curSymbol.tokenStr).value = rToken.tokenStr;
+                        st.getSymbol(curSymbol.tokenStr).value = rToken.tokenStr + ".00";
+                        String val = st.getSymbol(curSymbol.tokenStr).value;
                         st.setDataType((STIdentifier)st.getSymbol(curSymbol.tokenStr), ltype);
+                        if (show) {
+                            System.out.println("***** ASSIGN ***** : "+curSymbol.tokenStr+" = "+val);
+                        }
                     } else {
                         throw new ParserException(scan.currentToken.iSourceLineNr,
                             "Incompatible type.", scan.sourceFileNm, scan.lines[scan.line-1]);
@@ -229,9 +300,21 @@ public class Parser {
                 } else {
                     st.getSymbol(curSymbol.tokenStr).value = rToken.tokenStr;
                     st.setDataType((STIdentifier)st.getSymbol(curSymbol.tokenStr), ltype);
+                    String val = st.getSymbol(curSymbol.tokenStr).value = rToken.tokenStr;
+                    if (show) {
+                        System.out.println("***** ASSIGN ***** : "+curSymbol.tokenStr+" = "+val);
+                    }
                 }
             } else {  // next token not a ';', possible expression
-                ResultValue resExpr = expr();
+                ResultValue resExpr = expr(false);
+                int assignType = getLiteralType(resExpr.value);
+                STIdentifier ident = (STIdentifier)st.getSymbol(curSymbol.tokenStr);
+                ident.value = resExpr.value;
+                String val = ident.value;
+                ident.dataType = assignType;
+                if (expr) {
+                    System.out.println("***** EXPRESSION ***** : "+curSymbol.tokenStr+" = "+val);
+                }
             }
         }
 
@@ -258,25 +341,63 @@ public class Parser {
                 scan.getNext();
                 scan.getNext();
 
+                while (ifCount != endifCount) 
+                {
+                	statements(bExec);
+                	if (scan.currentToken.tokenStr.equals("endif")) 
+                	{
+                		ifCount--;
+                		scan.getNext();
+                		scan.getNext();
+                	}
+                	if (scan.currentToken.tokenStr.equals("else"))
+                	{
+                		bExec = false;
+                		scan.getNext();
+                		while (bExec == false)
+                		{
+                			statements(bExec);
+                			if (scan.currentToken.tokenStr.equals("endif"))
+                			{
+                				ifCount--;
+                				scan.getNext();
+                			}
+                			if (ifCount == endifCount)
+                			{
+                				bExec = true;
+                			}
+                			else if (scan.currentToken.tokenStr.equals("else"))
+                			{
+                				scan.getNext();
+                			}
+                		}
+                	}
+                }
+                /*
                 statements(true); // you need to keep evaluating until you hit an 'else' or 'endif'
                 // has an else so ignore these statements
                 statements(false);
+                */
                 // at this point we already executed the true if block before
-                // the 'else' block, so we need to skip over all statements 
+                // the 'else' block, so we need to skip over all statements
                 // until we are at the end of the entire if block if we are not
                 // already there.
-                if (! scan.currentToken.tokenStr.equals("endif"))
+                /*if (! scan.currentToken.tokenStr.equals("endif"))
                 {
-                	skipTo("endif", ";");
-                }
+                    skipTo("endif", ";");
+                }*/
             }
             else
             {
-            	scan.getNext();
+                scan.getNext();
                 // Cond returned False, ignore true part
                 statements(false);
 
                 // check for 'else'
+                if (scan.currentToken.tokenStr.equals("else"))
+                {
+                	scan.getNext();
+                }
                 statements(true);
                 skipTo("endif", ";");
                 //skipTo("else", ":");
@@ -285,8 +406,8 @@ public class Parser {
 
         }
         else
-        {
-        	skipTo("endif", ";");
+        { // bExec is false
+            skipTo("endif", ";");
             /* well come back to this
             // we are ignoring execution
             // we want to ignore the conditional, true part, and false part
@@ -318,9 +439,8 @@ public class Parser {
     }
 
     public void whileStmt() throws Exception  {
-    	// store the number of loops inside this one
-    	
-    	String[] whileMatches = scan.buffer.split("(\\s*while\\s+)+");
+        // store the number of loops inside this one
+        String[] whileMatches = scan.buffer.split("(\\s*while\\s+)+");
 
         // make the first pass over the loop to store it in a while buffer
         // right now were assuming theres no nested loops
@@ -329,11 +449,11 @@ public class Parser {
         if (i == -1) {
             throw new ParserException(scan.currentToken.iSourceLineNr,
                     "No terminating 'endwhile' token for while loop", scan.sourceFileNm, "");
-        } 
-        
+        }
+
         String whileBuffer = getWhileBuffer();
-        //String whileBuffer = scan.nextToken.tokenStr + 
-        //		scan.buffer.substring(0, (i + "endwhile".length() + 1));
+        //String whileBuffer = scan.nextToken.tokenStr +
+        //        scan.buffer.substring(0, (i + "endwhile".length() + 1));
 
         // check for error
         /*if (whileBuffer.charAt(whileBuffer.length()-1) != ';') {
@@ -342,72 +462,77 @@ public class Parser {
         }*/
         ResultValue resCond = evalCond();
         String remBuffer = scan.buffer;
-    	int lastEndIndex = scan.buffer.indexOf("endwhile") + 
-    			"endwhile".length() + 1;
-    	//scan.buffer = scan.buffer.substring(lastEndIndex);
+        int lastEndIndex = scan.buffer.indexOf("endwhile") +
+                "endwhile".length() + 1;
+        //scan.buffer = scan.buffer.substring(lastEndIndex);
         while (resCond.value.equals("true")) {
-        	while (! scan.currentToken.tokenStr.equals("endwhile")) {
-        		statements(true);
-        	}        	
+            while (! scan.currentToken.tokenStr.equals("endwhile")) {
+                statements(true);
+            }
 
-        	scan.buffer = whileBuffer + scan.buffer;
-        	scan.getNext();
-        	//if (scan.currentToken instanceof STControl) {
-        		scan.getNext();
-        	//}
-        	resCond = evalCond();
+            scan.buffer = whileBuffer + scan.buffer;
+            scan.getNext();
+            //if (scan.currentToken instanceof STControl) {
+                scan.getNext();
+            //}
+            resCond = evalCond();
         }
         // reset the buffer to where it should be after the 'endwhile'
-    	int endCount = 0;
-    	int chopOff = whileBuffer.indexOf(":") + 1;
-    	whileBuffer = whileBuffer.substring(chopOff);
-    	while (endCount != whileMatches.length) {
-    		i = scan.buffer.indexOf("endwhile");
-    		if (i != -1) {
-    			endCount++;
-    			i += "endwhile".length();
-    		}
-    	}
-		//scan.buffer = scan.buffer.substring(i + "endwhile".length() + 1);
-		//scan.buffer = scan.buffer.substring(i);
-		scan.buffer = scan.buffer.substring(whileBuffer.length()-1);
+        int endCount = 0;
+        int chopOff = whileBuffer.indexOf(":") + 1;
+        whileBuffer = whileBuffer.substring(chopOff);
+        while (endCount != whileMatches.length) {
+            i = scan.buffer.indexOf("endwhile");
+            if (i != -1) {
+                endCount++;
+                i += "endwhile".length();
+            }
+        }
+        //scan.buffer = scan.buffer.substring(i + "endwhile".length() + 1);
+        //scan.buffer = scan.buffer.substring(i);
+        scan.buffer = scan.buffer.substring(whileBuffer.length()-1);
     }
 
 
     public String getWhileBuffer () {
-    	// get the number of while loops both nested and parent
-    	String[] whileMatches = scan.buffer.split("(\\s*while\\s+)+");
-    	int index = scan.buffer.indexOf("endwhile"); // first occurrence
-    	index += "endwhile".length(); // move cursor over
-    	int endCount = 0;
-    	if (index != -1)
-        	endCount = 1;
+        // get the number of while loops both nested and parent
+        String[] whileMatches = scan.buffer.split("(\\s*while\\s+)+");
+        int index = scan.buffer.indexOf("endwhile"); // first occurrence
+        index += "endwhile".length(); // move cursor over
+        int endCount = 0;
+        if (index != -1)
+            endCount = 1;
 
-		int finalIndex = index; 
-		String temp = scan.buffer.substring(finalIndex); // placeholder
-    	while (index != -1 && endCount != whileMatches.length) {
-    		index = scan.buffer.indexOf("endwhile", finalIndex);
-    		if (index != -1) {
-    			index += "endwhile".length();
-    			finalIndex = index;
-    			endCount++;
+        int finalIndex = index;
+        String temp = scan.buffer.substring(finalIndex); // placeholder
+        while (index != -1 && endCount != whileMatches.length) {
+            index = scan.buffer.indexOf("endwhile", finalIndex);
+            if (index != -1) {
+                index += "endwhile".length();
+                finalIndex = index;
+                endCount++;
 
 
-    		}
-    	}
-    	String buffer = scan.currentToken.tokenStr + " " +
-    			scan.nextToken.tokenStr + 
-    			scan.buffer.substring(0, (finalIndex + 1));
-    	return buffer;
-	}
-    
+            }
+        }
+        String buffer = scan.currentToken.tokenStr + " " +
+                scan.nextToken.tokenStr +
+                scan.buffer.substring(0, (finalIndex + 1));
+        return buffer;
+    }
+
     // skipTo(...) will skip tokens until your currentToken.tokenStr = stmt
     // so when the function exits, currentToken.tokenStr = stmt
     public void skipTo(String stmt, String terminatingStr) throws Exception
     {
-        while (!scan.currentToken.tokenStr.equals(stmt))
+        while (! scan.currentToken.tokenStr.equals(stmt) && 
+        		! scan.currentToken.tokenStr.equals("else"))
         {
-        	scan.getNext();
+            scan.getNext();
+            if (scan.currentToken.tokenStr.equals("if"))
+            {
+            	ifCount++;
+            }
         }
     }
 
@@ -429,6 +554,7 @@ public class Parser {
         String leftVal;
         if (leftIdent != null)
         {
+
             leftVal = leftIdent.value;
             leftOpType = leftIdent.dataType;
 
@@ -506,7 +632,7 @@ public class Parser {
             case 2:
             	// if the right is an integer and the right is a float
             	// the truncate the decimal portion
-            	if (leftOpType != rightOpType) 
+            	if (leftOpType != rightOpType)
             	{
             		rightVal = rightVal.substring(0, rightVal.indexOf('.'));
             	}
@@ -526,7 +652,7 @@ public class Parser {
             case 3:
             	// if the left is a float and the right is an integer
             	// add a .0 to the end of the integer
-            	if (leftOpType != rightOpType) 
+            	if (leftOpType != rightOpType)
             	{
             		rightVal = rightVal + ".0";
             	}
@@ -820,7 +946,7 @@ public class Parser {
 
     // assumes that this is called when currentToken = to the first operand
     // stops at the next token after the expression
-    public ResultValue expr() throws Exception {
+    public ResultValue expr(boolean funcCall) throws Exception {
     	Stack<Token> mainStack = new Stack<Token>();
     	ArrayList<Token> postAList = new ArrayList<Token>();
     	Token tok = new Token();
@@ -867,10 +993,18 @@ public class Parser {
     							}
     							postAList.add(popped);
     						}
-    						if (!bFound) {
+    						if (!bFound && funcCall) {   // no matching left paren but a func has been called ie print()
     							// TODO: call errors for missing "("
     							// TODO: add function implementations here
-    						}
+                                while (! mainStack.isEmpty()) {
+                                    popped = mainStack.pop();
+                                    if (popped.tokenStr.equals("("))
+                                        error("Missing ')' separator");
+
+                                    postAList.add(popped);
+                                }
+                                return evaluateExpr(postAList);
+    					    }
     						break;
     					default:
     						error("Invalid separator in expression");
@@ -882,37 +1016,36 @@ public class Parser {
     		}
     		scan.getNext();
     		tok = scan.currentToken;
-    	}
+    	} // end while loop
     	while (! mainStack.isEmpty()) {
     		popped = mainStack.pop();
     		if (popped.tokenStr.equals("("))
     			error("Missing ')' separator");
-    		
+
     		postAList.add(popped);
     	}
-    	
         return evaluateExpr(postAList);
     }
-    
+
     // TODO: Edit error messages so they're more useful to end users.
     // TODO: create a new error method that can deal with the currentToken (Not where the Scanner is at)
     public ResultValue evaluateExpr(ArrayList list) throws ParserException {
     	Stack<Token> stk = new Stack<Token>(); // a stack that will be used to do the math
-    	
+
     	Token currToken = new Token(); // Iterative token for the passed ArrayList
     	Token extraToken1 = new Token(); // Extra token used to add values to the expression stack
     	Token extraToken2 = new Token(); // Extra token used to check for leftover/single stack items
     	Token tokOp1 = new Token(); // contains the left operand
     	Token tokOp2 = new Token(); // contains the right operand
-    	
+
     	Numeric nOp1; // contains the left operand in Numeric form
     	Numeric nOp2; // contains the right operand in Numeric form
-    	
+
     	ResultValue resOp1; // contains the left operand in ResultValue form
     	ResultValue resOp2; // contains the right operand in ResultValue form
     	ResultValue resMain = new ResultValue(""); // the main returned resultValue
     	ResultValue resTemp = new ResultValue(""); // the temp resultValue used for holding calculated expressions
-    	
+
     	// Because we're doing postfix, we need to read through the expression
     	// left to right (stacks don't have that functionality so using an ArrayList
     	// is the best solution
@@ -927,7 +1060,7 @@ public class Parser {
 	    			// since we have an operator we need to evaluate the top two operands
 	    			// and because we are using a stack, the righthand operand
 	    			// appears before the lefthand operand on a stack
-	    			
+
 	    			if (currToken.tokenStr.equals("u-")) { // unary minus is handled differently
 	    				try {
 		    				tokOp2 = (Token) stk.pop(); // grab the right operand (the only operand)
@@ -943,16 +1076,16 @@ public class Parser {
 	    					resOp2.type = tokOp2.subClassif;
 	    				}
 	    				resOp2.structure.add(Token.strSubClassifM[tokOp2.subClassif]);
-	    				
+
 	    				nOp2 = new Numeric(this, resOp2, currToken.tokenStr, "2nd Operand"); // must be a number
 	    				resTemp = Utility.negative(this, nOp2);
-	    				
+
 	    				extraToken1 = tokOp2; // get the most accurate values for the line and column # as possible
 		    			extraToken1.tokenStr = resTemp.value;
 		    			extraToken1.primClassif = Token.OPERAND;
 		    			extraToken1.subClassif = resTemp.type;
 		    			stk.push(extraToken1);
-		    			
+
 		    			resMain.structure.add(currToken.tokenStr);
 		    			for (int j = 0; j < resOp2.structure.size(); j++) {
 		    				resMain.structure.add(resOp2.structure.get(j));
@@ -968,9 +1101,9 @@ public class Parser {
 		    			} catch (EmptyStackException b) {
 		    				error("Missing left expression operand.");
 		    			}
-		    			
+
 		    			// set the ResultValue objects of the operands
-		    			
+
 		    			// check if its a variable if so, we need its real value and dataType
 		    			if (tokOp1.subClassif == Token.IDENTIFIER) {
 		    				STEntry stEnt1 = st.getSymbol(tokOp1.tokenStr);
@@ -982,7 +1115,7 @@ public class Parser {
 		    			}
 		    			// we however will keep it as an identifier in our structure
 		    			resOp1.structure.add(Token.strSubClassifM[tokOp1.subClassif]);
-		    			
+
 		    			// do the same for the second possible variable
 		    			if (tokOp2.subClassif == Token.IDENTIFIER) {
 		    				STEntry stEnt2 = st.getSymbol(tokOp2.tokenStr);
@@ -993,7 +1126,7 @@ public class Parser {
 			    			resOp2.type = tokOp2.subClassif;
 		    			}
 		    			resOp2.structure.add(Token.strSubClassifM[tokOp2.subClassif]);
-		    			
+
 		    			// Numerical operands have different operators and need to have
 		    			// new Numeric variables associated with them as well.
 		    			// thus a fork in the code is made and a path is chosen based off of
@@ -1003,7 +1136,7 @@ public class Parser {
 		    				// set the Numeric values of the operands
 			    			nOp1 = new Numeric(this, resOp1, currToken.tokenStr, "1st Operand");
 			    			nOp2 = new Numeric(this, resOp2, currToken.tokenStr, "2nd Operand");
-			    			
+
 			    			// these operators only work on Numeric types
 			    			switch (currToken.tokenStr) {
 				    			case "+":
@@ -1086,18 +1219,18 @@ public class Parser {
 								default:
 									//error("Invalid operator in expression.");
 						            throw new ParserException(scan.currentToken.iSourceLineNr,
-						                    "Invalid operator in expression " + currToken.tokenStr, 
+						                    "Invalid operator in expression " + currToken.tokenStr,
 						                    scan.sourceFileNm, scan.lines[scan.line-1]);
 			    			} // end of inner Operator switch
 		    			} // end of else
-		    			
+
 		    			// add our new value to the stack
 		    			extraToken1 = tokOp1; // get the most accurate values for the line and column # as possible
 		    			extraToken1.tokenStr = resTemp.value;
 		    			extraToken1.primClassif = Token.OPERAND;
 		    			extraToken1.subClassif = resTemp.type;
 		    			stk.push(extraToken1);
-		    			
+
 		    			// building the main structure before returning
 		    			for (int j = 0; j < resOp1.structure.size(); j++) {
 		        			resMain.structure.add(resOp1.structure.get(j));
@@ -1111,18 +1244,18 @@ public class Parser {
 		    		default:
 		    			error("Invalid operand in expression.");
     		} // end of primClassif switch
-    		
+
     	} // end of ArrayList loop
-    	
+
     	// check if the stack is empty or if it has one item.
     	// if it has more than one item, there is a bad expression
     	// that has a missing operand or operator.
     	// if it has none then there was an error. (shouldn't happen normally)
-    	
+
     	if (! stk.isEmpty()) { // everything went as planned
     		if (stk.size() == 1) { // see if the stack only has one value
     			// is has only one value (which is the desired amount)
-    			
+
     			extraToken2 = stk.pop(); // get the last value
     			if (extraToken2.subClassif == Token.IDENTIFIER) { // test to see if it's just a variable
     				STEntry stExtra = st.getSymbol(extraToken2.tokenStr);
@@ -1141,7 +1274,7 @@ public class Parser {
     	} else {
     		error("Invalid expression"); // this error should have been caught by all the other checks
     	} // end of empty check
-    	
+
     	return resMain; // return your brand new value!
     }
 

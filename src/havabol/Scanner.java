@@ -8,6 +8,7 @@ public class Scanner {
     public String buffer;
     public Token currentToken;
     public Token nextToken;
+    public Debug debugger;
     public int col = 1;
     public int line = 1;
     public boolean exit;
@@ -27,8 +28,9 @@ public class Scanner {
     public static final String INVALID_OPERATOR = "INVALID_OPERATOR";
     public static final String INVALID_ESC = "ILLEGAL_ESCAPE_CHARACTER";
 
-    public Scanner(String SourceFileNm) throws IOException, Exception
+    public Scanner(String SourceFileNm, Debug debugger) throws IOException, Exception
     {
+        this.debugger = debugger;
     	this.sourceFileNm = SourceFileNm;
         // create our buffer to iterate thru
         this.buffer = new String(Files.readAllBytes(Paths.get(SourceFileNm)));
@@ -70,6 +72,18 @@ public class Scanner {
     public void process(String value) throws Exception
     {
         //System.out.println(this.nextToken.tokenStr);
+
+       // check for unary minus
+        if (this.currentToken != null) {
+            String curVal = this.currentToken.tokenStr;
+            if ( ( (operators.indexOf(curVal.charAt(0)) != -1) || curVal.equals("if") ||
+                curVal.equals("while") || curVal.equals(",") || curVal.equals("(")) && value.equals("-") ) {
+                this.nextToken.primClassif = Token.OPERATOR;
+                this.nextToken.subClassif = Token.VOID;
+                this.nextToken.tokenStr = "u-";
+                return;
+            }
+        }
         // first val of token a quote? then its a string
         if (value.charAt(0) == '"' || value.charAt(0) == '\'')
         {
@@ -410,7 +424,12 @@ public class Scanner {
         // start running thru rest of buffer
         for (i = 0; i < this.buffer.length(); i++)
         {
+            // take care of carraige returns
             char c = this.buffer.charAt(i);
+            if (c == '\r') {
+                this.buffer = this.buffer.substring(1);
+                return "";
+            }
             retVal += c;
 
             // if char is a delimiter
@@ -497,11 +516,15 @@ public class Scanner {
         return retVal;
     }
 
-    private void setToken(String value) throws Exception
+    public void setToken(String value) throws Exception
     {
         this.nextToken = new Token(value);
         this.nextToken.iSourceLineNr = this.line;
         this.nextToken.iColPos = this.col;
+        if (this.currentToken != null && debugger.token) {
+            System.out.print("***** TOKEN ***** : ");
+            this.currentToken.printToken();
+        }
         this.process(value);
     }
 }
