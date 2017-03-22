@@ -54,38 +54,35 @@ public class Parser {
 
         while (bExec == true) {
             if (scan.currentToken.tokenStr.toLowerCase().equals("print")) {
-                ArrayList<Token> arglist = new ArrayList<Token>();
+                ArrayList<String> arglist = new ArrayList<String>();
                 if (scan.nextToken.tokenStr.equals("(")) {
                     scan.getNext();  // on '('
                     String tok = scan.getNext();
                     while (!scan.currentToken.tokenStr.equals(")")) {
                         if (scan.nextToken.tokenStr.equals(",")) {
-                            arglist.add(scan.currentToken);
+                            if (scan.currentToken.subClassif == Token.STRING) { // one variable
+                                arglist.add(scan.currentToken.tokenStr);
+                            } else {
+                                ResultValue res = expr();
+                                arglist.add(res.value);
+                            }
+
                         } else if (scan.nextToken.tokenStr.equals(")")){
-                            arglist.add(scan.currentToken);
+                            arglist.add(scan.currentToken.tokenStr);
                         } else if (scan.currentToken.tokenStr.equals(",") && arglist.isEmpty()) {
                             throw new ParserException(
                                 scan.currentToken.iSourceLineNr,
                                 "Did not expect a comma. ", scan.sourceFileNm,"");
-                        } else {
-                            ;
+                        } else {  //  handle expr logic
+                            ResultValue res = expr();
+                            arglist.add(res.value);
                         }
                         scan.getNext();
                     }
                     if (scan.nextToken.tokenStr.equals(";")) {
                         for (int i=0; i < arglist.size(); i++) {
-                            Token token = arglist.get(i);
-                            STIdentifier arg = (STIdentifier)st.getSymbol(token.tokenStr);
-                            if (arg == null) {  // NOT in symbol table, possible string literal or possible ident not in table!
-                                if (token.subClassif == Token.STRING) {
-                                    System.out.print(token.tokenStr);
-                                } else {
-                                    System.err.println("Identifier not in symbol table!");
-                                    throw new Exception();
-                                }
-                            } else {
-                                System.out.print(arg.value);
-                            }
+                            String str = arglist.get(i);
+                            System.out.print(str);
                         }
                         System.out.println();
                     } else {

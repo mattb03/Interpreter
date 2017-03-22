@@ -1,13 +1,15 @@
 
-
 debug Token on;
-debug Assign on;
-debug Expr on;
+//debug Assign on;
+//debug Expr on;
 
 Int a = 5;
+
+print("-a = ", -a);
+
 Float b = 2.0;
 Int c = a + 10;
-
+print("ans = ", a + b);
 debug Token off;
 
 print("a = ",a, "\a");  // this should print out 'a = 5' because of automatic cast to Int
