@@ -16,6 +16,8 @@ public class Parser {
     // this map is for identifying if 2 operands are compatible datatypes
     public Map<Integer, Integer> validDataTypes;
     public Pattern p;
+    public int ifCount = 0;
+    public int endifCount = 0;
 
     public Parser(String SourceFileNm, SymbolTable st) {
         debugger = new Debug(scan);
@@ -37,19 +39,7 @@ public class Parser {
         Boolean expr = debugger.expr;
         if (bExec == false) {
 
-        	if (scan.nextToken.tokenStr.equals("else")) {
-        		skipTo("endif", ";");
-        	}
-        	else {
-        		// if nextToken is not an 'else' then its an 'endif'
-        		// so call getNext() once to skip over it.
-        		if (scan.nextToken.tokenStr.equals("endif")) {
-        			scan.getNext();
-        		}
-        		else {
-        			skipTo("else", ":");
-        		}
-        	}
+        	skipTo("endif", ";");
         }
 
         while (bExec == true) {
@@ -170,20 +160,28 @@ public class Parser {
                 if (scan.nextToken.tokenStr.equals("=")) {
                     assign(scan.currentToken);
                 }
-            } else if (scan.currentToken.tokenStr.toLowerCase().equals("if")) {
-                ifStmt(bExec);
+            } else if (scan.currentToken.tokenStr.equals("endif")) {
+            	bExec = false;
+            } 
+            else if (scan.currentToken.tokenStr.equals("else")) {
+            	bExec = false;
+            }
+            else if (scan.currentToken.tokenStr.toLowerCase().equals("if")) {
+                ifCount++;
+            	ifStmt(bExec);
                 bExec = false;
             } else if (scan.currentToken.tokenStr.toLowerCase().equals("while")) {
                 whileStmt();
             }
             if (bExec == true)
             	scan.getNext();
-
+            if (scan.nextToken.tokenStr.isEmpty())
+            	bExec = false;
             // if we found an 'else' or 'endif' we know weve hit the end of the statement block
             // so set bExec to false to exit the function
-            if (scan.nextToken.tokenStr.equals("else") || scan.nextToken.tokenStr.equals("endif")) {
+            /*if (scan.nextToken.tokenStr.equals("else") || scan.nextToken.tokenStr.equals("endif")) {
             	bExec = false;
-            }
+            }*/
             else if (scan.currentToken.tokenStr.equals("endwhile")) {
             	bExec = false;
             }
@@ -343,17 +341,51 @@ public class Parser {
                 scan.getNext();
                 scan.getNext();
 
+                while (ifCount != endifCount) 
+                {
+                	statements(bExec);
+                	if (scan.currentToken.tokenStr.equals("endif")) 
+                	{
+                		ifCount--;
+                		scan.getNext();
+                		scan.getNext();
+                	}
+                	if (scan.currentToken.tokenStr.equals("else"))
+                	{
+                		bExec = false;
+                		scan.getNext();
+                		while (bExec == false)
+                		{
+                			statements(bExec);
+                			if (scan.currentToken.tokenStr.equals("endif"))
+                			{
+                				ifCount--;
+                				scan.getNext();
+                			}
+                			if (ifCount == endifCount)
+                			{
+                				bExec = true;
+                			}
+                			else if (scan.currentToken.tokenStr.equals("else"))
+                			{
+                				scan.getNext();
+                			}
+                		}
+                	}
+                }
+                /*
                 statements(true); // you need to keep evaluating until you hit an 'else' or 'endif'
                 // has an else so ignore these statements
                 statements(false);
+                */
                 // at this point we already executed the true if block before
                 // the 'else' block, so we need to skip over all statements
                 // until we are at the end of the entire if block if we are not
                 // already there.
-                if (! scan.currentToken.tokenStr.equals("endif"))
+                /*if (! scan.currentToken.tokenStr.equals("endif"))
                 {
                     skipTo("endif", ";");
-                }
+                }*/
             }
             else
             {
@@ -362,6 +394,10 @@ public class Parser {
                 statements(false);
 
                 // check for 'else'
+                if (scan.currentToken.tokenStr.equals("else"))
+                {
+                	scan.getNext();
+                }
                 statements(true);
                 skipTo("endif", ";");
                 //skipTo("else", ":");
@@ -370,7 +406,7 @@ public class Parser {
 
         }
         else
-        {
+        { // bExec is false
             skipTo("endif", ";");
             /* well come back to this
             // we are ignoring execution
@@ -489,9 +525,14 @@ public class Parser {
     // so when the function exits, currentToken.tokenStr = stmt
     public void skipTo(String stmt, String terminatingStr) throws Exception
     {
-        while (!scan.currentToken.tokenStr.equals(stmt))
+        while (! scan.currentToken.tokenStr.equals(stmt) && 
+        		! scan.currentToken.tokenStr.equals("else"))
         {
             scan.getNext();
+            if (scan.currentToken.tokenStr.equals("if"))
+            {
+            	ifCount++;
+            }
         }
     }
 
