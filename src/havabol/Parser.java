@@ -412,64 +412,54 @@ public class Parser {
 
 
     public void whileStmt() throws Exception  {
-        // store the number of loops inside this one
-        String[] whileMatches = scan.buffer.split("(?=.*?)[^end]while(?!.*?[^\"'])");
 
-        // make the first pass over the loop to store it in a while buffer
-        // right now were assuming theres no nested loops
-        int i = scan.buffer.indexOf("endwhile");
-        // if we didnt find an 'endwhile' symbol throw error
-        if (i == -1) {
-            throw new ParserException(scan.currentToken.iSourceLineNr,
-                    "No terminating 'endwhile' token for while loop", scan.sourceFileNm, "");
-        }
-
-        String whileBuffer = getWhileBuffer();
-        //String whileBuffer = scan.nextToken.tokenStr +
-        //        scan.buffer.substring(0, (i + "endwhile".length() + 1));
-
-        // check for error
-        /*if (whileBuffer.charAt(whileBuffer.length()-1) != ';') {
-            throw new ParserException(scan.currentToken.iSourceLineNr,
-                    "No semicolon ';' to terminate 'endwhile'", scan.sourceFileNm, "");
-        }*/
+        String whileBuffer = scan.buffer;
+        whileBuffer = scan.currentToken.tokenStr + ' ' + scan.nextToken.tokenStr + ' ' + whileBuffer;
+       
         scan.getNext();
         ResultValue resCond = expr(false);
-        String remBuffer = scan.buffer;
-        int lastEndIndex = scan.buffer.indexOf("endwhile") +
-                "endwhile".length() + 1;
-        //scan.buffer = scan.buffer.substring(lastEndIndex);
-        while (resCond.value.equals("true")) {
-            while (! scan.currentToken.tokenStr.equals("endwhile")) {
-            	if (scan.currentToken.primClassif == Token.EOF) {
-            		return;
+        
+        if (resCond.value.equals("true")) {
+        	while (resCond.value.equals("true")) {
+	        	statements(true,true);
+	        	if (! scan.currentToken.tokenStr.equals("endwhile")) {
+	        		error("While not terminated by endwhile.\n");
+	        	}
+	        	scan.buffer = whileBuffer;
+	        	scan.getNext(); // consume endwhile
+	        	scan.getNext(); // consume separator
+	        	// TODO: error check for bad separator
+	        	scan.getNext(); // consume while
+	        	resCond = expr(false);
+        	}
+        	if (resCond.value.equals("false")) {
+        		Stack<Token> stk = new Stack<Token>();
+            	while (true) {
+            		if (scan.currentToken.tokenStr.equals("while")) {
+            			stk.push(scan.currentToken);
+            		} else if (stk.isEmpty() && scan.currentToken.tokenStr.equals("endwhile")) {
+            			scan.getNext(); // consume endwhile
+            			return;
+            		} else if (! stk.isEmpty() && scan.currentToken.tokenStr.equals("endwhile")) {
+            			stk.pop();
+            		}
+            		scan.getNext();
             	}
-                statements(true,true);
-            }
-
-            scan.buffer = whileBuffer + scan.buffer;
-            scan.getNext();
-            //if (scan.currentToken instanceof STControl) {
-                scan.getNext();
-            //}
-            scan.getNext();
-            resCond = expr(false);
+        	}
+        } else {
+        	Stack<Token> stk = new Stack<Token>();
+        	while (true) {
+        		if (scan.currentToken.tokenStr.equals("while")) {
+        			stk.push(scan.currentToken);
+        		} else if (stk.isEmpty() && scan.currentToken.tokenStr.equals("endwhile")) {
+        			scan.getNext(); // consume endwhile
+        			return;
+        		} else if (! stk.isEmpty() && scan.currentToken.tokenStr.equals("endwhile")) {
+        			stk.pop();
+        		}
+        		scan.getNext();
+        	}
         }
-        // reset the buffer to where it should be after the 'endwhile'
-        int endCount = 0;
-        // int chopOff = whileBuffer.indexOf(":") + 1 + 
-        int chopOff = whileBuffer.indexOf(scan.nextToken.tokenStr, whileBuffer.indexOf(":"));
-        whileBuffer = whileBuffer.substring(chopOff);
-        while (endCount != whileMatches.length) {
-            i = scan.buffer.indexOf("endwhile");
-            if (i != -1) {
-                endCount++;
-                i += "endwhile".length();
-            }
-        }
-        //scan.buffer = scan.buffer.substring(i + "endwhile".length() + 1);
-        //scan.buffer = scan.buffer.substring(i);
-        scan.buffer = scan.buffer.substring(whileBuffer.length()-scan.nextToken.tokenStr.length());
     }
 
 
