@@ -33,7 +33,7 @@ public class HavaBol
             Parser parser = new Parser(args[0], st);
             while (! parser.scan.getNext().isEmpty())
             {
-                parser.statements(true);
+                parser.statements(true,true);
                 /*
                 try
                 {

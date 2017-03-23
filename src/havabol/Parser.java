@@ -35,14 +35,28 @@ public class Parser {
         p = Pattern.compile("[^0-9.]");
     }
 
-    public void statements(boolean bExec) throws Exception, ParserException {
+    public void statements(boolean bExec, boolean bCalled) throws Exception, ParserException {
         Boolean expr = debugger.expr;
-        if (bExec == false) {
-
-        	skipTo("endif", ";");
+        if (! bExec) {
+        	Stack<Token> stk = new Stack<Token>();
+        	while (true) {
+        		if (scan.currentToken.tokenStr.equals("if")) {
+        			stk.push(scan.currentToken);
+        		} else if (stk.isEmpty()) {
+        			if (scan.currentToken.tokenStr.equals("else")
+        					|| scan.currentToken.tokenStr.equals("endif")) {
+        				return;
+        			}
+        		} else if (! stk.isEmpty()) {
+        			if (scan.currentToken.tokenStr.equals("endif")) {
+        				stk.pop();
+        			}
+        		}
+        		scan.getNext();
+        	}
         }
 
-        while (bExec == true) {
+        while (bExec) {
             if (scan.currentToken.tokenStr.toLowerCase().equals("print")) {
                 ArrayList<String> arglist = new ArrayList<String>();
                 if (scan.nextToken.tokenStr.equals("(")) {
@@ -161,15 +175,25 @@ public class Parser {
                     assign(scan.currentToken);
                 }
             } else if (scan.currentToken.tokenStr.equals("endif")) {
-            	bExec = false;
+            	scan.getNext();
+            	if (! scan.currentToken.tokenStr.equals(";")) {
+            		error("endif is not correctly terminated.\n");
+            	}
+            	if (!bCalled) {
+            		error("Unmatched endif.\n");
+            	}
+            	return;
             } 
             else if (scan.currentToken.tokenStr.equals("else")) {
-            	bExec = false;
+            	if (!bCalled) {
+            		error("Unmatched else.\n");
+            	}
+            	return;
             }
             else if (scan.currentToken.tokenStr.toLowerCase().equals("if")) {
-                ifCount++;
-            	ifStmt(bExec);
-                bExec = false;
+            	scan.getNext(); // consume if
+            	ifStmt();
+                
             } else if (scan.currentToken.tokenStr.toLowerCase().equals("while")) {
                 whileStmt();
             }
@@ -320,147 +344,76 @@ public class Parser {
 
     }
 
-    public void ifStmt(boolean bExec) throws Exception {
-
-        Object resTrueStmts;
-        Object resFalseStmts;
-        // Do we need to evaluate the condition?
-        if (bExec == true)
-        {
-            // we are executing (not ignoring)
-            ResultValue resCond = evalCond(); //new ResultValue("true"); // you can test this condition in expr
-            // Did the condition return True?
-            if (resCond.value == "true")
-            {
-                // Cond returned True, execute statements
-                // skip from 'if' to the next token to avoid infinite loop
-                // TODO:
-                // left off here. once you get the statements() to execute properly, we need to:
-                // 1. skip over the rest of the statements until we hit an 'endif'
-                // 2. finish off the rest of this function
-                scan.getNext();
-                scan.getNext();
-
-                while (ifCount != endifCount) 
-                {
-                	statements(bExec);
-                	if (scan.currentToken.tokenStr.equals("endif")) 
-                	{
-                		ifCount--;
-                		scan.getNext();
-                		scan.getNext();
-                	}
-                	if (scan.currentToken.tokenStr.equals("else"))
-                	{
-                		bExec = false;
-                		scan.getNext();
-                		while (bExec == false)
-                		{
-                			statements(bExec);
-                			if (scan.currentToken.tokenStr.equals("endif"))
-                			{
-                				ifCount--;
-                				scan.getNext();
-                			}
-                			if (ifCount == endifCount)
-                			{
-                				bExec = true;
-                			}
-                			else if (scan.currentToken.tokenStr.equals("else"))
-                			{
-                				scan.getNext();
-                			}
-                		}
-                	}
-                }
-                /*
-                statements(true); // you need to keep evaluating until you hit an 'else' or 'endif'
-                // has an else so ignore these statements
-                statements(false);
-                */
-                // at this point we already executed the true if block before
-                // the 'else' block, so we need to skip over all statements
-                // until we are at the end of the entire if block if we are not
-                // already there.
-                /*if (! scan.currentToken.tokenStr.equals("endif"))
-                {
-                    skipTo("endif", ";");
-                }*/
-            }
-            else
-            {
-                scan.getNext();
-                // Cond returned False, ignore true part
-                ifCount--;
-                if (! scan.currentToken.tokenStr.equals("else"))
-                {
-                	bExec = false;
-                }
-                else { // the current token is an else
-                	bExec = true;
-                }
-                
-                while (bExec == false)
-                {
-                	skipTo("endif", ";");
-                	if (ifCount == endifCount)
-                	{
-                		bExec = true;
-                	}
-                	else if (scan.currentToken.tokenStr.equals("endif"))
-                	{
-                		ifCount--;
-                	}
-                    scan.getNext();
-                }
-                scan.getNext();
-                while (! scan.currentToken.tokenStr.equals("endif"))
-                {
-                	statements(true);
-                }
-                scan.getNext();
-                //skipTo("endif", ";");
-                //skipTo("else", ":");
-
-            }
-
-        }
-        else
-        { // bExec is false
-            skipTo("endif", ";");
-            /* well come back to this
-            // we are ignoring execution
-            // we want to ignore the conditional, true part, and false part
-            // Should we execute evalCond ?
-            skipTo("if", ":");
-            //resTrueStmts = statements(false); this line is needed, but you need to figure
-            // out the data type of resTrueStmts
-            if (resTrueStmts.terminatingStr == "else")
-            {
-                if (scan.getNext() != ":")
-                {
-                    errorWithCurrent("Expected ':' after 'else'");
-                }
-                resFalseStmts = statements();
-                if (resFalseStmts.terminatingStr != "endif")
-                {
-                    errorWithCurrent("Expected endif");
-                }
-            }
-            if (resTrueStmts.terminatingStr != "endif")
-            {
-                errorWithCurrent("Expected endif");
-            }
-            if (scan.getNext() != ";")
-            {
-                errorWithCurrent("Expected ';' after 'endif'");
-            }*/
-        }
+    // assumes currentToken is after an if.
+    // when returned to, the value is on an else, or endif
+    public void ifStmt() throws Exception {
+    	ResultValue resCond = expr(false);
+    	Token endingToken;
+    	if (! scan.currentToken.tokenStr.equals(":")) {
+    		error("Invalid terminating token on if.\n");
+    	}
+    	scan.getNext(); // consume separator
+    	if (resCond.value.equals("true")) {
+    		// the starting if is true execute the code
+    		statements(true, true);
+    		// back and the currentToken is after the endif; 
+    		// or on the else
+    		if (scan.currentToken.tokenStr.equals("else")) {
+            	scan.getNext(); // consume else
+            	if (! scan.currentToken.tokenStr.equals(":")) {
+            		error("Invalid separator for else: '"
+            				+ scan.currentToken.tokenStr +"'.\n");
+            	}
+            	scan.getNext(); // consume separator
+            	// run through the false statements
+            	statements(false, false);
+            	// back and the currentToken can be an else or endif
+            	if (scan.currentToken.tokenStr.equals("else")) {
+            		// an else is an error
+            		error("Unmatched nested else statement.\n");
+            	} else if (scan.currentToken.tokenStr.equals("endif")) {
+            		// this is the correct scenario
+            		scan.getNext(); // consume endif
+            		if (! scan.currentToken.tokenStr.equals(";")) {
+            			error("Invalid separator for endif: '" 
+            					+ scan.currentToken.tokenStr + "'.\n");
+            		}
+            		// there isn't anything else to execute
+            	} else {
+            		error("If statement not terminated by endif.\n");
+            	}
+    		}
+    		// else the previous token was an endif;
+    		// so there isn't anything else to execute
+    	} else {
+    		// the starting if is false
+    		statements(false, false);
+    		endingToken = scan.currentToken;
+    		scan.getNext(); // consume the else or endif
+    		if (! scan.currentToken.tokenStr.equals(":")
+    				&& endingToken.tokenStr.equals("else")) {
+    			error("Invalid separator for else: '"
+        				+ scan.currentToken.tokenStr +"'.\n");
+    		} else if (! scan.currentToken.tokenStr.equals(";")
+    				&& endingToken.tokenStr.equals("endif")) {
+    			error("Invalid separator for endif: '"
+        				+ scan.currentToken.tokenStr +"'.\n");
+    		}
+    		if (endingToken.tokenStr.equals("else")) {
+        		scan.getNext(); // consume the separator
+    			// there was an else execute those statements
+    			statements(true, true);
+    		}
+    		// else there was an endif
+    		// done nothing to execute
+    	}
+    	
     }
+
 
     public void whileStmt() throws Exception  {
         // store the number of loops inside this one
-        String[] whileMatches = scan.buffer.split("(\\s*while\\s+)+");
+        String[] whileMatches = scan.buffer.split("(?=.*?)[^end]while(?!.*?[^\"'])");
 
         // make the first pass over the loop to store it in a while buffer
         // right now were assuming theres no nested loops
@@ -480,14 +433,18 @@ public class Parser {
             throw new ParserException(scan.currentToken.iSourceLineNr,
                     "No semicolon ';' to terminate 'endwhile'", scan.sourceFileNm, "");
         }*/
-        ResultValue resCond = evalCond();
+        scan.getNext();
+        ResultValue resCond = expr(false);
         String remBuffer = scan.buffer;
         int lastEndIndex = scan.buffer.indexOf("endwhile") +
                 "endwhile".length() + 1;
         //scan.buffer = scan.buffer.substring(lastEndIndex);
         while (resCond.value.equals("true")) {
             while (! scan.currentToken.tokenStr.equals("endwhile")) {
-                statements(true);
+            	if (scan.currentToken.primClassif == Token.EOF) {
+            		return;
+            	}
+                statements(true,true);
             }
 
             scan.buffer = whileBuffer + scan.buffer;
@@ -495,11 +452,13 @@ public class Parser {
             //if (scan.currentToken instanceof STControl) {
                 scan.getNext();
             //}
-            resCond = evalCond();
+            scan.getNext();
+            resCond = expr(false);
         }
         // reset the buffer to where it should be after the 'endwhile'
         int endCount = 0;
-        int chopOff = whileBuffer.indexOf(":") + 1;
+        // int chopOff = whileBuffer.indexOf(":") + 1 + 
+        int chopOff = whileBuffer.indexOf(scan.nextToken.tokenStr, whileBuffer.indexOf(":"));
         whileBuffer = whileBuffer.substring(chopOff);
         while (endCount != whileMatches.length) {
             i = scan.buffer.indexOf("endwhile");
@@ -510,7 +469,7 @@ public class Parser {
         }
         //scan.buffer = scan.buffer.substring(i + "endwhile".length() + 1);
         //scan.buffer = scan.buffer.substring(i);
-        scan.buffer = scan.buffer.substring(whileBuffer.length()-1);
+        scan.buffer = scan.buffer.substring(whileBuffer.length()-scan.nextToken.tokenStr.length());
     }
 
 
