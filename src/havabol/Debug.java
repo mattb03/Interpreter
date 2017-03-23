@@ -1,40 +1,51 @@
 package havabol;
-
-
     public class Debug {
     public static boolean assign;
     public static boolean expr;
     public static boolean token;
-    public Scanner scan;
 
-    public Debug(Scanner scan) {
+    public Debug() {
         this.assign = false;
         this.expr = false;
         this.token = false;
-        this.scan = scan;
     }
 
-    public void turnOn(String type) throws ParserException {
-        if (type.equals("Assign")) {
-            this.assign = true;
-        } else if (type.equals("Expr")) {
-            this.expr = true;
-        } else if (type.equals("Token")) {
-            this.token = true;
+    public void setDebugState(Scanner scan) throws ParserException, Exception {
+        scan.getNext();
+        String type = scan.currentToken.tokenStr;
+        String state = scan.nextToken.tokenStr;
+        int lineNr = scan.currentToken.iSourceLineNr;
+        boolean bstate;
+        String msg;
+        if (state.equals("on")) {
+            bstate = true;
+        } else if (state.equals("off")) {
+            bstate = false;
         } else {
+            msg = "Invalid debug state: ";
+            msg += state;
+            throw new  ParserException(lineNr, msg, scan.sourceFileNm, "");
+        }
+
+        if (type.equals("Assign")) {
+            this.assign = bstate;
+        } else if (type.equals("Expr")) {
+            this.expr = bstate;
+        } else if (type.equals("Token")) {
+            this.token = bstate;
+        } else {
+            msg = "Invalid debug type: ";
+            msg += type;
+            throw new  ParserException(lineNr, msg, scan.sourceFileNm, "");
+        }
+        scan.getNext();
+        scan.getNext();
+        if (!scan.currentToken.tokenStr.equals(";")) {
             throw new ParserException(
                 scan.currentToken.iSourceLineNr,
-                "Invalid debug state. ", scan.sourceFileNm,"");
+                "Expected ';' at the end of debug line.", scan.sourceFileNm,
+                "");
         }
-    }
 
-    public void turnOff(String type) {
-        if (type.equals("Assign")) {
-            this.assign = false;
-        } else if (type.equals("Expr")) {
-            this.expr = false;
-        } else if (type.equals("Token")) {
-            this.token = false;
-        }
     }
 }

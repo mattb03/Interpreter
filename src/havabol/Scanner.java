@@ -28,6 +28,10 @@ public class Scanner {
     public static final String INVALID_OPERATOR = "INVALID_OPERATOR";
     public static final String INVALID_ESC = "ILLEGAL_ESCAPE_CHARACTER";
 
+    public Scanner(){
+
+    }
+
     public Scanner(String SourceFileNm, Debug debugger) throws IOException, Exception
     {
         this.debugger = debugger;
@@ -71,9 +75,6 @@ public class Scanner {
     */
     public void process(String value) throws Exception
     {
-        //System.out.println(this.nextToken.tokenStr);
-
-       // check for unary minus
         if (this.currentToken != null) {
             String curVal = this.currentToken.tokenStr;
             if ( ( (operators.indexOf(curVal.charAt(0)) != -1) || curVal.equals("if") ||
@@ -143,7 +144,6 @@ public class Scanner {
             }
             else
             {
-                System.out.println();
                 this.handleErrors(str, INVALID_OPERATOR);
             }
         }
@@ -316,7 +316,7 @@ public class Scanner {
             col = this.col;
 
         }
-        System.out.println("********** ERROR **********");
+        System.out.println("\n********** ERROR **********");
         System.out.printf("%s  %s  at line %d, column %d\n", errVal, value, this.line, col);
         throw new Exception();
     }
@@ -338,14 +338,9 @@ public class Scanner {
         	int lineNum = this.lines.length + 1;
         	// this loop is to print the blank lines at eof if any
     		for (i = 0; i <= this.blankLines; i++) {
-	        	//System.out.print(lineNum + " \n");       DEBUG PRINTLN
 	    		lineNum++;
 	    	}
     		// print the last line only if its a comment
-    		if (this.line-1 <= lines.length && this.lines[this.line-1].matches("^\\s*/\\s*/.*$"))
-    		{
-    			System.out.printf("d %s\n", this.line, this.lines[this.line - 1]);
-    		}
             // set EOF param's in currentToken, set exit state to true, return " ", so we can come back one more time
             this.nextToken = new Token();
             this.nextToken.primClassif = Token.EOF;
@@ -364,10 +359,6 @@ public class Scanner {
             }
             else if (c == '\n' && !this.aComment)
             {
-            	if (this.line != this.lastLine && this.line <= this.lines.length)
-            	{
-            		//System.out.printf("%d %s\n", this.line, this.lines[this.line - 1]);       DEBUG PRINTLN
-            	}
                 this.lastLine = this.line;
             	this.line++;
 
@@ -377,10 +368,6 @@ public class Scanner {
             {
             	this.aComment = false;
                 finCom = true;
-            	if (this.line != this.lastLine && this.line <= this.lines.length)
-            	{
-            		//System.out.printf("%d %s\n", this.line, this.lines[this.line - 1]);     DEBUG PRINTLN
-            	}
 
             	this.lastLine = this.line;
                 this.line++;
@@ -407,14 +394,9 @@ public class Scanner {
 
         	// this loop is to print blank lines at eof if any
     		for (i = 0; i <= this.blankLines; i++) {
-	        	//System.out.print(lineNum + " \n");
 	    		lineNum++;
 	    	}
-    		// print the last line only if its a comment
-    		if (this.line-1 <= lines.length && this.lines[this.line-1].matches("^\\s*/\\s*/.*$"))
-    		{
-    			System.out.printf("%d %s\n", this.line, this.lines[this.line - 1]);
-    		}
+
             this.nextToken = new Token();
             this.nextToken.primClassif = Token.EOF;
             this.nextToken.subClassif = Token.VOID;
@@ -494,16 +476,6 @@ public class Scanner {
         // our current line num is NOT equal to our last line num
         if (this.line != this.lastLine)
         {
-            // print out the current line num and the line itself using String array of lines
-            try
-            {
-                //System.out.printf("%d %s\n", this.line, this.lines[this.line - 1]);   THIS IS A DEBUG STATEMENT!!
-            }
-            catch (ArrayIndexOutOfBoundsException e)
-            {
-                ;
-            }
-            // set the lastLine num equal to the current line num
             this.lastLine = this.line;
         }
         if (!this.aComment)
@@ -522,9 +494,31 @@ public class Scanner {
         this.nextToken.iSourceLineNr = this.line;
         this.nextToken.iColPos = this.col;
         if (this.currentToken != null && debugger.token) {
-            System.out.print("***** TOKEN ***** : ");
+            System.out.print("***** TOKEN ***** :" + this.currentToken.iSourceLineNr + ":");
             this.currentToken.printToken();
         }
         this.process(value);
     }
+
+    public Scanner saveState(){
+        Scanner scan = new Scanner();
+        scan.sourceFileNm = this.sourceFileNm;
+        scan.buffer = this.buffer;
+        scan.currentToken = this.currentToken;
+        scan.nextToken = this.nextToken;
+        scan.debugger = this.debugger;
+        scan.col = this.col;
+        scan.line = this.line;
+        scan.exit = this.exit;
+        scan.opCombine = this.opCombine;
+        scan.aComment = this.aComment;
+        scan.lines = this.lines;
+        scan.lastLine = this.lastLine;
+        scan.blankLines = this.blankLines;
+        return scan;
+    }
+
 }
+
+
+

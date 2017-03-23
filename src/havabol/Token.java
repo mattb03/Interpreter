@@ -12,7 +12,7 @@ public class Token
 
     @Override
 	public String toString() {
-		return "Token [tokenStr=" + tokenStr + "]";
+		return "Token [tokenStr=" + tokenStr + ":" + this.iSourceLineNr +"]";
 	}
 
 	public int normPreced = 0;

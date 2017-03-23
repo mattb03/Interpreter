@@ -31,25 +31,7 @@ public class HavaBol
         	SymbolTable st = new SymbolTable();
 
             Parser parser = new Parser(args[0], st);
-            while (! parser.scan.getNext().isEmpty())
-            {
-                parser.statements(true);
-                /*
-                try
-                {
-                  // call putSymbol(String symbol, STEntry entry)
-
-                  scan.currentToken.printToken();
-                  symbolTable.putSymbol(scan.currentToken.tokenStr, new STEntry(
-                    scan.currentToken.tokenStr, scan.currentToken.primClassif,
-                    scan.currentToken.subClassif));
-                }
-                catch (NullPointerException e)
-                {
-                  continue;
-                }*/
-            }
-            // symbolTable.printTable();
+            parser.statements();
         }
         catch (Exception e)
         {
