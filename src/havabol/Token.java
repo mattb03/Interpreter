@@ -209,7 +209,7 @@ public class Token
     {
         if (tok.subClassif == STRING)
         {
-            return this.hexPrint(25, this.tokenStr);
+            return this.hexPrint(44, this.tokenStr);
         }
         else
         {

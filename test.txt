@@ -2,15 +2,13 @@
 //debug Token on;
 debug Assign on;
 debug Expr on;
-
+print("\n\n\n\n\nMiguel!!!!!!!!!!!!!!!!!!!!!\t\t");
 Int a = 5;
-
 print("-a = ", -a);
 
 Float b = 2.0;
 Int c = a + 10;
 print("ans = ", a + b);
-debug Token off;
 
 print("a = ",a, "\a");  // this should print out 'a = 5' because of automatic cast to Int
 print("b = ", b);
@@ -25,30 +23,37 @@ while a > 3:
 		b = b + 1;
 	endwhile;
 endwhile;
+debug Token on;
 print ("a is ", a);
 print("b = ", b);
 print("c = ", c);
 
-
+debug Token off;
 if a == b:
     print("a = ", a, "\nb = ", b, "\n");
     a = 3;
     if a == 3:
     	print ("now a is ", a);
-    else if b == 2.0:
-    	print ("nested else if b is ", b);
+    else: 
+        if b == 2.0:
+    	    print ("nested else if b is ", b);
+        endif;
     endif;
-else if c == 17:
+else:
+    if c == 17:
 	print ("c is ", c);
 	if b <= c:
 		print (b, " is <= ", c);
-	else if a == 3:
+	else:
+            if a == 3:
 		print ("this shouldnt run");
 		print ("please dont run");
-	else:
+	    else:
 		print ("once again please dont run");
-	endif;
-else:
-    print(a, " not equal to ", b);
+	    endif;
+        endif;
+    else:
+        print(a, " not equal to ", b);
+    endif;
 endif;
 

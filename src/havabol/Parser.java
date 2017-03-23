@@ -13,25 +13,12 @@ public class Parser {
     public Debug debugger;
     public SymbolTable st;
     public ParserException error;
-    // this map is for identifying if 2 operands are compatible datatypes
-    public Map<Integer, Integer> validDataTypes;
     public Pattern p;
-    public int ifCount = 0;
-    public int endifCount = 0;
 
-    public Parser(String SourceFileNm, SymbolTable st) {
+    public Parser(String SourceFileNm, SymbolTable st) throws Exception {
+        scan = new Scanner(SourceFileNm, debugger);
         debugger = new Debug(scan);
-        try {
-            scan = new Scanner(SourceFileNm, debugger);
-        }catch (Exception e) {
-        }
         this.st = st;
-        // create datatype key-value mappings
-        validDataTypes = new HashMap<Integer, Integer>();
-        validDataTypes.put(2, 3); // Integer -> Float
-        validDataTypes.put(3, 2); // Float -> Integer
-        validDataTypes.put(4, 5); // bool -> String
-        validDataTypes.put(5, 4); // String -> bool
         p = Pattern.compile("[^0-9.]");
     }
 
@@ -81,16 +68,21 @@ public class Parser {
                         } else if (scan.currentToken.tokenStr.equals(",") && arglist.isEmpty()) {
                             throw new ParserException(
                                 scan.currentToken.iSourceLineNr,
-                                "Did not expect a comma. ", scan.sourceFileNm,"");
+                                "Did not expect a comma. Found : "+scan.currentToken.tokenStr
+                                , scan.sourceFileNm, scan.lines[scan.currentToken.iSourceLineNr]);
                         } else if (scan.currentToken.tokenStr.equals(",")) {  //  handle expr logic
                             scan.getNext(); // consume comma and call expr
-                            String curr = scan.currentToken.tokenStr;
-                            ResultValue res = expr(true);
-                            arglist.add(res.value);
-                            if (expr) {
-                                System.out.println("***** EXPRESSION ***** : "+curr+" = "+res.value);
+                            if (scan.currentToken.subClassif == Token.STRING) {
+                                arglist.add(scan.currentToken.tokenStr);
+                            } else {
+                                String curr = scan.currentToken.tokenStr;
+                                ResultValue res = expr(true);
+                                arglist.add(res.value);
+                                if (expr) {
+                                    System.out.println("***** EXPRESSION ***** : "+curr+" = "+res.value);
+                                }
+                                continue;
                             }
-                            continue;
                         }
                         scan.getNext();
                     }
@@ -103,7 +95,8 @@ public class Parser {
                     } else {
                         throw new ParserException(
                             scan.currentToken.iSourceLineNr,
-                             "Expected ';' ", scan.sourceFileNm,"");
+                            "Expected ';'. Found : "+ scan.currentToken.tokenStr,
+                            scan.sourceFileNm, scan.lines[scan.currentToken.iSourceLineNr]);
 
                     }
                 }
@@ -121,21 +114,24 @@ public class Parser {
                 } else {
                     throw new ParserException(
                         scan.currentToken.iSourceLineNr,
-                        "Invalid debug state. ", scan.sourceFileNm,"");
+                        "Invalid debug state. Found : "+scan.currentToken.tokenStr
+                        , scan.sourceFileNm, scan.lines[scan.currentToken.iSourceLineNr]);
                 }
                 scan.getNext(); // consume semicolon
                 if (scan.currentToken.equals(";")) {
                     throw new ParserException(
                         scan.currentToken.iSourceLineNr,
-                        "Expected ';' .  ", scan.sourceFileNm,"");
+                        "Expected ';'. Found : "+scan.currentToken.tokenStr
+                        , scan.sourceFileNm, scan.lines[scan.currentToken.iSourceLineNr]);
                 }
             // if we come across a declare statement. i.e. Int, String, Bool ...
             } else if (scan.currentToken.subClassif == Token.DECLARE) {
                 // if nextToken is not an identifier throw an error
                 if (scan.nextToken.subClassif != 1) {
                     throw new ParserException(scan.nextToken.iSourceLineNr,
-                        "Identifier expected after declare statement:",
-                        scan.sourceFileNm, "");
+                        "Identifier expected after declare statement. " +
+                        "Found : "+scan.currentToken.tokenStr
+                        , scan.sourceFileNm, scan.lines[scan.currentToken.iSourceLineNr]);
                 } else {
                     int type = Token.VOID;
                     String token = scan.currentToken.tokenStr;
@@ -169,7 +165,8 @@ public class Parser {
                     System.err.println("not in symbol table!");
                     throw new ParserException(scan.currentToken.iSourceLineNr,
                             "Symbol "+scan.currentToken.tokenStr+
-                            " is not in Symbol Table.", scan.sourceFileNm, "");
+                            " is not in Symbol Table.", scan.sourceFileNm,
+                            scan.lines[scan.currentToken.iSourceLineNr]);
                 }
                 if (scan.nextToken.tokenStr.equals("=")) {
                     assign(scan.currentToken);
@@ -183,7 +180,7 @@ public class Parser {
             		error("Unmatched endif.\n");
             	}
             	return;
-            } 
+            }
             else if (scan.currentToken.tokenStr.equals("else")) {
             	if (!bCalled) {
             		error("Unmatched else.\n");
@@ -193,7 +190,7 @@ public class Parser {
             else if (scan.currentToken.tokenStr.toLowerCase().equals("if")) {
             	scan.getNext(); // consume if
             	ifStmt();
-                
+
             } else if (scan.currentToken.tokenStr.toLowerCase().equals("while")) {
                 whileStmt();
             }
@@ -229,7 +226,8 @@ public class Parser {
         scan.getNext(); // get equals sign
         if (!scan.currentToken.tokenStr.equals("=")) {
             throw new ParserException(scan.currentToken.iSourceLineNr,
-                    "syntax error: ", scan.sourceFileNm, scan.lines[scan.line-1]);
+                    "Invalid assign. Expected '='. Found : "+scan.currentToken.tokenStr
+                    ,scan.sourceFileNm, scan.lines[scan.currentToken.iSourceLineNr]);
         }
         scan.getNext(); // get val (right op)
         Token rToken = scan.currentToken;
@@ -263,7 +261,8 @@ public class Parser {
 
                     } else {
                         throw new ParserException(scan.currentToken.iSourceLineNr,
-                            "Incompatible type.", scan.sourceFileNm, scan.lines[scan.line-1]);
+                            "Incompatible type for numeric expression. ",
+                             scan.sourceFileNm, scan.lines[scan.currentToken.iSourceLineNr]);
                     }
 
                 } else {
@@ -319,7 +318,8 @@ public class Parser {
                         }
                     } else {
                         throw new ParserException(scan.currentToken.iSourceLineNr,
-                            "Incompatible type.", scan.sourceFileNm, scan.lines[scan.line-1]);
+                            "Incompatible type for numeric expression. ",
+                            scan.sourceFileNm, scan.lines[scan.currentToken.iSourceLineNr]);
                     }
                 } else {
                     st.getSymbol(curSymbol.tokenStr).value = rToken.tokenStr;
@@ -356,7 +356,7 @@ public class Parser {
     	if (resCond.value.equals("true")) {
     		// the starting if is true execute the code
     		statements(true, true);
-    		// back and the currentToken is after the endif; 
+    		// back and the currentToken is after the endif;
     		// or on the else
     		if (scan.currentToken.tokenStr.equals("else")) {
             	scan.getNext(); // consume else
@@ -375,7 +375,7 @@ public class Parser {
             		// this is the correct scenario
             		scan.getNext(); // consume endif
             		if (! scan.currentToken.tokenStr.equals(";")) {
-            			error("Invalid separator for endif: '" 
+            			error("Invalid separator for endif: '"
             					+ scan.currentToken.tokenStr + "'.\n");
             		}
             		// there isn't anything else to execute
@@ -407,7 +407,7 @@ public class Parser {
     		// else there was an endif
     		// done nothing to execute
     	}
-    	
+
     }
 
 
@@ -415,10 +415,10 @@ public class Parser {
 
         String whileBuffer = scan.buffer;
         whileBuffer = scan.currentToken.tokenStr + ' ' + scan.nextToken.tokenStr + ' ' + whileBuffer;
-       
+
         scan.getNext();
         ResultValue resCond = expr(false);
-        
+
         if (resCond.value.equals("true")) {
         	while (resCond.value.equals("true")) {
 	        	statements(true,true);
@@ -490,262 +490,6 @@ public class Parser {
         return buffer;
     }
 
-    // skipTo(...) will skip tokens until your currentToken.tokenStr = stmt
-    // so when the function exits, currentToken.tokenStr = stmt
-    public void skipTo(String stmt, String terminatingStr) throws Exception
-    {
-        while (! scan.currentToken.tokenStr.equals(stmt) && 
-        		! scan.currentToken.tokenStr.equals("else"))
-        {
-            scan.getNext();
-            if (scan.currentToken.tokenStr.equals("if"))
-            {
-            	ifCount++;
-            }
-        }
-    }
-
-    public ResultValue evalCond() throws Exception
-    {
-        ResultValue resVal = new ResultValue("true");
-
-        int leftOpType = 0;
-        int rightOpType = 0;
-
-        // get the left operand
-        scan.getNext();
-        Token leftOp = scan.currentToken;
-
-        // symbol table entry for the left operand
-        STIdentifier leftIdent = (STIdentifier)st.getSymbol(leftOp.tokenStr);
-
-        // the literal value of the left operand
-        String leftVal;
-        if (leftIdent != null)
-        {
-
-            leftVal = leftIdent.value;
-            leftOpType = leftIdent.dataType;
-
-        }
-        else
-        {
-            leftVal = getTokenValue(leftOp);
-            leftOpType = getLiteralType(leftVal);
-        }
-
-        // now get the operator
-        scan.getNext();
-        Token operator = scan.currentToken;
-
-        // get the right operand
-        scan.getNext();
-        Token rightOp = scan.currentToken;
-
-        // symbol table entry for the right operand
-        STIdentifier rightIdent = (STIdentifier)st.getSymbol(rightOp.tokenStr);
-
-        // the literal value of the right operand
-        String rightVal;
-        if (rightIdent != null)
-        {
-            rightVal = rightIdent.value;
-            rightOpType = rightIdent.dataType;
-
-        }
-        else
-        {
-            rightVal = getTokenValue(rightOp);
-            rightOpType = getLiteralType(rightVal);
-        }
-        /*
-        System.out.println("leftOp: " + leftOp.tokenStr +
-                "\topeator: " + operator.tokenStr +
-                "\trightOp: " + rightOp.tokenStr);
-        System.out.println("entry in the st: " + st.table.get(leftOp.tokenStr));
-        System.out.println("entry in the st: " + st.table.get(rightOp.tokenStr));
-        */
-
-        // throw an error if theres no terminating colon
-        if (! scan.nextToken.tokenStr.equals(":"))
-        {
-            throw new ParserException(scan.currentToken.iSourceLineNr,
-                    "No terminating ':'", scan.sourceFileNm, scan.lines[scan.line-1]);
-        }
-
-        // now we have the value of each operand in string format
-        // so now get the datatypes of each operand
-
-
-        // types are valid if theyre the same, or if the left maps to the right
-        if (leftOpType != rightOpType)
-        {
-            if (validDataTypes.get(leftOpType) != rightOpType ||
-                (leftOpType == 4 && !rightVal.equals("T") && !rightVal.equals("F")))
-            {
-            // throw error
-                throw new ParserException(rightOp.iSourceLineNr,
-                    "Right datatype cannot be compared to the left", scan.sourceFileNm, scan.lines[scan.line-1]);
-            }
-        }
-
-        // now evaluate
-        boolean flag;
-        // TODO:
-        // we left off here. need to figure out how to put a new value into
-        // the symbol table. once we can do that, we can determine whether
-        // this function is done (it should be done).
-        switch (leftOpType)
-        {
-            // were evaluating integers
-            case 2:
-            	// if the right is an integer and the right is a float
-            	// the truncate the decimal portion
-            	if (leftOpType != rightOpType)
-            	{
-            		rightVal = rightVal.substring(0, rightVal.indexOf('.'));
-            	}
-                flag = evalIntegers(leftVal, operator.tokenStr, rightVal);
-                if (flag == true)
-                {
-
-                    return resVal;
-                }
-                else
-                {
-                    resVal.value = "false";
-                    return resVal;
-                }
-
-            // were evaluating floats
-            case 3:
-            	// if the left is a float and the right is an integer
-            	// add a .0 to the end of the integer
-            	if (leftOpType != rightOpType)
-            	{
-            		rightVal = rightVal + ".0";
-            	}
-                flag = evalFloats(leftVal, operator.tokenStr, rightVal);
-                if (flag == true)
-                {
-                    return resVal;
-                }
-                else
-                {
-                    resVal.value = "false";
-                    return resVal;
-                }
-
-            // we know at this point were evaluating string or bool
-            default:
-                switch (operator.tokenStr)
-                {
-                    case "==":
-                        if (leftVal.equals(rightVal))
-                        {
-                            // return true
-                            return resVal;
-                        }
-                        else
-                        {
-                            // return false
-                            resVal.value = "false";
-                            return resVal;
-                        }
-                    case "!=":
-                        if (!leftVal.equals(rightVal))
-                        {
-                            // return true
-                            return resVal;
-                        }
-                        else
-                        {
-                            // return false
-                            resVal.value = "false";
-                            return resVal;
-                        }
-
-                    // bool only
-                    case "&&":
-                        // throw error if both are not bools
-                        if (leftOpType != 4 && rightOpType != 4)
-                        {
-                            throw new ParserException(operator.iSourceLineNr,
-                            "Invalid operator for datatypes", scan.sourceFileNm, scan.lines[scan.line-1]);
-                        }
-                        // we know both are bools at this point
-                        if (leftVal.equals("T") && rightVal.equals("T"))
-                        {
-                            // return true
-                            return resVal;
-                        }
-                        else
-                        {
-                            // return false
-                            resVal.value = "false";
-                            return resVal;
-                        }
-                    // bool only
-                    case "||":
-                        // throw error if both are not bools
-                        if (leftOpType != 4 && rightOpType != 4)
-                        {
-                            throw new ParserException(operator.iSourceLineNr,
-                            "Invalid operator for datatypes", scan.sourceFileNm, scan.lines[scan.line-1]);
-                        }
-                        if (leftVal.equals("F") && rightVal.equals("F"))
-                        {
-                            // return false
-                            resVal.value = "false";
-                            return resVal;
-                        }
-                        else
-                        {
-                            // return true
-                            return resVal;
-                        }
-                }
-        }
-        return resVal;
-    }
-
-    // getTokenValue(Token) assumes that the Token being passed in is one of the following:
-    // an identifier, a numeric constant, a string literal, or a bool string literal
-    // its purpose is to return the value of the Token being passed in
-    public String getTokenValue(Token tok) throws ParserException
-    {
-
-        // check if its in the symbol table
-        STIdentifier ident = (STIdentifier)st.getSymbol(tok.tokenStr);
-        if (tok.tokenStr.equals("loc"))
-            st.putValue(ident, "TX");
-        // if its not in the table, its not an identifier.
-        // so it must be a numeric constant, string literal, or bool string literal
-        if (ident == null)
-        {
-            return tok.tokenStr;
-        }
-
-        // if we hit here, we know its in the table ie. its an identifier
-
-        // if its an identifier, get its value
-        if (! st.getSymbol(tok.tokenStr).value.equals("NO VALUE"))
-        {
-            return st.getSymbol(tok.tokenStr).value;
-        }
-        // if its an identifier but has NO VALUE, then its null throw error
-        // else if (st.getSymbol(tok.tokenStr).value.equals("NO VALUE"))
-        else
-        {
-            throw new ParserException(tok.iSourceLineNr,
-                    "No value for variable \"" + tok.tokenStr + "\"", scan.sourceFileNm, scan.lines[scan.line-1]);
-        }
-
-    }
-
-    // this function is to return the datatype of a literal token. that is,
-    // a token that is not an identifier, ie. not in the symbol table.
-    // it takes the literal token string and returns its datatype as an int.
     public int getLiteralType (String litToken)
     {
 
@@ -776,141 +520,6 @@ public class Parser {
             }
             // if its not a single T or F then its a string
             return 5;
-    }
-
-
-    public boolean evalIntegers (String leftOp, String operator, String rightOp)
-    {
-        // This needs to handle Floats as well****************************************************
-        int iLeft = Integer.parseInt(leftOp);
-        int iRight = Integer.parseInt(rightOp);
-        switch (operator)
-        {
-            case "==":
-                if (iLeft == iRight)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            case "!=":
-                if (iLeft != iRight)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            case ">":
-                if (iLeft > iRight)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            case ">=":
-                if (iLeft >= iRight)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            case "<":
-                if (iLeft < iRight)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            case "<=":
-                if (iLeft <= iRight)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            default:
-                return false;
-        }
-
-    }
-
-    public boolean evalFloats (String leftOp, String operator, String rightOp)
-    {
-
-        float fLeft = Float.parseFloat(leftOp);
-        float fRight = Float.parseFloat(rightOp);
-        switch (operator)
-        {
-            case "==":
-                if (fLeft == fRight)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            case "!=":
-                if (fLeft != fRight)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            case ">":
-                if (fLeft > fRight)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            case ">=":
-                if (fLeft >= fRight)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            case "<":
-                if (fLeft < fRight)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            case "<=":
-                if (fLeft <= fRight)
-                {
-                    return true;
-                }
-                else
-                {
-                    return false;
-                }
-            default:
-                return false;
-        }
-
     }
 
     // assumes that this is called when currentToken = to the first operand
@@ -1165,16 +774,16 @@ public class Parser {
 								//error("Invalid operator in expression.");
 					            throw new ParserException(scan.currentToken.iSourceLineNr,
 					                    "Invalid operator in expression: '" + currToken.tokenStr + "'",
-					                    scan.sourceFileNm, scan.lines[scan.line-1]);
+					                    scan.sourceFileNm, scan.lines[scan.currentToken.iSourceLineNr]);
 		    			} // end of inner Operator switch
-		    			
+
 		    			// add our new value to the stack
 		    			extraToken1 = tokOp1; // get the most accurate values for the line and column # as possible
 		    			extraToken1.tokenStr = resTemp.value;
 		    			extraToken1.primClassif = Token.OPERAND;
 		    			extraToken1.subClassif = resTemp.type;
 		    			stk.push(extraToken1);
-	
+
 		    			// building the main structure before returning
 		    			for (int j = 0; j < resOp1.structure.size(); j++) {
 		        			resMain.structure.add(resOp1.structure.get(j));
