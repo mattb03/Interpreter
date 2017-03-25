@@ -1,15 +1,25 @@
-
 //debug Token on;
 debug Assign on;
 debug Expr on;
-print("\n\n\n\n\nMiguel!!!!!!!!!!!!!!!!!!!!!\t\t");
+//print(, ",");
+Int i = 123 + 1;
+Float f = i;
+print(i);
+String aeeu111 = 123;
+Int i;
+Bool x = "aoeu";
+print(i + 1);
+print(aeeu111);
+debug Exit on;
+//i = "uuu";
+
+print("\n\n\n\n\nMiguel!!!!!!!!!!!!!!!!!!!!!\t\t\a\a\a\a\a\a");
 Int a = 5;
 print("-a = ", -a);
 
 Float b = 2.0;
 Int c = a + 10;
 print("ans = ", a + b);
-
 print("a = ",a, "\a");  // this should print out 'a = 5' because of automatic cast to Int
 print("b = ", b);
 print("c = ", c);
@@ -23,12 +33,12 @@ while a > 3:
 		b = b + 1;
 	endwhile;
 endwhile;
-debug Token on;
+//debug Token on;
 print ("a is ", a);
 print("b = ", b);
 print("c = ", c);
 
-debug Token off;
+//debug Token off;
 if a == b:
     print("a = ", a, "\nb = ", b, "\n");
     a = 3;

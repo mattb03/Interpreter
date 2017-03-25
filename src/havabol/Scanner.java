@@ -23,10 +23,10 @@ public class Scanner {
     private final static String escChars = "\"\'\\nat";
     private final static String letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private final static String numbers = "0123456789";
-    public static final String MALFORMED_NUM = "MALFORMED_NUM";
-    public static final String NON_TERMINATED_STRING = "NON_TERMINATED_STRING";
-    public static final String INVALID_OPERATOR = "INVALID_OPERATOR";
-    public static final String INVALID_ESC = "ILLEGAL_ESCAPE_CHARACTER";
+    public static final String MALFORMED_NUM = "Malformed number";
+    public static final String NON_TERMINATED_STRING = "String not terminated";
+    public static final String INVALID_OPERATOR = "Invalid operator";
+    public static final String INVALID_ESC = "Invalid escape character";
 
     public Scanner() {
     	// this constructor is for saving the current state of the main scanner. 
@@ -123,8 +123,13 @@ public class Scanner {
         {
             this.delEval(value);
         }
-        else
-        {
+        else if (value.startsWith(".")) {
+        	System.err.print("********** ERROR **********\nLine " + nextToken.iSourceLineNr 
+        			+ ": " + lines[nextToken.iSourceLineNr - 1] 
+        			+ "\nFLOAT token: '" + value + "' requires a preceding 0\n"
+        			+ "File: " + sourceFileNm);
+        	throw new Exception();
+        } else {
             // if it got this far it must be an identifier or and keyword operator
             this.idEval(value);
         }
@@ -320,9 +325,11 @@ public class Scanner {
             col = this.col;
 
         }
-        System.out.println("********** ERROR **********");
-        System.out.printf("%s  %s  at line %d, column %d\n", errVal, value, this.line, col);
-        throw new Exception();
+        System.err.print("********** ERROR **********\nLine " + nextToken.iSourceLineNr 
+    			+ ": " + lines[nextToken.iSourceLineNr - 1] 
+    			+ "\n" + errVal + ": "+ value + "\n"
+    			+ "File: " + sourceFileNm);
+    	throw new Exception();
     }
 
     public String getNext() throws Exception
@@ -526,7 +533,7 @@ public class Scanner {
         this.nextToken.iSourceLineNr = this.line;
         this.nextToken.iColPos = this.col;
         if (this.currentToken != null && debugger.token) {
-            System.out.print("***** TOKEN ***** : ");
+            System.out.print("***** TOKEN ***** :" + currentToken.iSourceLineNr + ": ");
             this.currentToken.printToken();
         }
         this.process(value);
@@ -537,7 +544,7 @@ public class Scanner {
     	scan.sourceFileNm = this.sourceFileNm;
     	scan.buffer = this.buffer;
     	scan.currentToken = this.currentToken;
-    	scan.nextToken = this.nextToken;
+    	scan.nextToken = this.nextToken.saveToken();
     	scan.debugger = this.debugger;
     	scan.col = this.col;
     	scan.line = this.line;

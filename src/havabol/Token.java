@@ -221,7 +221,7 @@ public class Token
     {
         if (tok.subClassif == STRING)
         {
-            return this.hexPrint(44, this.tokenStr);
+            return this.hexPrint(48, this.tokenStr);
         }
         else
         {

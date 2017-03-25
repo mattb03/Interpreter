@@ -20,9 +20,7 @@ public class Numeric {
 				strValue = Double.toString(doubleValue);
 				type = Token.FLOAT;
 			} catch (Exception f) {
-				String error = opPos + " of " + op + " operand isn't a valid numeric type\n";
-				throw new ParserException(parser.scan.currentToken.iSourceLineNr,  error
-						, parser.scan.sourceFileNm, "");
+				parser.error(opPos + " of " + op + " operand isn't a valid numeric type", parser.startOfExprToken);
 			}
 		}
 	}
