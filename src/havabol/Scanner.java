@@ -28,6 +28,10 @@ public class Scanner {
     public static final String INVALID_OPERATOR = "INVALID_OPERATOR";
     public static final String INVALID_ESC = "ILLEGAL_ESCAPE_CHARACTER";
 
+    public Scanner() {
+    	// this constructor is for saving the current state of the main scanner. 
+    }
+    
     public Scanner(String SourceFileNm, Debug debugger) throws IOException, Exception
     {
         this.debugger = debugger;
@@ -526,5 +530,23 @@ public class Scanner {
             this.currentToken.printToken();
         }
         this.process(value);
+    }
+    
+    public Scanner saveState() {
+    	Scanner scan = new Scanner();
+    	scan.sourceFileNm = this.sourceFileNm;
+    	scan.buffer = this.buffer;
+    	scan.currentToken = this.currentToken;
+    	scan.nextToken = this.nextToken;
+    	scan.debugger = this.debugger;
+    	scan.col = this.col;
+    	scan.line = this.line;
+    	scan.exit = this.exit;
+    	scan.opCombine = this.opCombine;
+    	scan.aComment = this.aComment;
+    	scan.lines = this.lines;
+    	scan.lastLine = this.lastLine;
+    	scan.blankLines = this.blankLines;
+    	return scan;
     }
 }

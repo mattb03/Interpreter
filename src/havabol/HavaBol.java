@@ -6,7 +6,7 @@ public class HavaBol {
           SymbolTable st = new SymbolTable();
           Parser parser = new Parser(args[0], st);
           while (! parser.scan.getNext().isEmpty()) {
-            parser.statements(true,true);
+            parser.statements(false);
           }
         }
         catch (Exception e) {

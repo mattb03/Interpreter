@@ -22,28 +22,11 @@ public class Parser {
         p = Pattern.compile("[^0-9.]");
     }
 
-    public void statements(boolean bExec, boolean bCalled) throws Exception, ParserException {
+    public void statements(boolean bCalled) throws Exception, ParserException {
         Boolean expr = debugger.expr;
-        if (! bExec) {
-        	Stack<Token> stk = new Stack<Token>();
-        	while (true) {
-        		if (scan.currentToken.tokenStr.equals("if")) {
-        			stk.push(scan.currentToken);
-        		} else if (stk.isEmpty()) {
-        			if (scan.currentToken.tokenStr.equals("else")
-        					|| scan.currentToken.tokenStr.equals("endif")) {
-        				return;
-        			}
-        		} else if (! stk.isEmpty()) {
-        			if (scan.currentToken.tokenStr.equals("endif")) {
-        				stk.pop();
-        			}
-        		}
-        		scan.getNext();
-        	}
-        }
+        
 
-        while (bExec) {
+        while (true) {
             if (scan.currentToken.tokenStr.toLowerCase().equals("print")) {
                 ArrayList<String> arglist = new ArrayList<String>();
                 if (scan.nextToken.tokenStr.equals("(")) {
@@ -100,7 +83,6 @@ public class Parser {
 
                     }
                 }
-
 
             } else if (scan.currentToken.tokenStr.equals("debug")) {
                     scan.getNext();
@@ -194,20 +176,15 @@ public class Parser {
             } else if (scan.currentToken.tokenStr.toLowerCase().equals("while")) {
                 whileStmt();
             }
-            if (bExec == true)
-            	scan.getNext();
-            if (scan.nextToken.tokenStr.isEmpty())
-            	bExec = false;
-            // if we found an 'else' or 'endif' we know weve hit the end of the statement block
-            // so set bExec to false to exit the function
-            /*if (scan.nextToken.tokenStr.equals("else") || scan.nextToken.tokenStr.equals("endif")) {
-            	bExec = false;
-            }*/
-            else if (scan.currentToken.tokenStr.equals("endwhile")) {
-            	bExec = false;
+            scan.getNext();
+            if (scan.currentToken.tokenStr.equals("endwhile")) {
+            	if (!bCalled) {
+            		error("Unmatched endwhile.\n");
+            	}
+            	return;
             }
             else if (scan.nextToken.tokenStr.isEmpty()) {
-            	bExec = false;
+            	break;
             }
         }
     }
@@ -355,7 +332,7 @@ public class Parser {
     	scan.getNext(); // consume separator
     	if (resCond.value.equals("true")) {
     		// the starting if is true execute the code
-    		statements(true, true);
+    		statements(true);
     		// back and the currentToken is after the endif;
     		// or on the else
     		if (scan.currentToken.tokenStr.equals("else")) {
@@ -366,7 +343,22 @@ public class Parser {
             	}
             	scan.getNext(); // consume separator
             	// run through the false statements
-            	statements(false, false);
+            	Stack<Token> stk = new Stack<Token>();
+            	while (true) {
+            		if (scan.currentToken.tokenStr.equals("if")) {
+            			stk.push(scan.currentToken);
+            		} else if (stk.isEmpty()) {
+            			if (scan.currentToken.tokenStr.equals("else")
+            					|| scan.currentToken.tokenStr.equals("endif")) {
+            				break;
+            			}
+            		} else if (! stk.isEmpty()) {
+            			if (scan.currentToken.tokenStr.equals("endif")) {
+            				stk.pop();
+            			}
+            		}
+            		scan.getNext();
+            	}
             	// back and the currentToken can be an else or endif
             	if (scan.currentToken.tokenStr.equals("else")) {
             		// an else is an error
@@ -387,7 +379,23 @@ public class Parser {
     		// so there isn't anything else to execute
     	} else {
     		// the starting if is false
-    		statements(false, false);
+        	// run through the false statements
+        	Stack<Token> stk = new Stack<Token>();
+        	while (true) {
+        		if (scan.currentToken.tokenStr.equals("if")) {
+        			stk.push(scan.currentToken);
+        		} else if (stk.isEmpty()) {
+        			if (scan.currentToken.tokenStr.equals("else")
+        					|| scan.currentToken.tokenStr.equals("endif")) {
+        				break;
+        			}
+        		} else if (! stk.isEmpty()) {
+        			if (scan.currentToken.tokenStr.equals("endif")) {
+        				stk.pop();
+        			}
+        		}
+        		scan.getNext();
+        	}
     		endingToken = scan.currentToken;
     		scan.getNext(); // consume the else or endif
     		if (! scan.currentToken.tokenStr.equals(":")
@@ -402,7 +410,7 @@ public class Parser {
     		if (endingToken.tokenStr.equals("else")) {
         		scan.getNext(); // consume the separator
     			// there was an else execute those statements
-    			statements(true, true);
+    			statements(true);
     		}
     		// else there was an endif
     		// done nothing to execute
@@ -412,25 +420,32 @@ public class Parser {
 
 
     public void whileStmt() throws Exception  {
+    	Scanner old = this.scan.saveState();
+    	Token tok = scan.nextToken.saveToken();
 
         String whileBuffer = scan.buffer;
         whileBuffer = scan.currentToken.tokenStr + ' ' + scan.nextToken.tokenStr + ' ' + whileBuffer;
 
         scan.getNext();
         ResultValue resCond = expr(false);
+        old.nextToken = tok;
 
         if (resCond.value.equals("true")) {
         	while (resCond.value.equals("true")) {
-	        	statements(true,true);
+	        	statements(true);
 	        	if (! scan.currentToken.tokenStr.equals("endwhile")) {
 	        		error("While not terminated by endwhile.\n");
 	        	}
-	        	scan.buffer = whileBuffer;
+	        	scan = old.saveState();
+	        	tok = scan.nextToken.saveToken();
+	        	scan.getNext();
+	        	/*scan.buffer = whileBuffer;
 	        	scan.getNext(); // consume endwhile
 	        	scan.getNext(); // consume separator
 	        	// TODO: error check for bad separator
-	        	scan.getNext(); // consume while
+	        	scan.getNext(); // consume while*/
 	        	resCond = expr(false);
+	        	old.nextToken = tok;
         	}
         	if (resCond.value.equals("false")) {
         		Stack<Token> stk = new Stack<Token>();
@@ -460,34 +475,6 @@ public class Parser {
         		scan.getNext();
         	}
         }
-    }
-
-
-    public String getWhileBuffer () {
-        // get the number of while loops both nested and parent
-        String[] whileMatches = scan.buffer.split("(?=.*?)[^end]while(?!.*?[^\"'])");
-        int index = scan.buffer.indexOf("endwhile"); // first occurrence
-        index += "endwhile".length(); // move cursor over
-        int endCount = 0;
-        if (index != -1)
-            endCount = 1;
-
-        int finalIndex = index;
-        String temp = scan.buffer.substring(finalIndex); // placeholder
-        while (index != -1 && endCount != whileMatches.length) {
-            index = scan.buffer.indexOf("endwhile", finalIndex);
-            if (index != -1) {
-                index += "endwhile".length();
-                finalIndex = index;
-                endCount++;
-
-
-            }
-        }
-        String buffer = scan.currentToken.tokenStr + " " +
-                scan.nextToken.tokenStr +
-                scan.buffer.substring(0, (finalIndex + 1));
-        return buffer;
     }
 
     public int getLiteralType (String litToken)
