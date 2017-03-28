@@ -1,4 +1,4 @@
-//debug Token on;
+debug Token on;
 debug Assign on;
 debug Expr on;
 //setup

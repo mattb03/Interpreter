@@ -8,6 +8,9 @@ public class Numeric {
 	public int type;			// INTEGER, FLOAT
 
 	public Numeric(Parser parser, ResultValue res, String op, String opPos) throws ParserException {
+		if (res.value.equals("NO VALUE")) {
+			parser.error("Symbol has not been initialized.");
+		}
 		try {
 			integerValue = Integer.parseInt(res.value);
 			doubleValue = (double) integerValue;
