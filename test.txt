@@ -1,4 +1,4 @@
-debug Token on;
+//debug Token on;
 debug Assign on;
 debug Expr on;
 //setup
@@ -13,7 +13,8 @@ String s2 = "\t\tNATE\n\n";
 Bool b = T;
 Bool b2 = F;
 
-
+Int concat = (2 * 3) # (3^2);
+print("concat val -> : ", concat);
 
 // identifier cases : normal good!  decalre to identifier, identifier to identifier, identifier to lit, declare to lit
 
