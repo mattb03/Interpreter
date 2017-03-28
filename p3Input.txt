@@ -2,8 +2,8 @@ print("p3Input.txt");
 Int i;
 Float pi;
 String day;
-   day
-   =
+   day 
+   = 
    "Sunday";
 String name;
 name = "Anita Goodgrade";
@@ -65,11 +65,11 @@ print(">>> First If");
 if loc == "TX": // check for TX
     // It is TX
     print("\tloc is", loc);
-    // it is ok to have this statement on multiple lines.
+    // it is ok to have this statement on multiple lines.  
     // That is why we have a semicolon
-    i
-       =
-          i
+    i 
+       = 
+          i 
           + 1;
 endif;
 print("\tDone with first if");
@@ -81,8 +81,8 @@ if i >= 5:
 else:
     print("\t2nd if false, i >= 5, i =", i);
 endif;
-// while and if
-print(">>> First while i < 5");
+// while and if 
+print(">>> First while i < 5");    
 i = 1;
 while i < 5:
     print("\ttop of while, i=", i);
@@ -128,3 +128,4 @@ while i < 5:
     i = i + 1;
 endwhile;
 print("\tAfter outer while");
+        

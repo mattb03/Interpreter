@@ -12,7 +12,7 @@ public class Token
 
     @Override
 	public String toString() {
-		return "Token [tokenStr=" + tokenStr + ":" + this.iSourceLineNr +"]";
+		return "Token [tokenStr=" + tokenStr + "]";
 	}
 
 	public int normPreced = 0;
@@ -174,42 +174,54 @@ public class Token
     }
 
     public void setPrecedence() {
-    	String conditionals = "<><=>===!=";
-
-    	if (primClassif == SEPARATOR) {
-    		normPreced = 15;
-    		stkPreced = 2;
-    	} else if (tokenStr.equals("u-")) {
-    		normPreced = stkPreced = 12;
-    		// TODO: unary minus symbol in scanner "u-"
-    	} else if (tokenStr.equals("^")) {
-    		normPreced = 11;
-    		stkPreced = 10;
-    	} else if (tokenStr.equals("*")
-    			|| tokenStr.equals("/")) {
-    		normPreced = stkPreced = 9;
-    	} else if (tokenStr.equals("+")
-    			|| tokenStr.equals("-")) {
-    		normPreced = stkPreced = 8;
-    	} else if (tokenStr.equals("#")) {
-    		normPreced = stkPreced = 7;
-    	} else if (conditionals.contains(tokenStr)
-    			|| tokenStr.equals("in")
-    			|| tokenStr.equals("notin")) {
-    		normPreced = stkPreced = 6;
-    	} else if (tokenStr.equals("not")) {
-    		normPreced = stkPreced = 5;
-    	} else if (tokenStr.equals("and")
-    			|| tokenStr.equals("or")) {
-    		normPreced = stkPreced = 4;
+    	if (primClassif != Token.OPERAND) {
+    		String conditionals = "<><=>===!=";
+	    	if (primClassif == SEPARATOR) {
+	    		normPreced = 15;
+	    		stkPreced = 2;
+	    	} else if (tokenStr.equals("u-")) {
+	    		normPreced = stkPreced = 12;
+	    		// TODO: unary minus symbol in scanner "u-"
+	    	} else if (tokenStr.equals("^")) {
+	    		normPreced = 11;
+	    		stkPreced = 10;
+	    	} else if (tokenStr.equals("*")
+	    			|| tokenStr.equals("/")) {
+	    		normPreced = stkPreced = 9;
+	    	} else if (tokenStr.equals("+")
+	    			|| tokenStr.equals("-")) {
+	    		normPreced = stkPreced = 8;
+	    	} else if (tokenStr.equals("#")) {
+	    		normPreced = stkPreced = 7;
+	    	} else if (conditionals.contains(tokenStr)
+	    			|| tokenStr.equals("in")
+	    			|| tokenStr.equals("notin")) {
+	    		normPreced = stkPreced = 6;
+	    	} else if (tokenStr.equals("not")) {
+	    		normPreced = stkPreced = 5;
+	    	} else if (tokenStr.equals("and")
+	    			|| tokenStr.equals("or")) {
+	    		normPreced = stkPreced = 4;
+	    	}
     	}
+    }
+    
+    public Token saveToken() {
+    	Token newToken = new Token("");
+    	
+    	newToken.tokenStr = this.tokenStr;
+    	newToken.primClassif = this.primClassif;
+        newToken.subClassif = this.subClassif;
+        newToken.iSourceLineNr = this.iSourceLineNr;
+        newToken.iColPos = this.iColPos;
+        return newToken;
     }
 
     private String parseString(Token tok)
     {
         if (tok.subClassif == STRING)
         {
-            return this.hexPrint(25, this.tokenStr);
+            return this.hexPrint(47, this.tokenStr);
         }
         else
         {

@@ -20,11 +20,10 @@ public class ParserException extends Exception {
         sb.append("********** ERROR **********\n");
 		sb.append("Line ");
 		sb.append(Integer.toString(iLineNr));
-		sb.append(" ");
-		sb.append(line);
-		sb.append("  ");
+		sb.append(": ");
+		sb.append(line + "\n");
 		sb.append(diagnostic);
-		sb.append(" File: ");
+		sb.append("\nFile: ");
 		sb.append(sourceFileName);
 
 		return sb.toString();
