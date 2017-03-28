@@ -145,7 +145,7 @@ public class Parser {
                     //put this token into symbol table!!!
                     STIdentifier entry = (STIdentifier) st.getSymbol(scan.currentToken.tokenStr);
                     if (entry != null) {
-                    	entry.value = "NO_VALUE";
+                    	entry.value = "NO VALUE";
                     } else {
 	                    st.putSymbol(scan.currentToken.tokenStr,
 	                            new STEntry(scan.currentToken.tokenStr,
