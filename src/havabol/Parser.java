@@ -540,7 +540,7 @@ public class Parser {
     		error("Invalid terminating token on if.\n");
     	}
     	scan.getNext(); // consume separator
-    	if (resCond.value.equals("true")) {
+    	if (resCond.value.equals("T")) {
     		// the starting if is true execute the code
     		statements(true);
     		// back and the currentToken is after the endif;
@@ -633,8 +633,8 @@ public class Parser {
         scan.getNext();
         ResultValue resCond = expr(false);
 
-        if (resCond.value.equals("true")) {
-        	while (resCond.value.equals("true")) {
+        if (resCond.value.equals("T")) {
+        	while (resCond.value.equals("T")) {
 	        	statements(true);
 	        	if (! scan.currentToken.tokenStr.equals("endwhile")) {
 	        		error("While not terminated by endwhile.");
@@ -647,7 +647,7 @@ public class Parser {
 	        	scan.getNext();
 	        	resCond = expr(false);
         	}
-        	if (resCond.value.equals("false")) {
+        	if (resCond.value.equals("F")) {
         		Stack<Token> stk = new Stack<Token>();
             	while (true) {
             		if (scan.currentToken.tokenStr.equals("while")) {

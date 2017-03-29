@@ -1,9 +1,17 @@
 
-Int fbits = 8;
 
+Int fbits = 8;
 Int pbits = 10;
 Int offset = 12;
+
+String flag = "virt";
+String flag2 = "phys";
+
+
 print("========== My memory program ==========");
 print("Page size is ", 2^offset);
-print("Virtual address space is ", 2^(pbits + offset));
-print("Physical address space is ", 2^(fbits + offset));
+if flag == "virt":
+    print("Virtual address space is ", 2^(pbits + offset));
+else:
+    print("Physical address space is ", 2^(fbits + offset));
+endif;
