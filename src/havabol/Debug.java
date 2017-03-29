@@ -22,7 +22,7 @@ package havabol;
         } else if (type.equals("Token")) {
             this.token = true;
         } else if (type.equals("Exit")) {
-        	System.exit(-1);
+        	System.exit(0);
         } else {
             throw new ParserException(
                 scan.currentToken.iSourceLineNr,
