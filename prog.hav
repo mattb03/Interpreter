@@ -20,14 +20,14 @@ if flag == "virt":
 if flag2 == "phys":
     print("Physical address space is ", 2^(fbits + offset));
 
-debug Exit on; // comment this out to run code below.
 
-// The code below hangs.
+// The code below does not hang.
 
 if 0 == 1:
     if 2 == 2:
         if 3 == 3:
             print("HERE");
-
+        endif;
+    endif;
 else:
     print("other branch!");
