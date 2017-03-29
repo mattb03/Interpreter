@@ -332,11 +332,49 @@ public class Parser {
                             value = resExpr.value;
                             value += ".00";
                         }
+
+                    } else if (ltype == Token.INTEGER && assignType == Token.STRING) {
+                        value = resExpr.value;
+                        int testVal;
+                        try {
+                            testVal = Integer.parseInt(value);
+                            if (expr) {
+                                System.out.println("+++++ EXPRN +++++ :"+curr.iSourceLineNr
+                                            + ": " + curr.tokenStr + " = "+value);
+                            }
+                        } catch (Exception e) {
+                            error("Incompatible types. Cannot assign "+
+                                Token.strSubClassifM[assignType]+
+                                " to "+Token.strSubClassifM[ltype]+
+                                " when STRING is a non numeric value");
+                        }
+
+                    } else if (ltype == Token.STRING) {
+                        value = resExpr.value;
+                        if (expr) {
+                            System.out.println("+++++ EXPRN +++++ :"+curr.iSourceLineNr
+                                + ": " + curr.tokenStr + " = "+value);
+                        }
+                    } else if (ltype == Token.BOOLEAN && assignType == Token.STRING) {
+                        value = resExpr.value;
+                        if (value.equals("T") || value.equals("F")) {
+                            ;
+                        } else {
+                            error("Incompatible types. Cannot assign "+
+                                Token.strSubClassifM[assignType]+
+                                " to "+Token.strSubClassifM[ltype]+
+                                " when STRING is a not a 'T' or 'F'");
+                        }
+                        if (expr) {
+                            System.out.println("+++++ EXPRN +++++ :"+curr.iSourceLineNr
+                                + ": " + curr.tokenStr + " = "+value);
+                        }
                     } else {
                         error("Incompatible types. Cannot assign "+
-                            Token.strSubClassifM[rtype]+
+                            Token.strSubClassifM[assignType]+
                             " to "+Token.strSubClassifM[ltype]);
                     }
+
                 } else {  // they are the same type
                     value = resExpr.value;
                 }
@@ -437,9 +475,46 @@ public class Parser {
                             value = resExpr.value;
                             value += ".00";
                         }
+                    } else if (ltype == Token.INTEGER && assignType == Token.STRING) {
+                        value = resExpr.value;
+                        System.out.println("val is : "+value);
+                        int testVal;
+                        try {
+                            testVal = Integer.parseInt(value);
+                            if (expr) {
+                                System.out.println("+++++ EXPRN +++++ :"+curr.iSourceLineNr
+                                            + ": " + curr.tokenStr + " = "+value);
+                            }
+                        } catch (Exception e) {
+                            error("Incompatible types. Cannot assign "+
+                                scan.currentToken.strSubClassifM[rToken.subClassif]+
+                                " to "+curr.strSubClassifM[ltype]+
+                                " when STRING is a non numeric value");
+                        }
+
+                    } else if (ltype == Token.STRING) {
+                        value = resExpr.value;
+                        if (expr) {
+                            System.out.println("+++++ EXPRN +++++ :"+curr.iSourceLineNr
+                                + ": " + curr.tokenStr + " = "+value);
+                        }
+                    } else if (ltype == Token.BOOLEAN && assignType == Token.STRING) {
+                        value = resExpr.value;
+                        if (value.equals("T") || value.equals("F")) {
+                            ;
+                        } else {
+                            error("Incompatible types. Cannot assign "+
+                                Token.strSubClassifM[rToken.subClassif]+
+                                " to "+Token.strSubClassifM[ltype]+
+                                " when STRING is a not a 'T' or 'F'");
+                        }
+                        if (expr) {
+                            System.out.println("+++++ EXPRN +++++ :"+curr.iSourceLineNr
+                                + ": " + curr.tokenStr + " = "+value);
+                        }
                     } else {
                         error("Incompatible types. Cannot assign "+
-                            Token.strSubClassifM[rToken.subClassif]+
+                            Token.strSubClassifM[assignType]+
                             " to "+Token.strSubClassifM[ltype]);
                     }
                 } else {  // same types

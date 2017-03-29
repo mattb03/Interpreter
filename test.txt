@@ -1,9 +1,8 @@
 //debug Token on;
 debug Assign on;
-debug Expr on;
+//debug Expr on;
 //setup
 /////////////////// CORRECT MISSING SEMICOLON AT END OF STATEMENT BUG!!!!!!!!!!!!!!!!!!!!!!!
-///////////////////  CORRECT EXPRESSIONS!!!!!!!!!!!!!!!   'true'  and 'false'; Utility class!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 Int i = 10;
 Int i2 = 100;
 Float f = 3.14;
@@ -61,8 +60,42 @@ print(z);
 
 
 //These cases need to be handled properly
-String ss = 2 + 3;
-String ss = 3.14 + 2.22;
+// LITERAL EXPR
+    // int -> float : GOOD
+    // int -> STRING : GOOD
+    // int -> BOOL : GOOD
+    // float -> int : GOOD
+    // float -> STRING : GOOD
+    // float -> BOOL : GOOD
+    // string -> int : GOOD
+    // string -> float : GOOD
+    // string -> bool : GOOD
+    // bool -> int : GOOD
+    // bool -> float : GOOD
+    // bool -> string : GOOD
+
+
+
+
+// IDENT EXPR
+    // int -> float : GOOD
+    // int -> STRING : GOOD
+    // int -> BOOL :  GOOD
+    // float -> int :  GOOD
+    // float -> STRING :  GOOD
+    // float -> BOOL :  GOOD
+    // string -> int : GOOD
+    // string -> float :  GOOD
+    // string -> bool :  GOOD
+    // bool -> int : GOOD
+    // bool -> float : GOOD
+    // bool -> string :  GOOD
+
+String value = "T";
+
+Bool bbb = value # "";
+print("bbb is ",bbb);
+
 debug Exit on;
 
 
