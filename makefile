@@ -29,6 +29,10 @@ out2:
 out3:
 	$(JAVA) $(JFLAGS) havabol.HavaBol error3.txt
 
+hav:
+	$(JAVA) $(JFLAGS) havabol.HavaBol prog.hav
+
+
 clean:
 	rm -r bin/*
 
