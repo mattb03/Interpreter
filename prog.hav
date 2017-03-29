@@ -1,1 +1,9 @@
-print("Hello world!");
+
+Int fbits = 8;
+
+Int pbits = 10;
+Int offset = 12;
+print("========== My memory program ==========");
+print("Page size is ", 2^offset);
+print("Virtual address space is ", 2^(pbits + offset));
+print("Physical address space is ", 2^(fbits + offset));
