@@ -1,4 +1,4 @@
-Int x;
+Int  x;
 Float pie;
 String yStr;
 

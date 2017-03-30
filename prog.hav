@@ -9,6 +9,11 @@ Int fbits = 8;
 Int pbits = 10;
 Int offset = 12;
 
+print( 3.0 / 2);
+
+print(3 / 2.0);
+
+
 String flag = "virt";
 String flag2 = "phys";
 
@@ -31,3 +36,12 @@ if 0 == 1:
     endif;
 else:
     print("other branch!");
+
+
+Int a = 10;
+Int b = 5;
+
+if a > b:
+    b = 1000;
+
+print("a = ", a,"\nb = ", b);

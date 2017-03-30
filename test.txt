@@ -1,5 +1,5 @@
 //debug Token on;
-debug Assign on;
+//debug Assign on;
 //debug Expr on;
 //setup
 /////////////////// CORRECT MISSING SEMICOLON AT END OF STATEMENT BUG!!!!!!!!!!!!!!!!!!!!!!!
@@ -55,8 +55,8 @@ String s2 = "Chris" # "\tBuckner";
 print(s2);
 
 Int z = 2.14 + 3; //  GOOD
-Int z = f + 12.2;
-print(z);
+Int zz = f + 12.2;
+print(zz);
 
 
 //These cases need to be handled properly

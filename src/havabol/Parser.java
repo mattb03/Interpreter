@@ -103,6 +103,8 @@ public class Parser {
                     	error("Print function not terminated with ';'");
 
                     }
+                } else {
+                    error("Invalid print statement");
                 }
 
             } else if (scan.currentToken.tokenStr.equals("debug")) {
@@ -142,17 +144,19 @@ public class Parser {
                     else if (token.equals("Date"))
                         type = Token.DATE;
                     scan.getNext();
+
+                    //array logic should start here or after symbol is put into symbol table
+
                     //put this token into symbol table!!!
-                    STIdentifier entry = (STIdentifier) st.getSymbol(scan.currentToken.tokenStr);
+                    Token tokk = scan.currentToken;
+                    STIdentifier entry = (STIdentifier) st.getSymbol(tokk.tokenStr);
                     if (entry != null) {
                     	entry.value = "NO VALUE";
                     } else {
-	                    st.putSymbol(scan.currentToken.tokenStr,
-	                            new STEntry(scan.currentToken.tokenStr,
-	                                scan.currentToken.primClassif,
-	                                scan.currentToken.subClassif));
+	                    st.putSymbol(tokk.tokenStr, new STEntry(tokk.tokenStr, 
+                                        tokk.primClassif, tokk.subClassif));
 	                    // set the type in the symbol table for the identifier
-	                    st.getSymbol(scan.currentToken.tokenStr).type = type;
+	                    st.getSymbol(tokk.tokenStr).type = type;
                     }
                     if (scan.nextToken.tokenStr.equals(";")) {
                     	scan.getNext();
