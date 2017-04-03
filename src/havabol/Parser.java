@@ -180,36 +180,28 @@ public class Parser {
                 	error("Invalid assign. Expected '='. Found : "+scan.currentToken.tokenStr);
                 }
             } else if (scan.currentToken.tokenStr.equals("endif")) {
-            	scan.getNext();
-            	if (! scan.currentToken.tokenStr.equals(";")) {
-            		error("endif is not correctly terminated.\n");
-            	}
             	if (!bCalled) {
-            		error("Unmatched endif.\n");
+            		error("Endif is missing corresponding if.");
             	}
             	return;
-            }
-            else if (scan.currentToken.tokenStr.equals("else")) {
+            } else if (scan.currentToken.tokenStr.equals("else")) {
             	if (!bCalled) {
-            		error("Unmatched else.\n");
+            		error("Else is missing corresponding if.");
             	}
             	return;
-            }
-            else if (scan.currentToken.tokenStr.toLowerCase().equals("if")) {
-            	scan.getNext(); // consume if
+            } else if (scan.currentToken.tokenStr.toLowerCase().equals("if")) {
             	ifStmt();
-
             } else if (scan.currentToken.tokenStr.toLowerCase().equals("while")) {
                 whileStmt();
-            }
-            scan.getNext();
-            if (scan.currentToken.tokenStr.equals("endwhile")) {
+            } else if (scan.currentToken.tokenStr.equals("endwhile")) {
             	if (!bCalled) {
-            		error("Unmatched endwhile.\n");
+            		error("Unmatched endwhile.");
             	}
             	return;
             }
-            else if (scan.nextToken.tokenStr.isEmpty()) {
+            
+            scan.getNext();
+            if (scan.nextToken.primClassif == Token.EOF) {
             	break;
             }
         }
@@ -535,25 +527,29 @@ public class Parser {
 
     }
 
-    // assumes currentToken is after an if.
-    // when returned to, the value is on an else, or endif
+    // assumes currentToken is on an if.
     public void ifStmt() throws Exception {
+    	// statementToken is used to track the start of a statement for error checking
+    	Token beginningIf; // like statementToken this is used to save the start of the whole statement
+    	Token statementToken = beginningIf = scan.currentToken;
+    	scan.getNext(); // consume if
+    	
     	ResultValue resCond = expr(false);
-    	Token endingToken;
     	if (! scan.currentToken.tokenStr.equals(":")) {
-    		error("Invalid terminating token on if.\n");
+    		error("Invalid terminating token for if: '"
+    				+ scan.currentToken.tokenStr + "'", statementToken);
     	}
     	scan.getNext(); // consume separator
     	if (resCond.value.equals("T")) {
     		// the starting if is true execute the code
     		statements(true);
-    		// back and the currentToken is after the endif;
-    		// or on the else
+    		// currentToken is an endif or an else
     		if (scan.currentToken.tokenStr.equals("else")) {
+    			statementToken = scan.currentToken; // save the starting else for error checking
             	scan.getNext(); // consume else
             	if (! scan.currentToken.tokenStr.equals(":")) {
-            		error("Invalid separator for else: '"
-            				+ scan.currentToken.tokenStr +"'.\n");
+            		error("Invalid terminating token for else: '"
+            				+ scan.currentToken.tokenStr +"'", statementToken);
             	}
             	scan.getNext(); // consume separator
             	// run through the false statements
@@ -561,36 +557,62 @@ public class Parser {
             	while (true) {
             		if (scan.currentToken.tokenStr.equals("if")) {
             			stk.push(scan.currentToken);
+            			//statementToken = scan.currentToken; // update to nested if
             		} else if (stk.isEmpty()) {
             			if (scan.currentToken.tokenStr.equals("else")
             					|| scan.currentToken.tokenStr.equals("endif")) {
             				break;
             			}
             		} else if (! stk.isEmpty()) {
+            			if (scan.currentToken.tokenStr.equals("else")) {
+            				if (! scan.nextToken.tokenStr.equals(":")) {
+            					error("Invalid terminating token for else: '"
+            							+ scan.nextToken.tokenStr + "'");
+            				}
+            			}
             			if (scan.currentToken.tokenStr.equals("endif")) {
+            				if (! scan.nextToken.tokenStr.equals(";")) {
+            					error("Invalid terminating token for endif: '"
+            							+ scan.nextToken.tokenStr + "'");
+            				}
             				stk.pop();
             			}
             		}
+            		if (scan.currentToken.primClassif == Token.EOF)
+        				error("Else statement not terminated by endif.", statementToken);
+            		
             		scan.getNext();
-            	}
-            	// back and the currentToken can be an else or endif
+            	} // endwhile
+            	
+            	statementToken = scan.currentToken;
+            	
+            	// currentToken MUST be an else or endif
             	if (scan.currentToken.tokenStr.equals("else")) {
             		// an else is an error
-            		error("Unmatched nested else statement.\n");
-            	} else if (scan.currentToken.tokenStr.equals("endif")) {
+            		error("Unmatched nested else statement.");
+            	} else {
             		// this is the correct scenario
             		scan.getNext(); // consume endif
             		if (! scan.currentToken.tokenStr.equals(";")) {
-            			error("Invalid separator for endif: '"
-            					+ scan.currentToken.tokenStr + "'.\n");
+            			error("Invalid terminating token for endif: '"
+            					+ scan.currentToken.tokenStr + "'", statementToken);
             		}
             		// there isn't anything else to execute
-            	} else {
-            		error("If statement not terminated by endif.\n");
             	}
+    		} else { // currentToken is not an else, must be an endif, check
+    			if (! scan.currentToken.tokenStr.equals("endif")) {
+    				error("If statement not terminated by endif.", statementToken);
+    			} else {
+    				statementToken = scan.currentToken;
+    				scan.getNext();
+                	if (! scan.currentToken.tokenStr.equals(";")) {
+                		error("Invalid terminating token for endif: '"
+            					+ scan.currentToken.tokenStr + "'", statementToken);
+                	}
+    			}
     		}
-    		// else the previous token was an endif;
-    		// so there isn't anything else to execute
+    	// end of starting if true
+    		
     	} else {
     		// the starting if is false
         	// run through the false statements
@@ -598,33 +620,72 @@ public class Parser {
         	while (true) {
         		if (scan.currentToken.tokenStr.equals("if")) {
         			stk.push(scan.currentToken);
+        			statementToken = scan.currentToken; // update to nested if
         		} else if (stk.isEmpty()) {
         			if (scan.currentToken.tokenStr.equals("else")
         					|| scan.currentToken.tokenStr.equals("endif")) {
         				break;
         			}
         		} else if (! stk.isEmpty()) {
+        			if (scan.currentToken.tokenStr.equals("else")) {
+        				if (! scan.nextToken.tokenStr.equals(":")) {
+        					error("Invalid terminating token for else: '"
+        							+ scan.nextToken.tokenStr + "'");
+        				}
+        			}
         			if (scan.currentToken.tokenStr.equals("endif")) {
+        				if (! scan.nextToken.tokenStr.equals(";")) {
+        					error("Invalid terminating token for endif: '"
+        							+ scan.nextToken.tokenStr + "'");
+        				}
         				stk.pop();
+        				if (! stk.isEmpty())
+        					statementToken = stk.peek();
+        				else 
+        					statementToken = beginningIf;
         			}
         		}
+        		if (scan.currentToken.primClassif == Token.EOF)
+    				error("If statement not terminated by endif.", statementToken);
+        		
         		scan.getNext();
-        	}
-    		endingToken = scan.currentToken;
-    		scan.getNext(); // consume the else or endif
-    		if (! scan.currentToken.tokenStr.equals(":")
-    				&& endingToken.tokenStr.equals("else")) {
-    			error("Invalid separator for else: '"
-        				+ scan.currentToken.tokenStr +"'.\n");
-    		} else if (! scan.currentToken.tokenStr.equals(";")
-    				&& endingToken.tokenStr.equals("endif")) {
-    			error("Invalid separator for endif: '"
-        				+ scan.currentToken.tokenStr +"'.\n");
-    		}
-    		if (endingToken.tokenStr.equals("else")) {
+        	} // endwhile
+        	
+        	// currentToken MUST be an else or an endif
+    		statementToken = scan.currentToken; // save for error checking
+    		scan.getNext(); // consume else or endif
+    		
+    		if (statementToken.tokenStr.equals("else")) {
+            	if (! scan.currentToken.tokenStr.equals(":")) {
+            		error("Invalid terminating token for else: '"
+            				+ scan.currentToken.tokenStr +"'", statementToken);
+            	}
         		scan.getNext(); // consume the separator
-    			// there was an else execute those statements
+        		
+    			// execute the statements in else
     			statements(true);
+    			
+    			// currentToken MUST be an else or endif
+            	if (scan.currentToken.tokenStr.equals("else")) {
+            		// an else is an error
+            		error("Unmatched else statement.");
+            	} else { // currentToken is not an else, must be an endif, check
+        			if (! scan.currentToken.tokenStr.equals("endif")) {
+        				error("Else statement not terminated by endif.", statementToken);
+        			} else {
+        				statementToken = scan.currentToken;
+        				scan.getNext();
+                    	if (! scan.currentToken.tokenStr.equals(";")) {
+                    		error("Invalid terminating token for endif: '"
+                					+ scan.currentToken.tokenStr + "'", statementToken);
+                    	}
+        			}
+            	}
+    		} else {
+        		if (! scan.currentToken.tokenStr.equals(";")) {
+        			error("Invalid terminating token for endif: '"
+        					+ scan.currentToken.tokenStr + "'", statementToken);
+        		}
     		}
     	}
 
@@ -762,12 +823,12 @@ public class Parser {
 
     		postAList.add(popped);
     	}
+    	
         return evaluateExpr(postAList);
     }
 
     // TODO: Edit error messages so they're more useful to end users.
-    // TODO: create a new error method that can deal with the currentToken (Not where the Scanner is at)
-    public ResultValue evaluateExpr(ArrayList list) throws ParserException {
+    public ResultValue evaluateExpr(ArrayList<Token> list) throws ParserException {
     	Stack<Token> stk = new Stack<Token>(); // a stack that will be used to do the math
 
     	Token currToken = new Token(); // Iterative token for the passed ArrayList
@@ -788,7 +849,7 @@ public class Parser {
     	// left to right (stacks don't have that functionality so using an ArrayList
     	// is the best solution
     	for (int i = 0; i < list.size(); i++) {
-    		currToken = (Token) list.get(i); // get the current Token from the ArrayList
+    		currToken = list.get(i); // get the current Token from the ArrayList
     		switch (currToken.primClassif) {
 	    		case Token.OPERAND:
 	    			// TODO: add functionality to properly accept arrays and functions
