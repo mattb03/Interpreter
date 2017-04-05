@@ -750,6 +750,12 @@ public class Parser {
     	// 2. check if the word "in" is in the line
     	//    a. if true, then its a foreach
     	//    b. else, its a counting for
+    	String forCond = getForCond();
+    	System.out.println("wasssaaaaaaa");
+
+	}
+    
+    public String getForCond() throws Exception {
     	String forCond = scan.currentToken.tokenStr + " " + scan.nextToken.tokenStr + " " + scan.getNext();
     	if (forCond.indexOf("=") != -1) {
     		// its a counter for loop
@@ -757,21 +763,28 @@ public class Parser {
     		for (i = 0; i < 3; i++) {
     			forCond += " " + scan.getNext();
     		}
-    		if (scan.nextToken.tokenStr.indexOf(":") != -1 ) {
-    			// condition complete
-    			forCond += scan.getNext();
+    		if (forCond.indexOf("to") == -1 ) {
+    			// error, missing "to" keyword
+				error("for loop missing \"to\" keyword: " + "\"" + forCond + "\"");
     		}
-    		else if (forCond.indexOf("by") != -1) {
-    			// it has an incr, keep reading
-    			
+    		forCond += scan.getNext();
+    		if (forCond.indexOf("by") == -1 && forCond.indexOf(":") == -1) {
+    			// error, missing "by" keyword and colon
+				error("for loop missing \":\" or \"by\" keyword: " + "\"" + forCond + "\"");
     		}
-    		else {
-    			
-    			// error
-				error("for loop missing terminating colon or \"by\" keyword: " + "\"" + forCond + "\"");
-    		}
+    		// if were here then its a valid counter for loop, so we can run it
     	}
-	}
+    	
+    	else if (forCond.indexOf("in") != -1) {
+    		// its a foreach loop
+    		return "for each loop";
+    	}
+    	else {
+    		// error, missing "=" sign or "in" keyword
+			error("for loop missing \"=\" or \"in\" keyword: " + "\"" + forCond + "\"");
+    	}
+    	return forCond;
+    }
     
     // assumes that this is called when currentToken = to the first operand
     // stops at the next token after the expression

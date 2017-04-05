@@ -5,6 +5,6 @@
 Int i;
 String szStr = "Can\'t wait";
 
-for i = 0 to 5
+for i = 0 to 5:
 	print (szStr);
 endfor;
