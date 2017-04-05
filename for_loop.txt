@@ -1,0 +1,10 @@
+//for cv = sv to limit by incr:
+//	doWork();
+//endfor;
+
+Int i;
+String szStr = "Can\'t wait";
+
+for i = 0 to 5
+	print (szStr);
+endfor;

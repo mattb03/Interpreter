@@ -1,4 +1,5 @@
 package havabol;
+import java.awt.event.FocusAdapter;
 import java.nio.file.Files;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -198,6 +199,8 @@ public class Parser {
             		error("Unmatched endwhile.");
             	}
             	return;
+            } else if (scan.currentToken.tokenStr.equals("for")) {
+            	forStmt();
             }
             
             scan.getNext();
@@ -742,6 +745,34 @@ public class Parser {
         }
     }
 
+    public void forStmt() throws Exception {
+		// 1. read in entire line
+    	// 2. check if the word "in" is in the line
+    	//    a. if true, then its a foreach
+    	//    b. else, its a counting for
+    	String forCond = scan.currentToken.tokenStr + " " + scan.nextToken.tokenStr + " " + scan.getNext();
+    	if (forCond.indexOf("=") != -1) {
+    		// its a counter for loop
+    		int i;
+    		for (i = 0; i < 3; i++) {
+    			forCond += " " + scan.getNext();
+    		}
+    		if (scan.nextToken.tokenStr.indexOf(":") != -1 ) {
+    			// condition complete
+    			forCond += scan.getNext();
+    		}
+    		else if (forCond.indexOf("by") != -1) {
+    			// it has an incr, keep reading
+    			
+    		}
+    		else {
+    			
+    			// error
+				error("for loop missing terminating colon or \"by\" keyword: " + "\"" + forCond + "\"");
+    		}
+    	}
+	}
+    
     // assumes that this is called when currentToken = to the first operand
     // stops at the next token after the expression
     public ResultValue expr(boolean funcCall) throws Exception {
