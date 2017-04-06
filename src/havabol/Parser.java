@@ -752,7 +752,10 @@ public class Parser {
     	//    b. else, its a counting for
     	String forCond = getForCond();
     	System.out.println("wasssaaaaaaa");
-
+    	// at this point we have the entire for loop condition, so we can begin evaluating
+    	// we will check for errors in it along the way
+    	
+    	
 	}
     
     public String getForCond() throws Exception {
@@ -767,12 +770,26 @@ public class Parser {
     			// error, missing "to" keyword
 				error("for loop missing \"to\" keyword: " + "\"" + forCond + "\"");
     		}
-    		forCond += scan.getNext();
+    		forCond += " " + scan.getNext();
     		if (forCond.indexOf("by") == -1 && forCond.indexOf(":") == -1) {
     			// error, missing "by" keyword and colon
-				error("for loop missing \":\" or \"by\" keyword: " + "\"" + forCond + "\"");
+				error("for loop missing terminating \":\" or \"by\" keyword: " + "\"" + forCond + "\"");
     		}
     		// if were here then its a valid counter for loop, so we can run it
+    		if (forCond.indexOf("by") != -1) {
+    			// theres an incr, so keep reading
+    			forCond += " ";
+    			forCond += scan.getNext() + " ";
+    			scan.getNext();
+    			// now we error check again
+    			if (scan.nextToken.tokenStr.indexOf(":") == -1) {
+    				error("for loop missing terminating \":\": " + "\"" + forCond + "\"");
+    			}
+    			else {
+    				// if the next token is a colon then add it to the forCond and return forCond
+    				forCond += scan.nextToken.tokenStr + " ";
+    			}
+    		}
     	}
     	
     	else if (forCond.indexOf("in") != -1) {
