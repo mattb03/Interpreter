@@ -363,7 +363,7 @@ public class Scanner {
             	this.lastLine = this.line;
                 this.line++;
             }
-            else if (c == ' ' || c == '\t')
+            else if (c == ' ' || c == '\t' || c == '\r')
             {
                 this.col++;
             }
@@ -394,67 +394,68 @@ public class Scanner {
             char c = this.buffer.charAt(i);
             if (c == '\r') {
                 this.buffer = this.buffer.substring(1);
-                return "";
-            }
-            retVal += c;
-
-            // if char is a delimiter
-            if (delimiters.indexOf(c) != -1)
-            {
-                // if first char in our run thru the remaining buffer
-                if (i == 0)
+                i -= 1;   // reset for loop back a character
+            // take care of carriage returns
+            } else {
+                retVal += c;
+                // if char is a delimiter
+                if (delimiters.indexOf(c) != -1)
                 {
-                    if (this.buffer.charAt(0) == '/' && this.buffer.charAt(1) == '/')
+                    // if first char in our run thru the remaining buffer
+                    if (i == 0)
                     {
-                        this.aComment = true;
-                        continue;
-                    }
-                    // if this first char is a quote
-                    if (retVal.charAt(0) == '"' || retVal.charAt(0) == '\'') // if a quote, add to retVal
-                    {
-                        continue;
-                    }
-                    // chop off one char from beginning of buffer
-                    this.buffer = this.buffer.substring(1);
-                    if (this.aComment)
+                        if (this.buffer.charAt(0) == '/' && this.buffer.charAt(1) == '/')
+                        {
+                            this.aComment = true;
+                            continue;
+                        }
+                        // if this first char is a quote
+                        if (retVal.charAt(0) == '"' || retVal.charAt(0) == '\'') // if a quote, add to retVal
+                        {
+                            continue;
+                        }
+                        // chop off one char from beginning of buffer
                         this.buffer = this.buffer.substring(1);
-                }
-                // if not the first char in our run thru buffer (aka first char in our token)
-                else
-                {
-                    // if the first char is our return val(token) was a quote
-                    if (retVal.charAt(0) == '"' || retVal.charAt(0) == '\'')
-                    {
-                        if (c == retVal.charAt(0))
-                        {
-                            // and if the char before it is NOT a backslash (escaping)
-                            if (retVal.charAt(i -1) != '\\' || (retVal.charAt(i-2) == '\\' && retVal.charAt(i-1) == '\\'))
-                            {
-                                // make this our return val (token)
-                                retVal = retVal.substring(0, retVal.length());
-                                // chop this piece off front of our buffer
-                                this.buffer = this.buffer.substring(retVal.length());
-                                break;
-                            }
-                        }
-                        // not first char in our buffer(aka our token), first char starts with a quote
-                        // and char is a line feed
-                        else if (c == '\n')
-                        {
-                            // set col num to this token's length
-                            this.col += retVal.length();
-                            this.handleErrors(retVal, NON_TERMINATED_STRING);
-                        }
-                        continue;
+                        if (this.aComment)
+                            this.buffer = this.buffer.substring(1);
                     }
-                    // not on first char in our current buffer, but we didnt hit any above conditions, we will
-                    // blindly add this to our return val
-                    retVal = retVal.substring(0, retVal.length() - 1);
-                    // chop our built up return val off the front of the buffer
-                    this.buffer = this.buffer.substring(retVal.length());
+                    // if not the first char in our run thru buffer (aka first char in our token)
+                    else
+                    {
+                        // if the first char is our return val(token) was a quote
+                        if (retVal.charAt(0) == '"' || retVal.charAt(0) == '\'')
+                        {
+                            if (c == retVal.charAt(0))
+                            {
+                                // and if the char before it is NOT a backslash (escaping)
+                                if (retVal.charAt(i -1) != '\\' || (retVal.charAt(i-2) == '\\' && retVal.charAt(i-1) == '\\'))
+                                {
+                                    // make this our return val (token)
+                                    retVal = retVal.substring(0, retVal.length());
+                                    // chop this piece off front of our buffer
+                                    this.buffer = this.buffer.substring(retVal.length());
+                                    break;
+                                }
+                            }
+                            // not first char in our buffer(aka our token), first char starts with a quote
+                            // and char is a line feed
+                            else if (c == '\n')
+                            {
+                                // set col num to this token's length
+                                this.col += retVal.length();
+                                this.handleErrors(retVal, NON_TERMINATED_STRING);
+                            }
+                            continue;
+                        }
+                        // not on first char in our current buffer, but we didnt hit any above conditions, we will
+                        // blindly add this to our return val
+                        retVal = retVal.substring(0, retVal.length() - 1);
+                        // chop our built up return val off the front of the buffer
+                        this.buffer = this.buffer.substring(retVal.length());
+                    }
+                    if (!this.aComment)
+                        break;
                 }
-                if (!this.aComment)
-                    break;
             }
         }
 

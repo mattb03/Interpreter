@@ -9,7 +9,7 @@ public class Numeric {
 
 	public Numeric(Parser parser, ResultValue res, String op, String opPos) throws ParserException {
 		if (res.value.equals("NO VALUE")) {
-			parser.error("Symbol has not been initialized.");
+			parser.error(opPos+" '"+parser.startOfExprToken.tokenStr+"' has not been initialized."+parser.startOfExprToken.tokenStr, parser.startOfExprToken);
 		}
 		try {
 			integerValue = Integer.parseInt(res.value);
@@ -23,7 +23,7 @@ public class Numeric {
 				strValue = Double.toString(doubleValue);
 				type = Token.FLOAT;
 			} catch (Exception f) {
-				parser.error(opPos + " of " + op + " operand isn't a valid numeric type", parser.startOfExprToken);
+				parser.error(opPos + " of " + op + " operator isn't a valid numeric type", parser.startOfExprToken);
 			}
 		}
 	}
