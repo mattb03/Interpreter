@@ -1,14 +1,8 @@
 package havabol;
-import java.awt.event.FocusAdapter;
-import java.nio.file.Files;
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import javax.management.RuntimeErrorException;
-import javax.print.attribute.standard.RequestingUserName;
-
-import jdk.internal.org.objectweb.asm.tree.analysis.Analyzer;
+import java.util.ArrayList;
+import java.util.EmptyStackException;
+import java.util.Stack;
 
 public class Parser {
 
@@ -798,6 +792,41 @@ public class Parser {
 							assign(scan.currentToken, true);
 						}
 					}
+					// now get the limit
+					if (!scan.currentToken.tokenStr.equals("to")) {
+						error("Missing " + "\"" + "to" + "\"" + " keyword in for loop");
+					}
+					scan.getNext();
+					if (scan.nextToken.tokenStr.equals(":")) {
+						// run the code until cv = limit
+						STIdentifier limitIdent = (STIdentifier) st.getSymbol(scan.currentToken.tokenStr);
+						int start = Integer.parseInt(tempIdent.value);
+						if (limitIdent == null) {
+							// if its an identifier and not in the symbol table, then error
+							if (scan.currentToken.subClassif == 1) {
+								error("\"" + scan.currentToken.tokenStr + "\"" + " is an undeclared identifier");
+							}
+						}
+						else {
+							// we found the identifier in the symbol table, make sure it has a value
+							if (limitIdent.value.equals("NO VALUE")) {
+								error("The identifier " + "\"" + limitIdent.symbol + "\"" + " has no value");
+							}
+							int end = Integer.parseInt(limitIdent.value);
+							for (i = start; i < end; i++) {
+								statements(true);
+							}
+						}
+						
+					}
+					else {
+						// there should be an incr variable
+						if (!scan.nextToken.tokenStr.equals("by")) {
+							error("Missing " + "\"" + "by" + "\"" + " keyword in for loop");
+						}
+						
+					}
+					System.out.println("what is this shit");
 				}
 				// if its not the keyword "to" or an operator then error
 		    	else {
