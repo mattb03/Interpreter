@@ -8,6 +8,8 @@ import java.util.regex.Pattern;
 import javax.management.RuntimeErrorException;
 import javax.print.attribute.standard.RequestingUserName;
 
+import jdk.internal.org.objectweb.asm.tree.analysis.Analyzer;
+
 public class Parser {
 
     public Scanner scan;
@@ -757,63 +759,59 @@ public class Parser {
     }
 
     public void forStmt() throws Exception {
-		// 1. read in entire line
-    	// 2. check if the word "in" is in the line
-    	//    a. if true, then its a foreach
-    	//    b. else, its a counting for
-    	String forCond = getForCond();
-    	System.out.println("wasssaaaaaaa");
-    	// at this point we have the entire for loop condition, so we can begin evaluating
-    	// we will check for errors in it along the way
-    	
-    	
+    	// save the scanner state to revert back to original when done
+    	Scanner savedScanner = this.scan.saveState();
+    	String temp = scan.currentToken.tokenStr + " " + scan.nextToken.tokenStr + " " + scan.getNext();
+    	int i;
+
+    	// restore the state so we can use getNext()
+    	this.scan = savedScanner;
+    	scan.getNext();
+
+		int k;
+		// begin first argument analysis
+		// check if its an operand
+		if (scan.currentToken.subClassif == 1) {
+			// make sure its not in the symbol table
+			STIdentifier tempIdent = (STIdentifier) st.getSymbol(scan.currentToken.tokenStr);
+			if (scan.nextToken.equals("in")) {
+				// should be a foreach loop
+				if (tempIdent != null) {
+					error("\"" + scan.currentToken.tokenStr + "\"" + " has already been declared");
+				}
+			}
+			else {
+				// should be a counting for loop
+				if (tempIdent == null) {
+					error("Variable " + "\"" + scan.currentToken.tokenStr + "\"" + " has not been declared");
+				}
+				// begin second argument analysis
+				ResultValue resVal = null;
+				if (!scan.nextToken.tokenStr.equals("to")) {
+					// if its not the word "to" it must be an operator
+					if (scan.nextToken.primClassif == 2) { 
+						// only call expr(...) if its not an equal sign
+						if (!scan.nextToken.tokenStr.equals("=")) {
+							resVal = expr(false);
+						}
+						if (scan.nextToken.tokenStr.equals("=")) {
+							assign(scan.currentToken, true);
+						}
+					}
+				}
+				// if its not the keyword "to" or an operator then error
+		    	else {
+		    		error("\"" + scan.nextToken.tokenStr + "\"" + " is not a valid token");
+		    	}
+			}
+		}
+		// if the first argument is not an operand then error
+		else {
+			error("First argument is not a valid operand: " + "\"" + scan.currentToken.tokenStr + "\"");
+		}
+		// end first argument analysis
 	}
-    
-    public String getForCond() throws Exception {
-    	String forCond = scan.currentToken.tokenStr + " " + scan.nextToken.tokenStr + " " + scan.getNext();
-    	if (forCond.indexOf("=") != -1) {
-    		// its a counter for loop
-    		int i;
-    		for (i = 0; i < 3; i++) {
-    			forCond += " " + scan.getNext();
-    		}
-    		if (forCond.indexOf("to") == -1 ) {
-    			// error, missing "to" keyword
-				error("for loop missing \"to\" keyword: " + "\"" + forCond + "\"");
-    		}
-    		forCond += " " + scan.getNext();
-    		if (forCond.indexOf("by") == -1 && forCond.indexOf(":") == -1) {
-    			// error, missing "by" keyword and colon
-				error("for loop missing terminating \":\" or \"by\" keyword: " + "\"" + forCond + "\"");
-    		}
-    		// if were here then its a valid counter for loop, so we can run it
-    		if (forCond.indexOf("by") != -1) {
-    			// theres an incr, so keep reading
-    			forCond += " ";
-    			forCond += scan.getNext() + " ";
-    			scan.getNext();
-    			// now we error check again
-    			if (scan.nextToken.tokenStr.indexOf(":") == -1) {
-    				error("for loop missing terminating \":\": " + "\"" + forCond + "\"");
-    			}
-    			else {
-    				// if the next token is a colon then add it to the forCond and return forCond
-    				forCond += scan.nextToken.tokenStr + " ";
-    			}
-    		}
-    	}
-    	
-    	else if (forCond.indexOf("in") != -1) {
-    		// its a foreach loop
-    		return "for each loop";
-    	}
-    	else {
-    		// error, missing "=" sign or "in" keyword
-			error("for loop missing \"=\" or \"in\" keyword: " + "\"" + forCond + "\"");
-    	}
-    	return forCond;
-    }
-    
+
     // assumes that this is called when currentToken = to the first operand
     // stops at the next token after the expression
     public ResultValue expr(boolean funcCall) throws Exception {
@@ -837,7 +835,10 @@ public class Parser {
     		tok.setPrecedence();
     		switch (tok.primClassif) {
     			case Token.OPERAND:
-    				postAList.add(tok);
+    				if (tok.tokenStr.equals("to")) {
+    			        return evaluateExpr(postAList);
+    				}
+					postAList.add(tok);
     				break;
     			case Token.OPERATOR:
     				while (! mainStack.isEmpty()) {
