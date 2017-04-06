@@ -696,20 +696,31 @@ public class Parser {
 
 
     public void whileStmt() throws Exception  {
-    	Scanner old = this.scan.saveState();
+    	Scanner old = scan.saveState();
+    	Token beginningWhile;
+    	Token statementToken = beginningWhile = scan.currentToken; // used for saving the statement token for errors
 
-        scan.getNext();
+        scan.getNext(); // consume while
         ResultValue resCond = expr(false);
+        
+        if (! scan.currentToken.tokenStr.equals(":")) {
+        	error("Invalid terminating token for while: '"
+        			+ scan.currentToken.tokenStr + "'", beginningWhile);
+        }
+        scan.getNext(); // consume separator
 
         if (resCond.value.equals("T")) {
         	while (resCond.value.equals("T")) {
 	        	statements(true);
-	        	if (! scan.currentToken.tokenStr.equals("endwhile")) {
-	        		error("While not terminated by endwhile.");
+	        	// currentToken MUST be an endwhile
+	        	statementToken = scan.currentToken;
+	        	if (! statementToken.tokenStr.equals("endwhile")) {
+	        		error("While not terminated by endwhile.", beginningWhile);
 	        	}
-	        	scan.getNext();
+	        	scan.getNext(); // consume endwhile
             	if (! scan.currentToken.tokenStr.equals(";")) {
-            		error("endwhile is not correctly terminated.");
+            		error("Invalid terminating token for endwhile: '"
+            				+ scan.currentToken.tokenStr + "'", statementToken);
             	}
 	        	scan = old.saveState();
 	        	scan.getNext();
@@ -821,7 +832,8 @@ public class Parser {
     	while (tok.primClassif == Token.OPERAND
     			|| tok.primClassif == Token.OPERATOR
     			|| tok.tokenStr.equals("(")
-    			|| tok.tokenStr.equals(")")) {
+    			|| tok.tokenStr.equals(")") 
+    			|| tok.tokenStr.equals("]")) {
     		tok.setPrecedence();
     		switch (tok.primClassif) {
     			case Token.OPERAND:
@@ -867,12 +879,12 @@ public class Parser {
     					    }
     						break;
     					default:
-    						error("Invalid separator in expression");
+    						error("Invalid separator in expression", startOfExprToken);
     						break;
     				}
     				break;
     			default:
-    				error("Invalid operator/operand in expression");
+    				error("Invalid operator/operand in expression", startOfExprToken);
     		}
     		scan.getNext();
     		tok = scan.currentToken;
@@ -925,12 +937,12 @@ public class Parser {
 	    				try {
 		    				tokOp2 = (Token) stk.pop(); // grab the right operand (the only operand)
 		    			} catch (EmptyStackException a) {
-		    				error("Missing right expression operand.");
+		    				error("Missing right expression operand for unary minus.", currToken);
 		    			}
 	    				if (tokOp2.subClassif == Token.IDENTIFIER) {
 	    					STEntry stEnt2 = st.getSymbol(tokOp2.tokenStr);
 	    					if (stEnt2 == null) {
-	    	                    error("Symbol '"+tokOp2+"' is not in Symbol Table.");
+	    	                    error("Symbol '"+tokOp2+"' is not in Symbol Table.", tokOp2);
 	    	                }
 	    					resOp2 = new ResultValue(stEnt2.value);
 	    					resOp2.type = ((STIdentifier)stEnt2).type;
@@ -957,12 +969,14 @@ public class Parser {
 		    			try {
 		    				tokOp2 = (Token) stk.pop(); // grab the right operand
 		    			} catch (EmptyStackException a) {
-		    				error("Missing expression operand. For operator: " + currToken.tokenStr);
+		    				error("Missing expression operand. For operator: '"
+		    						+ currToken.tokenStr + "'", currToken);
 		    			}
 		    			try {
 		    				tokOp1 = (Token) stk.pop(); // grab the left operand
 		    			} catch (EmptyStackException b) {
-		    				error("Missing expression operand. For operator: " + currToken.tokenStr);
+		    				error("Missing expression operand. For operator: '"
+		    						+ currToken.tokenStr + "'", currToken);
 		    			}
 
 		    			// set the ResultValue objects of the operands
@@ -971,7 +985,7 @@ public class Parser {
 		    			if (tokOp1.subClassif == Token.IDENTIFIER) {
 		    				STEntry stEnt1 = st.getSymbol(tokOp1.tokenStr);
 		    				if (stEnt1 == null) {
-	    	                    error("Symbol '"+tokOp1.tokenStr+"' is not in Symbol Table.");
+	    	                    error("Symbol '"+tokOp1.tokenStr+"' is not in Symbol Table.", tokOp1);
 	    	                }
 		    				resOp1 = new ResultValue(stEnt1.value);
 		    				resOp1.type = ((STIdentifier)stEnt1).type;
@@ -986,7 +1000,7 @@ public class Parser {
 		    			if (tokOp2.subClassif == Token.IDENTIFIER) {
 		    				STEntry stEnt2 = st.getSymbol(tokOp2.tokenStr);
 		    				if (stEnt2 == null) {
-	    	                    error("Symbol '"+tokOp2.tokenStr+"' is not in Symbol Table.");
+	    	                    error("Symbol '"+tokOp2.tokenStr+"' is not in Symbol Table.", tokOp2);
 	    	                }
 		    				resOp2 = new ResultValue(stEnt2.value);
 		    				resOp2.type = ((STIdentifier)stEnt2).type;
@@ -1062,10 +1076,8 @@ public class Parser {
 			    				resTemp = Utility.booleanConditionals(this, resOp1, resOp2, "or");
 			    				break;
 							default:
-								//error("Invalid operator in expression.");
-					            throw new ParserException(scan.currentToken.iSourceLineNr,
-					                    "Invalid operator in expression: '" + currToken.tokenStr + "'",
-					                    scan.sourceFileNm, scan.lines[scan.currentToken.iSourceLineNr]);
+								error("Invalid operator in expression: '"
+									+ currToken.tokenStr + "'", startOfExprToken);
 		    			} // end of inner Operator switch
 
 		    			// add our new value to the stack
@@ -1086,7 +1098,8 @@ public class Parser {
 	    			} // end of unary if
 		    		break; // end of operator case
 		    		default:
-		    			error("Invalid operand in expression.");
+		    			error("Invalid operand in expression: '"
+								+ currToken.tokenStr + "'", startOfExprToken);
     		} // end of primClassif switch
 
     	} // end of ArrayList loop
@@ -1104,7 +1117,7 @@ public class Parser {
     			if (extraToken2.subClassif == Token.IDENTIFIER) { // test to see if it's just a variable
     				STEntry stExtra = st.getSymbol(extraToken2.tokenStr);
     				if (stExtra == null) {
-	                    error("Symbol '"+extraToken2.tokenStr+"' is not in Symbol Table.");
+	                    error("Symbol '"+extraToken2.tokenStr+"' is not in Symbol Table.", extraToken2);
 	                }
     				resMain.value = stExtra.value;
     				resMain.type = ((STIdentifier)stExtra).type;
@@ -1116,10 +1129,10 @@ public class Parser {
         			resMain.type = extraToken2.subClassif;
     			} // end of identifier check
     		} else {
-    			error("Unbalanced Expression."); // this error should have been caught by all the other checks
+    			error("Unbalanced Expression.", startOfExprToken); // this error should have been caught by all the other checks
     		} // end of size check
     	} else {
-    		error("Invalid expression. Found : ''"); // this error should have been caught by all the other checks
+    		error("Invalid expression.", startOfExprToken); // this error should have been caught by all the other checks
     	} // end of empty check
 
     	return resMain; // return your brand new value!
