@@ -1,11 +1,13 @@
 debug Token on ;
 //debug Assign on;
 //debug Expr on;
-Int a = 10 * 10;
-print(a);
+//Int a = 10 * 10;
+//print(a);
 
-Int arrayy[a];
+
+//Int arrayy[a];
 Int array[] = 1,2,3;
+array[1] = 100;
 //Int array1[10 + 10];
 Int array2 = 10;
 print(array);

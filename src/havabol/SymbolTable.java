@@ -79,6 +79,11 @@ public class SymbolTable
         }
     }
 
+    public void putArray(String symbol, STIdentifier entry)
+    {
+        table.put(symbol, entry);
+    }
+
     /*public void setDataType (STIdentifier ident, int type)
     {
     	String symbol = ident.symbol;
