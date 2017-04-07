@@ -173,7 +173,7 @@ public class Parser {
                         if (scan.currentToken.tokenStr.equals("]")) {
                             STIdentifier array = new STIdentifier(this,
                                 tokk.tokenStr, tokk.primClassif, tokk.subClassif, -100, type);
-                            st.putSymbol(tokk.tokenStr, array);
+                            st.putArray(tokk.tokenStr, array);
                             if (scan.nextToken.tokenStr.equals(";"))
                                 error("Malformed array declaration");
                         } else {  // next token is NOT ']', its either a literal or a variable
@@ -181,7 +181,7 @@ public class Parser {
                                 if (scan.currentToken.tokenStr.equals("unbound")) {
                                     STIdentifier array = new STIdentifier(this,
                                         tokk.tokenStr, tokk.primClassif, tokk.subClassif, -1, type);
-                                    st.putSymbol(tokk.tokenStr, array);
+                                    st.putArray(tokk.tokenStr, array);
                                 } else {
                                     ResultValue result = expr(true);
                                     System.err.println("value is: "+result.value);
@@ -190,12 +190,12 @@ public class Parser {
                             } catch (NumberFormatException e) { // if a float or other we get here
                                 error(scan.currentToken.tokenStr+" is not a valid size parameter");
                             }
-
-                            if (scan.nextToken.tokenStr.equals("="))
-                                declareArray(tokk);
-                            else if (scan.nextToken.tokenStr.equals(";"))
-                                scan.getNext();
                         }
+
+                        if (scan.nextToken.tokenStr.equals("="))
+                            declareArray(tokk);
+                        else if (scan.nextToken.tokenStr.equals(";"))
+                            scan.getNext();
                     }
                 }
             } else if (scan.currentToken.subClassif == Token.IDENTIFIER) { // if token is an identifier
@@ -212,7 +212,7 @@ public class Parser {
                     }
                 } else if (scan.nextToken.tokenStr.equals("[")) { // array logic!!!!!!!!!!!!!!!!!!!!!!!
                     scan.getNext(); // get "["
-                    if (scan.nextToken.subClassif != Token.IDENTIFIER || scan.nextToken.subClassif != Token.INTEGER)
+                    if (scan.nextToken.subClassif != Token.IDENTIFIER && scan.nextToken.subClassif != Token.INTEGER)
                         error("Malformed array declaration");
                     scan.getNext(); // get index
                     ResultValue resVal  = expr(true);  // pass in true to expr if using an array or inside a func
@@ -882,7 +882,6 @@ public class Parser {
 						}
 
 					}
-					System.out.println("what is this shit");
 				}
 				// if its not the keyword "to" or an operator then error
 		    	else {
@@ -900,8 +899,6 @@ public class Parser {
     // assumes that this is called when currentToken = to the first operand
     // stops at the next token after the expression
     public ResultValue expr(boolean funcCall) throws Exception {
-        System.out.println("EXPR");
-
         Stack<Token> mainStack = new Stack<Token>();
         ArrayList<Token> postAList = new ArrayList<Token>();
         Token tok = new Token();
@@ -966,6 +963,20 @@ public class Parser {
                                 return evaluateExpr(postAList);
     					    }
     						break;
+                        case "]":
+                        bFound = false;
+
+                        if (!bFound && funcCall) {
+                            while (!mainStack.isEmpty()) {
+                                popped = mainStack.pop();
+                                if (popped.tokenStr.equals("[")) {
+                                    error("Missing ']' separator");
+                                }
+                                postAList.add(popped);
+                            }
+                            return evaluateExpr(postAList);
+                        }
+                        break;
     					default:
     						error("Invalid separator in expression", startOfExprToken);
     						break;
@@ -1237,4 +1248,6 @@ public class Parser {
                 , fmt, scan.sourceFileNm, scan.lines[tok.iSourceLineNr - 1]);
     }
 }
+
+
 
