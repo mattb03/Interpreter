@@ -241,8 +241,9 @@ public class Parser {
                 return;
             } else if (scan.currentToken.tokenStr.equals("for")) {
                 forStmt();
-            }
-
+            } else if (scan.currentToken.tokenStr.equals("endfor")) {
+            	return;
+            }            
             scan.getNext();
             if (scan.nextToken.primClassif == Token.EOF) {
                 break;
@@ -823,16 +824,16 @@ public class Parser {
 		// check if its an operand
 		if (scan.currentToken.subClassif == 1) {
 			// make sure its not in the symbol table
-			STIdentifier tempIdent = (STIdentifier) st.getSymbol(scan.currentToken.tokenStr);
+			STIdentifier startIdent = (STIdentifier) st.getSymbol(scan.currentToken.tokenStr);
 			if (scan.nextToken.equals("in")) {
 				// should be a foreach loop
-				if (tempIdent != null) {
+				if (startIdent != null) {
 					error("\"" + scan.currentToken.tokenStr + "\"" + " has already been declared");
 				}
 			}
 			else {
 				// should be a counting for loop
-				if (tempIdent == null) {
+				if (startIdent == null) {
 					error("Variable " + "\"" + scan.currentToken.tokenStr + "\"" + " has not been declared");
 				}
 				// begin second argument analysis
@@ -854,13 +855,22 @@ public class Parser {
 					}
 					scan.getNext();
 					if (scan.nextToken.tokenStr.equals(":")) {
+						int end = 0;
 						// run the code until cv = limit
 						STIdentifier limitIdent = (STIdentifier) st.getSymbol(scan.currentToken.tokenStr);
-						int start = Integer.parseInt(tempIdent.value);
+						int start = Integer.parseInt(startIdent.value);
 						if (limitIdent == null) {
 							// if its an identifier and not in the symbol table, then error
 							if (scan.currentToken.subClassif == 1) {
 								error("\"" + scan.currentToken.tokenStr + "\"" + " is an undeclared identifier");
+							}
+							// if the limit is not a integer or float constant, then error
+							else if (scan.currentToken.subClassif != 2 && scan.currentToken.subClassif != 3) {
+								error("\"" + scan.currentToken.tokenStr + "\"" + " is not a valid ending limit");
+							}
+							// if its a valid integer or float constant, assign the ending value to it
+							else {
+								end = Integer.parseInt(scan.currentToken.tokenStr);
 							}
 						}
 						else {
@@ -868,12 +878,22 @@ public class Parser {
 							if (limitIdent.value.equals("NO VALUE")) {
 								error("The identifier " + "\"" + limitIdent.symbol + "\"" + " has no value");
 							}
-							int end = Integer.parseInt(limitIdent.value);
-							for (i = start; i < end; i++) {
-								statements(true);
+							// if the limit is not a limit or float constant, then error
+							if (scan.currentToken.subClassif != 2 && scan.currentToken.subClassif != 3) {
+								error("\"" + scan.currentToken.tokenStr + "\"" + " is not a valid ending limit");
+							}
+							end = Integer.parseInt(limitIdent.value);
+						}
+						
+						for (i = start; i < end; i++) {
+							savedScanner = this.scan.saveState();
+							
+							statements(true);
+							// only reset the buffer to top of loop if we are running the loop again
+							if (i+1 < end) {
+								this.scan = savedScanner;
 							}
 						}
-
 					}
 					else {
 						// there should be an incr variable
@@ -882,7 +902,6 @@ public class Parser {
 						}
 
 					}
-					System.out.println("what is this shit");
 				}
 				// if its not the keyword "to" or an operator then error
 		    	else {
@@ -895,6 +914,21 @@ public class Parser {
 			error("First argument is not a valid operand: " + "\"" + scan.currentToken.tokenStr + "\"");
 		}
 		// end first argument analysis
+		// now we skip to the endfor if we are not already there
+		while (!scan.currentToken.tokenStr.equals("endfor") && 
+				!scan.currentToken.tokenStr.equals("for") && 
+				scan.currentToken.primClassif != scan.currentToken.EOF) {
+			scan.getNext();
+		}
+		// if the current token is a "for" or EOF, then error, we did not find a matching endfor
+		if (scan.currentToken.tokenStr.equals("for") || 
+				scan.currentToken.primClassif == scan.currentToken.EOF) {
+			error("No terminating " + "\"" + "endfor" + "\"" + " for for loop");
+		}
+		// make sure there is a terminating semicolon after the endfor
+		if (!scan.nextToken.tokenStr.equals(";")) {
+			error("No terminating " + "\"" + ";" + "\"" + " after endfor");
+		}
 	}
 
     // assumes that this is called when currentToken = to the first operand
@@ -923,6 +957,12 @@ public class Parser {
     		switch (tok.primClassif) {
     			case Token.OPERAND:
     				if (tok.tokenStr.equals("to")) {
+    					while (! mainStack.isEmpty()) {
+    						popped = mainStack.pop();
+	    		    		if (popped.tokenStr.equals("("))
+	    		    			error("Missing ')' separator");
+	    		    		postAList.add(popped);
+    					}
     			        return evaluateExpr(postAList);
     				}
 					postAList.add(tok);

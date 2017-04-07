@@ -3,9 +3,10 @@
 //endfor;
 
 Int i = 5;
+Int j = 2;
 Int array;
 String szStr = "Can\'t wait";
 
-for i = 0 to 5:
+for i = j * 5 to 5:
 	print (szStr);
 endfor;
