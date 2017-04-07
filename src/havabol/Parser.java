@@ -188,7 +188,7 @@ public class Parser {
                                     int size = Integer.parseInt(result.value);  // check if its value is an int or not
                                 }
                             } catch (NumberFormatException e) { // if a float or other we get here
-                                error(scan.currentToken.tokenStr+" is not a valid size parameter");
+                                error("'"+this.startOfExprToken.tokenStr+"' is not a valid size parameter");
                             }
                         }
 
@@ -215,8 +215,13 @@ public class Parser {
                     if (scan.nextToken.subClassif != Token.IDENTIFIER && scan.nextToken.subClassif != Token.INTEGER)
                         error("Malformed array declaration");
                     scan.getNext(); // get index
-                    ResultValue resVal  = expr(true);  // pass in true to expr if using an array or inside a func
-                    entry.array.set(Integer.parseInt(resVal.value), resVal);
+                    ResultValue ind  = expr(true);  // pass in true to expr if using an array or inside a func
+                    scan.getNext(); // got '='
+                    if (!scan.currentToken.tokenStr.equals("="))
+                        error("Invalid array statement. Expected '='");
+                    scan.getNext();
+                    ResultValue resVal = expr(false);
+                    entry.array.set(Integer.parseInt(ind.value), resVal);
                 } else {
                 	error("Invalid assign. Expected '='. Found : "+scan.currentToken.tokenStr);
                 }
@@ -1233,7 +1238,7 @@ public class Parser {
                 error("Unbalanced Expression.", startOfExprToken); // this error should have been caught by all the other checks
             } // end of size check
         } else {
-            error("Invalid expression.", startOfExprToken); // this error should have been caught by all the other checks
+            error("'"+startOfExprToken.tokenStr+"' is an invalid expression."); // this error should have been caught by all the other checks
         } // end of empty check
         return resMain; // return your brand new value!
     }

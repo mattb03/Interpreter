@@ -1,19 +1,23 @@
 debug Token on ;
 //debug Assign on;
 //debug Expr on;
-//Int a = 10 * 10;
+//Int a = 10;
+//Float f = 3.14;
 //print(a);
 
-
-//Int arrayy[a];
+//Int arrayy[1 +2];
+//Int array10[10];
 Int array[] = 1,2,3;
-array[1] = 100;
-//Int array1[10 + 10];
+
+array[1] = 10.1; // should not let me assign this value!!!!!!
+
+print("HERE!!!!!!!!!!!!");
 Int array2 = 10;
+
 print(array);
+
+
 debug Exit on;
-
-
 
 
 
@@ -27,7 +31,6 @@ print("b = ", b);
 print(array);
 
 print("array = ", array);
-debug Exit on;
 
 //Int array [a] ;
 
