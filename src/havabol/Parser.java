@@ -603,7 +603,7 @@ public class Parser {
             	while (true) {
             		if (scan.currentToken.tokenStr.equals("if")) {
             			stk.push(scan.currentToken);
-            			//statementToken = scan.currentToken; // update to nested if
+            			statementToken = scan.currentToken; // update to nested if
             		} else if (stk.isEmpty()) {
             			if (scan.currentToken.tokenStr.equals("else")
             					|| scan.currentToken.tokenStr.equals("endif")) {
