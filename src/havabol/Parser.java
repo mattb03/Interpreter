@@ -812,6 +812,7 @@ public class Parser {
     public void forStmt() throws Exception {
     	// save the scanner state to revert back to original when done
     	Scanner savedScanner = this.scan.saveState();
+    	Token startToken = scan.currentToken.saveToken();
     	String temp = scan.currentToken.tokenStr + " " + scan.nextToken.tokenStr + " " + scan.getNext();
     	int i;
 
@@ -819,7 +820,6 @@ public class Parser {
     	this.scan = savedScanner;
     	scan.getNext();
 
-		int k;
 		// begin first argument analysis
 		// check if its an operand
 		if (scan.currentToken.subClassif == 1) {
@@ -884,13 +884,15 @@ public class Parser {
 							}
 							end = Integer.parseInt(limitIdent.value);
 						}
-						
-						for (i = start; i < end; i++) {
+						i = start;
+						//for (i = start; i < end; i++) {
+						while (i < end) {
 							savedScanner = this.scan.saveState();
-							
 							statements(true);
+							i = Integer.parseInt(startIdent.value);
+							i++;
 							// only reset the buffer to top of loop if we are running the loop again
-							if (i+1 < end) {
+							if (i < end) {
 								this.scan = savedScanner;
 							}
 						}
@@ -900,7 +902,6 @@ public class Parser {
 						if (!scan.nextToken.tokenStr.equals("by")) {
 							error("Missing " + "\"" + "by" + "\"" + " keyword in for loop");
 						}
-
 					}
 				}
 				// if its not the keyword "to" or an operator then error
@@ -921,9 +922,11 @@ public class Parser {
 			scan.getNext();
 		}
 		// if the current token is a "for" or EOF, then error, we did not find a matching endfor
-		if (scan.currentToken.tokenStr.equals("for") || 
-				scan.currentToken.primClassif == scan.currentToken.EOF) {
+		if (scan.currentToken.tokenStr.equals("for")) {
 			error("No terminating " + "\"" + "endfor" + "\"" + " for for loop");
+		}
+		else if(scan.currentToken.primClassif == scan.currentToken.EOF) {
+			error("No terminating " + "\"" + "endfor" + "\"" + " for for loop", startToken);
 		}
 		// make sure there is a terminating semicolon after the endfor
 		if (!scan.nextToken.tokenStr.equals(";")) {
