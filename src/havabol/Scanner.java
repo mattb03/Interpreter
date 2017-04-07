@@ -390,12 +390,11 @@ public class Scanner {
         // start running thru rest of buffer
         for (i = 0; i < this.buffer.length(); i++)
         {
-            // take care of carraige returns
+            // take care of carriage returns
             char c = this.buffer.charAt(i);
             if (c == '\r') {
                 this.buffer = this.buffer.substring(1);
                 i -= 1;   // reset for loop back a character
-            // take care of carriage returns
             } else {
                 retVal += c;
                 // if char is a delimiter
