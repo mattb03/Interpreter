@@ -776,12 +776,19 @@ public class Parser {
                 while (true) {
                     if (scan.currentToken.tokenStr.equals("while")) {
                         stk.push(scan.currentToken);
+                        statementToken = scan.currentToken; // update to nested while
                     } else if (stk.isEmpty() && scan.currentToken.tokenStr.equals("endwhile")) {
                         scan.getNext(); // consume endwhile
                         return;
                     } else if (! stk.isEmpty() && scan.currentToken.tokenStr.equals("endwhile")) {
                         stk.pop();
+        				if (! stk.isEmpty())
+        					statementToken = stk.peek();
+        				else 
+        					statementToken = beginningWhile;
                     }
+                    if (scan.currentToken.primClassif == Token.EOF)
+        				error("While statement not terminated by endwhile.", statementToken);
                     scan.getNext();
                 }
             }
@@ -790,12 +797,27 @@ public class Parser {
             while (true) {
                 if (scan.currentToken.tokenStr.equals("while")) {
                     stk.push(scan.currentToken);
+                    statementToken = scan.currentToken; // update to nested while
                 } else if (stk.isEmpty() && scan.currentToken.tokenStr.equals("endwhile")) {
+    				if (! scan.nextToken.tokenStr.equals(";")) {
+    					error("Invalid terminating token for endwhile: '"
+    							+ scan.nextToken.tokenStr + "'");
+    				}
                     scan.getNext(); // consume endwhile
                     return;
                 } else if (! stk.isEmpty() && scan.currentToken.tokenStr.equals("endwhile")) {
+    				if (! scan.nextToken.tokenStr.equals(";")) {
+    					error("Invalid terminating token for endwhile: '"
+    							+ scan.nextToken.tokenStr + "'");
+    				}
                     stk.pop();
+    				if (! stk.isEmpty())
+    					statementToken = stk.peek();
+    				else 
+    					statementToken = beginningWhile;
                 }
+                if (scan.currentToken.primClassif == Token.EOF)
+    				error("While statement not terminated by endwhile.", statementToken);
                 scan.getNext();
             }
         }
