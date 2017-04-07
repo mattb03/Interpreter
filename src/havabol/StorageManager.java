@@ -50,7 +50,7 @@ public class StorageManager {
             if (this.isBounded) {
                 this.parser.error("Out of bounds exception");
             } else {
-                offset = index - size;
+                offset = index - this.size;
                 for (int i=0; i < offset; i++) {
                     this.val.add(this.defaultVal); // setting to defualt value
                 }
@@ -64,10 +64,19 @@ public class StorageManager {
     public ResultValue get(int index) throws Exception {
         ResultValue retVal = new ResultValue("");
         retVal.type = this.type;
+        int offset;
         try {
             retVal.value = this.val.get(index);
         } catch (Exception e) {
-            this.parser.error("Out of bounds exception");
+            if (this.isBounded) {
+                this.parser.error("Out of bounds exception");
+            } else {
+                offset = index - this.size + 1;
+                for (int i = 0; i < offset; i++) {
+                    this.val.add(this.defaultVal);
+                }
+                retVal.value = this.val.get(index);
+            }
         }
         return retVal;
     }
@@ -91,9 +100,9 @@ public class StorageManager {
 
     public void defaultArray(String defaultVal) throws Exception {
         this.defaultVal = defaultVal;
-        //for (int i = 0; i < this.val )
+        for (int i = 0; i < this.val.size(); i++)
+            this.val.add(i, this.defaultVal);
+
     }
 
 }
-// in Parser
-// create another method called assign but with index as a parameter which only arrays will call!!!!!!!!!

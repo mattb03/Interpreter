@@ -178,41 +178,25 @@ public class Parser {
                                 error("Malformed array declaration");
                         } else {  // next token is NOT ']', its either a literal or a variable
                             try {
-                                int size = Integer.parseInt(scan.currentToken.tokenStr);  // check if its value is an int or not
-                            } catch (Exception e) { // if a float or other we get here
-                                if (!Character.isLetter(scan.currentToken.tokenStr.charAt(0))) { // if the token does not begin w a letter, error
-                                    error(scan.currentToken.tokenStr+" is not a valid size parameter");
-                                } else if (Character.isLetter(scan.currentToken.tokenStr.charAt(0))) {  // first char is a letter
-                                    STIdentifier array_entry = (STIdentifier) st.getSymbol(scan.currentToken.tokenStr); // got size!!!
-                                    if (array_entry != null) { // size var IN symbol table !!!!
-                                        STIdentifier array = new STIdentifier(this,
-                                            tokk.tokenStr, tokk.primClassif,tokk.subClassif,
-                                            Integer.parseInt(array_entry.value), type); // use expr instead of this particular size!!!!!!
-                                        st.putSymbol(tokk.tokenStr, array);
-
-                                    } else { // not IN symbol table
-                                        if (scan.currentToken.tokenStr.equals("unbound")) {
-                                            STIdentifier array = new STIdentifier(this,
-                                                tokk.tokenStr, tokk.primClassif, tokk.subClassif, -1, type);
-                                            st.putSymbol(tokk.tokenStr, array);
-                                        } else {
-                                            error("Not in symbol table", scan.currentToken);
-                                        }
-                                    }
-                                } else {  // this is a float!
-                                    error(scan.currentToken.tokenStr+" is not a valid size parameter");
+                                if (scan.currentToken.tokenStr.equals("unbound")) {
+                                    STIdentifier array = new STIdentifier(this,
+                                        tokk.tokenStr, tokk.primClassif, tokk.subClassif, -1, type);
+                                    st.putSymbol(tokk.tokenStr, array);
+                                } else {
+                                    ResultValue result = expr(true);
+                                    System.err.println("value is: "+result.value);
+                                    int size = Integer.parseInt(result.value);  // check if its value is an int or not
                                 }
+                            } catch (NumberFormatException e) { // if a float or other we get here
+                                error(scan.currentToken.tokenStr+" is not a valid size parameter");
                             }
+
                             if (scan.nextToken.tokenStr.equals("="))
                                 declareArray(tokk);
                             else if (scan.nextToken.tokenStr.equals(";"))
                                 scan.getNext();
                         }
-                        if (!scan.currentToken.tokenStr.equals("]")) {
-                            error("Expected ']' ");
-                        }
                     }
-
                 }
             } else if (scan.currentToken.subClassif == Token.IDENTIFIER) { // if token is an identifier
                 //check if curToken is in symbol table, if not throw an error
@@ -220,14 +204,14 @@ public class Parser {
                 if (entry == null) {
                     error("Symbol '"+scan.currentToken.tokenStr+"' is not in Symbol Table.");
                 }
-                if (scan.nextToken.tokenStr.equals("=")) {
+                if (scan.nextToken.tokenStr.equals("=")) {  // default or array copy.  ie  array = 10; array1 = array2;
                     if (entry.structure == STIdentifier.ARRAY) {
                         copyOrDefaultArray(entry);
                     } else {
                         assign(scan.currentToken);
                     }
                 } else if (scan.nextToken.tokenStr.equals("[")) { // array logic!!!!!!!!!!!!!!!!!!!!!!!
-                    scan.getNext(); // get "]"
+                    scan.getNext(); // get "["
                     if (scan.nextToken.subClassif != Token.IDENTIFIER || scan.nextToken.subClassif != Token.INTEGER)
                         error("Malformed array declaration");
                     scan.getNext(); // get index
@@ -266,62 +250,13 @@ public class Parser {
         }
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-      /*      } else if (scan.currentToken.tokenStr.equals("endif")) {
-            	scan.getNext();
-            	if (! scan.currentToken.tokenStr.equals(";")) {
-            		error("endif is not correctly terminated.\n");
-            	}
-            	if (!bCalled) {
-            		error("Unmatched endif.\n");
-            	}
-            	return;
-            }
-            else if (scan.currentToken.tokenStr.equals("else")) {
-            	if (!bCalled) {
-            		error("Unmatched else.\n");
-            	}
-            	return;
-            }
-            else if (scan.currentToken.tokenStr.toLowerCase().equals("if")) {
-            	scan.getNext(); // consume if
-            	ifStmt();
-
-            } else if (scan.currentToken.tokenStr.toLowerCase().equals("while")) {
-                whileStmt();
-            }
-            scan.getNext();
-            if (scan.currentToken.tokenStr.equals("endwhile")) {
-            	if (!bCalled) {
-            		error("Unmatched endwhile.\n");
-            	}
-            	return;
-            }
-            else if (scan.nextToken.tokenStr.isEmpty()) {
-            	break;
-            }
-        }
-    }*/
-
     @Override
 	public String toString() {
 		return "Parser [scan=" + scan + "]";
 	}
 
     public void assignArray(Token curSymbol) {
-
+        //  this method will handle      array[10] = 100;
 
     }
 
@@ -904,6 +839,8 @@ public class Parser {
     // assumes that this is called when currentToken = to the first operand
     // stops at the next token after the expression
     public ResultValue expr(boolean funcCall) throws Exception {
+        System.out.println("EXPR");
+
         Stack<Token> mainStack = new Stack<Token>();
         ArrayList<Token> postAList = new ArrayList<Token>();
         Token tok = new Token();
@@ -1224,6 +1161,7 @@ public class Parser {
         } else {
             error("Invalid expression.", startOfExprToken); // this error should have been caught by all the other checks
         } // end of empty check
+        System.out.println("result = "+resMain);
 
         return resMain; // return your brand new value!
     }
