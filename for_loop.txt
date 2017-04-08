@@ -6,11 +6,15 @@ Int i = 5;
 Int j = 2;
 Int array;
 String szStr = "Can\'t wait";
+Int array[5] = 1, 2, 5;
 
-for i = j * 2 to 10 by j * 1 + i:
+for i = array[0] to 5 by array[1]:
 	print (szStr, " i=", i);
 	i = i + 1;
 	print ("after programmer increments: i=", i);
 endfor;
 
+
 print("after for loop execution: i=", i);
+
+print (array[0]);

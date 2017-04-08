@@ -891,12 +891,20 @@ public class Parser {
 						if (limitIdent.value.equals("NO VALUE")) {
 							error("The identifier " + "\"" + limitIdent.symbol + "\"" + " has no value");
 						}
-						// if the limit is not a limit or float constant, then error
-						if (scan.currentToken.subClassif != 2 && scan.currentToken.subClassif != 3) {
-							error("\"" + scan.currentToken.tokenStr + "\"" + " is not a valid ending limit");
+						// if the look ahead is an operator then call expr() and assign the value to incr
+						if (scan.nextToken.primClassif == 2) {
+							resVal = expr(false);
+							end = Integer.parseInt(resVal.value);
 						}
-						end = Integer.parseInt(limitIdent.value);
-					}
+						else {
+							// if the look ahead is not an operator, then it must be a colon, error if its neither
+							if (!scan.nextToken.tokenStr.equals(":")) {
+								error("\"" + scan.nextToken.tokenStr + "\"" + " must be a colon " + "\"" + ":" + "\"" + " or an operator");
+							}
+							// if the look ahead is a colon, then we have reached the end of the for loop condition
+							// so assign the symbol table entry to incr
+							end = Integer.parseInt(limitIdent.value);
+						}					}
 					// end getting the limit in the for loop,
 
 					// check if there is an incr variable
@@ -923,16 +931,21 @@ public class Parser {
 						else {
 							// we found the identifier in the symbol table, make sure it has a value
 							if (incrIdent.value.equals("NO VALUE")) {
-								error("The identifier " + "\"" + incrIdent.symbol + "\"" + " has no value");
+								// if the incrIdent is a scalar, ie. not an array, then error
+								if (incrIdent.structure == 100) {
+									error("The identifier " + "\"" + incrIdent.symbol + "\"" + " has no value");
+								}
+
 							}
-							// if the look ahead is an operator then call expr() and assign the value to incr
-							if (scan.nextToken.primClassif == 2) {
+							// if the look ahead is an operator or the incr is an array then call expr() and
+							// assign the value to incr
+							if (scan.nextToken.primClassif == 2 || incrIdent.structure == -100) {
 								resVal = expr(false);
 								incr = Integer.parseInt(resVal.value);
 							}
 							else {
 								// if the look ahead is not an operator, then it must be a colon, error if its neither
-								if (!scan.nextToken.tokenStr.equals(":")) {
+								if (!scan.currentToken.tokenStr.equals(":") && !scan.nextToken.tokenStr.equals(":")) {
 									error("\"" + scan.nextToken.tokenStr + "\"" + " must be a colon " + "\"" + ":" + "\"" + " or an operator");
 								}
 								// if the look ahead is a colon, then we have reached the end of the for loop condition
@@ -949,6 +962,7 @@ public class Parser {
 						while (controlVar < end) {
 							savedScanner = this.scan.saveState();
 							statements(true);
+							
 							// was the control variable incremented by the programmer?
 							if (Integer.parseInt(startIdent.value) != controlVar) {	
 								// if true then update the control variable according to the symbol table entry
