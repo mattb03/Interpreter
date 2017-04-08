@@ -1006,7 +1006,7 @@ public class Parser {
         Token tok = new Token();
         Token popped = new Token();
 
-        boolean bFound;
+        boolean bFound, bArrayFound;
 
         tok = scan.currentToken;
         startOfExprToken = scan.currentToken.saveToken();
@@ -1030,7 +1030,23 @@ public class Parser {
     					}
     			        return evaluateExpr(postAList);
     				}
-					postAList.add(tok);
+    				try {
+    					if (((STIdentifier) st.getSymbol(tok.tokenStr)).structure
+    							== STIdentifier.ARRAY) {
+    						tok.isArray = true;
+    						tok.setPrecedence();
+    						mainStack.push(tok);
+    						if (scan.nextToken.tokenStr.equals("["))
+    							scan.getNext(); // consume the '[', we don't want it
+    					} else {
+    						// operand is a Scalar Identifier
+    						postAList.add(tok);
+    					}
+    				} catch (Exception e) {
+    					// operand is a Numeric add it to the postfix
+    					postAList.add(tok);
+    				}
+    				
     				break;
     			case Token.OPERATOR:
     				while (! mainStack.isEmpty()) {
@@ -1072,19 +1088,30 @@ public class Parser {
     					    }
     						break;
                         case "]":
-                        bFound = false;
-
-                        if (!bFound && funcCall) {
-                            while (!mainStack.isEmpty()) {
-                                popped = mainStack.pop();
-                                if (popped.tokenStr.equals("[")) {
-                                    error("Missing ']' separator");
-                                }
-                                postAList.add(popped);
-                            }
-                            return evaluateExpr(postAList);
-                        }
-                        break;
+	                        bArrayFound = false;
+	                        
+	                        while (! mainStack.isEmpty()) {
+	                        	popped = mainStack.pop();
+	                        	postAList.add(popped);
+	                        	
+	                        	if (popped.isArray) {
+	                        		bArrayFound = true;
+	                        		break;
+	                        	}
+	                        	
+	                        }
+	
+	                        if (!bArrayFound && funcCall) {
+	                            while (!mainStack.isEmpty()) {
+	                                popped = mainStack.pop();
+	                                if (popped.tokenStr.equals("[")) {
+	                                    error("Missing ']' separator");
+	                                }
+	                                postAList.add(popped);
+	                            }
+	                            return evaluateExpr(postAList);
+	                        }
+	                        break;
     					default:
     						error("Invalid separator in expression", startOfExprToken);
     						break;
@@ -1108,7 +1135,7 @@ public class Parser {
     }
 
     // TODO: Edit error messages so they're more useful to end users.
-    public ResultValue evaluateExpr(ArrayList<Token> list) throws ParserException {
+    public ResultValue evaluateExpr(ArrayList<Token> list) throws ParserException, Exception {
     	Stack<Token> stk = new Stack<Token>(); // a stack that will be used to do the math
 
         Token currToken = new Token(); // Iterative token for the passed ArrayList
@@ -1328,15 +1355,31 @@ public class Parser {
                     if (stExtra == null) {
                         error("Symbol '"+extraToken2.tokenStr+"' is not in Symbol Table.", extraToken2);
                     }
-                    resMain.value = stExtra.value;
-                    resMain.type = ((STIdentifier)stExtra).type;
-                    // since the above algorithm doesn't allow for variables to exist in the stack
-                    // resMain's structure is set here for the first time.
-                    resMain.structure.add(Token.strSubClassifM[extraToken2.subClassif]);
+                    if (extraToken2.isArray) {
+                    	// return an array value
+                    	resMain.value = ((STIdentifier) stExtra).array.val.toString();
+                    	resMain.type = ((STIdentifier) stExtra).type;
+                    	resMain.structure.add("ARRAY");
+                    } else {
+	                    resMain.value = stExtra.value;
+	                    resMain.type = ((STIdentifier)stExtra).type;
+	                    // since the above algorithm doesn't allow for variables to exist in the stack
+	                    // resMain's structure is set here for the first time.
+	                    resMain.structure.add(Token.strSubClassifM[extraToken2.subClassif]);
+                    }
                 } else {
                     resMain.value = extraToken2.tokenStr;
                     resMain.type = extraToken2.subClassif;
                 } // end of identifier check
+            } else if (stk.peek().isArray && stk.size() == 2) {
+            	// deal with array
+            	Token poppedArray = stk.pop(); // get array
+            	extraToken2 = stk.pop(); // get array index
+            	STIdentifier stArray = ((STIdentifier) st.getSymbol(poppedArray.tokenStr));
+            	if (stArray == null) {
+            		error("'" + poppedArray.tokenStr + "' is not in the SymbolTable", poppedArray);
+            	}
+            	resMain = stArray.array.get(Integer.parseInt(extraToken2.tokenStr));
             } else {
                 error("Unbalanced Expression.", startOfExprToken); // this error should have been caught by all the other checks
             } // end of size check

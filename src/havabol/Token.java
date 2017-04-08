@@ -9,6 +9,7 @@ public class Token
     public int subClassif = 0;
     public int iSourceLineNr = 0;
     public int iColPos = 0;
+    public boolean isArray = false;
 
     @Override
 	public String toString() {
@@ -174,7 +175,10 @@ public class Token
     }
 
     public void setPrecedence() {
-    	if (primClassif != Token.OPERAND) {
+    	if (isArray) {
+    		normPreced = 16;
+    		stkPreced = 0;
+    	} else if (primClassif != Token.OPERAND) {
     		String conditionals = "<><=>===!=";
 	    	if (primClassif == SEPARATOR) {
 	    		normPreced = 15;
