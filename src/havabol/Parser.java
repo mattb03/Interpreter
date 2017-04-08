@@ -251,8 +251,8 @@ public class Parser {
             	return;
             }
 
-            if (!scan.currentToken.tokenStr.equals(";"))
-                errorNoTerm("Statement not terminated");
+            //if (!scan.currentToken.tokenStr.equals(";"))
+                //errorNoTerm("Statement not terminated");
             scan.getNext();
             if (scan.nextToken.primClassif == Token.EOF) {
                 break;
@@ -867,7 +867,7 @@ public class Parser {
 					// check if there is an incr variable
 					if (scan.nextToken.equals("by")) {
 						// begin getting the incr in the for loop
-						
+
 					}
 					if (scan.nextToken.tokenStr.equals(":")) {
 						// begin getting the limit in the for loop
@@ -902,7 +902,7 @@ public class Parser {
 						}
 						// end getting the limit in the for loop, begin execution
 						i = start;
-						
+
 						//for (i = start; i < end; i++) {
 						while (i < end) {
 							savedScanner = this.scan.saveState();
