@@ -815,7 +815,8 @@ public class Parser {
     	Token startToken = scan.currentToken.saveToken();
     	String temp = scan.currentToken.tokenStr + " " + scan.nextToken.tokenStr + " " + scan.getNext();
     	int i;
-
+    	// default incr variable is 1 if there is none provided
+    	int incr = 1;
     	// restore the state so we can use getNext()
     	this.scan = savedScanner;
     	scan.getNext();
@@ -854,7 +855,13 @@ public class Parser {
 						error("Missing " + "\"" + "to" + "\"" + " keyword in for loop");
 					}
 					scan.getNext();
+					// check if there is an incr variable
+					if (scan.nextToken.equals("by")) {
+						// begin getting the incr in the for loop
+						
+					}
 					if (scan.nextToken.tokenStr.equals(":")) {
+						// begin getting the limit in the for loop
 						int end = 0;
 						// run the code until cv = limit
 						STIdentifier limitIdent = (STIdentifier) st.getSymbol(scan.currentToken.tokenStr);
@@ -884,23 +891,29 @@ public class Parser {
 							}
 							end = Integer.parseInt(limitIdent.value);
 						}
+						// end getting the limit in the for loop, begin execution
 						i = start;
+						
 						//for (i = start; i < end; i++) {
 						while (i < end) {
 							savedScanner = this.scan.saveState();
 							statements(true);
-							i = Integer.parseInt(startIdent.value);
-							i++;
+							// if the control variable was changed in the loop, update the value
+							if (Integer.parseInt(startIdent.value) != start) {
+								i = Integer.parseInt(startIdent.value);
+							}
+							i += incr;
 							// only reset the buffer to top of loop if we are running the loop again
 							if (i < end) {
 								this.scan = savedScanner;
 							}
 						}
+						// end for loop execution
 					}
 					else {
-						// there should be an incr variable
+						// there must be either a colon ":" or the "by" keyword, so throw error
 						if (!scan.nextToken.tokenStr.equals("by")) {
-							error("Missing " + "\"" + "by" + "\"" + " keyword in for loop");
+							error("Missing " + "\"" + ":" + "\"" + " or " + "\"" + "by" + "\"" + " keyword in for loop");
 						}
 					}
 				}
