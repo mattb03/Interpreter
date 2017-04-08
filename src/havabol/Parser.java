@@ -253,6 +253,7 @@ public class Parser {
 
             //if (!scan.currentToken.tokenStr.equals(";"))
                 //errorNoTerm("Statement not terminated");
+
             scan.getNext();
             if (scan.nextToken.primClassif == Token.EOF) {
                 break;
@@ -864,43 +865,83 @@ public class Parser {
 						error("Missing " + "\"" + "to" + "\"" + " keyword in for loop");
 					}
 					scan.getNext();
-					// check if there is an incr variable
-					if (scan.nextToken.equals("by")) {
-						// begin getting the incr in the for loop
-
+					// begin getting the limit in the for loop
+					int end = 0;
+					STIdentifier limitIdent = (STIdentifier) st.getSymbol(scan.currentToken.tokenStr);
+					int start = Integer.parseInt(startIdent.value);
+					if (limitIdent == null) {
+						// if its an identifier and not in the symbol table, then error
+						if (scan.currentToken.subClassif == 1) {
+							error("\"" + scan.currentToken.tokenStr + "\"" + " is an undeclared identifier");
+						}
+						// if the limit is not a integer or float constant, then error
+						else if (scan.currentToken.subClassif != 2 && scan.currentToken.subClassif != 3) {
+							error("\"" + scan.currentToken.tokenStr + "\"" + " is not a valid ending limit");
+						}
+						// if its a valid integer or float constant, assign the ending value to it
+						else {
+							end = Integer.parseInt(scan.currentToken.tokenStr);
+						}
 					}
-					if (scan.nextToken.tokenStr.equals(":")) {
-						// begin getting the limit in the for loop
-						int end = 0;
-						// run the code until cv = limit
-						STIdentifier limitIdent = (STIdentifier) st.getSymbol(scan.currentToken.tokenStr);
-						int start = Integer.parseInt(startIdent.value);
-						if (limitIdent == null) {
+					else {
+						// we found the identifier in the symbol table, make sure it has a value
+						if (limitIdent.value.equals("NO VALUE")) {
+							error("The identifier " + "\"" + limitIdent.symbol + "\"" + " has no value");
+						}
+						// if the limit is not a limit or float constant, then error
+						if (scan.currentToken.subClassif != 2 && scan.currentToken.subClassif != 3) {
+							error("\"" + scan.currentToken.tokenStr + "\"" + " is not a valid ending limit");
+						}
+						end = Integer.parseInt(limitIdent.value);
+					}
+					// end getting the limit in the for loop,
+
+					// check if there is an incr variable
+					if (scan.nextToken.tokenStr.equals("by")) {
+						scan.getNext();
+						scan.getNext();
+						// begin getting the incr in the for loop
+						STIdentifier incrIdent = (STIdentifier) st.getSymbol(scan.currentToken.tokenStr);
+						//incr = Integer.parseInt(incrIdent.value);
+						if (incrIdent == null) {
 							// if its an identifier and not in the symbol table, then error
 							if (scan.currentToken.subClassif == 1) {
 								error("\"" + scan.currentToken.tokenStr + "\"" + " is an undeclared identifier");
 							}
-							// if the limit is not a integer or float constant, then error
+							// if the incr is not a integer or float constant, then error
 							else if (scan.currentToken.subClassif != 2 && scan.currentToken.subClassif != 3) {
 								error("\"" + scan.currentToken.tokenStr + "\"" + " is not a valid ending limit");
 							}
 							// if its a valid integer or float constant, assign the ending value to it
 							else {
-								end = Integer.parseInt(scan.currentToken.tokenStr);
+								incr = Integer.parseInt(scan.currentToken.tokenStr);
 							}
 						}
 						else {
 							// we found the identifier in the symbol table, make sure it has a value
-							if (limitIdent.value.equals("NO VALUE")) {
-								error("The identifier " + "\"" + limitIdent.symbol + "\"" + " has no value");
+							if (incrIdent.value.equals("NO VALUE")) {
+								error("The identifier " + "\"" + incrIdent.symbol + "\"" + " has no value");
 							}
-							// if the limit is not a limit or float constant, then error
+							// if the incr is not a integer or float constant, then error
 							if (scan.currentToken.subClassif != 2 && scan.currentToken.subClassif != 3) {
-								error("\"" + scan.currentToken.tokenStr + "\"" + " is not a valid ending limit");
+								error("\"" + scan.currentToken.tokenStr + "\"" + " is not a valid increment value");
 							}
-							end = Integer.parseInt(limitIdent.value);
+							// if the look ahead is an operator then call expr() and assign the value to incr
+							if (scan.nextToken.subClassif == 2) {
+								resVal = expr(false);
+								incr = Integer.parseInt(resVal.value);
+							}
+							else {
+								// if the look ahead is not a colon or an operator, then error
+								if (!scan.nextToken.tokenStr.equals(":")) {
+									error("\"" + scan.nextToken.tokenStr + "\"" + " must be a colon " + "\"" + ":" + "\"" + " or an operator");
+								}
+								// if the look ahead is a constant, assign the value to incr
+								incr = Integer.parseInt(incrIdent.value);
+							}
+
 						}
-						// end getting the limit in the for loop, begin execution
+					}
 						i = start;
 
 						//for (i = start; i < end; i++) {
@@ -909,9 +950,11 @@ public class Parser {
 							statements(true);
 							// if the control variable was changed in the loop, update the value
 							if (Integer.parseInt(startIdent.value) != start) {
-								i = Integer.parseInt(startIdent.value);
+								i = Integer.parseInt(startIdent.value) + incr;
 							}
-							i += incr;
+							else {
+								i += incr;
+							}
 							// only reset the buffer to top of loop if we are running the loop again
 							if (i < end) {
 								this.scan = savedScanner;
@@ -925,11 +968,10 @@ public class Parser {
 							error("Missing " + "\"" + ":" + "\"" + " or " + "\"" + "by" + "\"" + " keyword in for loop");
 						}
 					}
-				}
 				// if its not the keyword "to" or an operator then error
-		    	else {
+		    	/*else {
 		    		error("\"" + scan.nextToken.tokenStr + "\"" + " is not a valid token");
-		    	}
+		    	}*/
 			}
 		}
 		// if the first argument is not an operand then error

@@ -7,7 +7,7 @@ Int j = 2;
 Int array;
 String szStr = "Can\'t wait";
 
-for i = j + 1 to 10:
-	print (szStr);
-	i = i + 2;
+for i = j * 2 to 10 by 2:
+	print (szStr, " i=", i);
+	i = i + 1;
 endfor;
