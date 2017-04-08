@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.EmptyStackException;
 import java.util.Stack;
 
+import org.omg.CORBA.INTERNAL;
+
 public class Parser {
 
     public Scanner scan;
@@ -825,7 +827,7 @@ public class Parser {
     	Scanner savedScanner = this.scan.saveState();
     	Token startToken = scan.currentToken.saveToken();
     	String temp = scan.currentToken.tokenStr + " " + scan.nextToken.tokenStr + " " + scan.getNext();
-    	int i;
+    	int controlVar;
     	// default incr variable is 1 if there is none provided
     	int incr = 1;
     	// restore the state so we can use getNext()
@@ -943,21 +945,28 @@ public class Parser {
 
 						}
 					}
-						i = start;
-
+						// start is the initial value for i. ie. "for i = 0 ..."
+						controlVar = start;
+						int difference = 0;
 						//for (i = start; i < end; i++) {
-						while (i < end) {
+						while (controlVar < end) {
 							savedScanner = this.scan.saveState();
 							statements(true);
-							// if the control variable was changed in the loop, update the value
-							if (Integer.parseInt(startIdent.value) != start) {
-								i = Integer.parseInt(startIdent.value) + incr;
+							// was the control variable incremented by the programmer?
+							if (Integer.parseInt(startIdent.value) != controlVar) {	
+								// if true then update the control variable according to the symbol table entry
+								difference = Integer.parseInt(startIdent.value) - controlVar;
+								controlVar += difference;
 							}
-							else {
-								i += incr;
-							}
+							
+							// increment control variable by the incr
+							controlVar += incr;
+							
+							// update the control variable symbol table entry
+							startIdent.value = String.valueOf(controlVar);
+							
 							// only reset the buffer to top of loop if we are running the loop again
-							if (i < end) {
+							if (controlVar < end) {
 								this.scan = savedScanner;
 							}
 						}
