@@ -23,6 +23,7 @@ public class Parser {
 
 
         while (true) {
+            System.out.println("current token:  "+scan.currentToken.tokenStr);
             expr = debugger.expr;
             if (scan.currentToken.tokenStr.equals("print")) {
                 ArrayList<String> arglist = new ArrayList<String>();
@@ -106,10 +107,10 @@ public class Parser {
                 }
 
             } else if (scan.currentToken.tokenStr.equals("debug")) {
-                    scan.getNext();
-                    String type = scan.currentToken.tokenStr; // got type
-                    scan.getNext();
-                    String state = scan.currentToken.tokenStr;  // got state; // 'on' or 'off'
+                scan.getNext();
+                String type = scan.currentToken.tokenStr; // got type
+                scan.getNext();
+                String state = scan.currentToken.tokenStr;  // got state; // 'on' or 'off'
                 if (state.equals("on")) {
                     debugger.turnOn(type);
                 } else if (state.equals("off")) {
@@ -184,8 +185,10 @@ public class Parser {
                                     st.putArray(tokk.tokenStr, array);
                                 } else {
                                     ResultValue result = expr(true);
-                                    System.err.println("value is: "+result.value);
                                     int size = Integer.parseInt(result.value);  // check if its value is an int or not
+                                    STIdentifier array = new STIdentifier(this,
+                                        tokk.tokenStr, tokk.primClassif, tokk.subClassif, size, type);
+                                    st.putArray(tokk.tokenStr, array);
                                 }
                             } catch (NumberFormatException e) { // if a float or other we get here
                                 error("'"+this.startOfExprToken.tokenStr+"' is not a valid size parameter");
@@ -250,8 +253,7 @@ public class Parser {
             } else if (scan.currentToken.tokenStr.equals("endfor")) {
             	return;
             }
-
-            //if (!scan.currentToken.tokenStr.equals(";"))
+            //if (!scan.nextToken.tokenStr.equals(";"))
                 //errorNoTerm("Statement not terminated");
 
             scan.getNext();

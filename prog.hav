@@ -1,12 +1,13 @@
 //debug Token on ;
 //debug Assign on;
 //debug Expr on;
-
-Int fbits = 8
-
-
+Int blah;
+Int fbits = 8;
 
 
+
+Int arr[fbits];
+arr[3] = 2;
 
 
 
@@ -14,7 +15,7 @@ Int pbits = 10;
 Int offset = 12;
 
 
-String flag = "virt;
+String flag = "virt";
 String flag2 = "phys";
 
 print("========== My memory program ==========");
@@ -33,11 +34,13 @@ if 0 == 1:
         if 3 = 3:
             print("HERE");
         endif;
+    endif;
 else:
     print("other branch!");
+endif;
 
 Int a = 10;
-Int b = 5
+Int b = 5;
 
 if a > b:
     b = 1000;
