@@ -1027,6 +1027,8 @@ public class Parser {
     						popped = mainStack.pop();
 	    		    		if (popped.tokenStr.equals("("))
 	    		    			error("Missing ')' separator");
+//	figure out        		if (popped.isArray)
+//	if needed        			error("Missing ']' separator");
 	    		    		postAList.add(popped);
     					}
     			        return evaluateExpr(postAList);
@@ -1037,8 +1039,10 @@ public class Parser {
     						tok.isArray = true;
     						tok.setPrecedence();
     						mainStack.push(tok);
-    						if (scan.nextToken.tokenStr.equals("["))
-    							scan.getNext(); // consume the '[', we don't want it
+    						if (scan.nextToken.tokenStr.equals("[")) {
+    							scan.getNext(); // consume the '[', we don't want it in the list
+    							tok.isElemRef = true; // denote that this is an array element reference
+    						}
     					} else {
     						// operand is a Scalar Identifier
     						postAList.add(tok);
@@ -1161,7 +1165,44 @@ public class Parser {
     		switch (currToken.primClassif) {
 	    		case Token.OPERAND:
 	    			// TODO: add functionality to properly accept arrays and functions
-	    			stk.push(currToken); // add the operand onto the stack for future use
+	    			if (currToken.isElemRef) {
+	    				STEntry stArray = st.getSymbol(currToken.tokenStr);
+	                    if (stArray == null) {
+	                        error("Symbol '"+currToken.tokenStr+"' is not in Symbol Table.", currToken);
+	                    }
+	    				try {
+		    				tokOp2 = (Token) stk.pop(); // grab the right operand (the only operand)
+		    			} catch (EmptyStackException a) {
+		    				error("Missing right expression operand for array element reference.", currToken);
+		    			}
+	    				if (tokOp2.subClassif == Token.IDENTIFIER) {
+	    					STEntry stEnt2 = st.getSymbol(tokOp2.tokenStr);
+	    					if (stEnt2 == null) {
+	    	                    error("Symbol '"+tokOp2+"' is not in Symbol Table.", tokOp2);
+	    	                }
+	    					resOp2 = new ResultValue(stEnt2.value);
+	    					resOp2.type = ((STIdentifier)stEnt2).type;
+	    				} else {
+	    					resOp2 = new ResultValue(tokOp2.tokenStr);
+	    					resOp2.type = tokOp2.subClassif;
+	    				}
+	    				resOp2.structure.add("ARRAY ELEM REF");
+	    				
+	    				nOp2 = new Numeric(this, resOp2, currToken.tokenStr, "2nd Operand"); // must be a number
+	    				resTemp = ((STIdentifier) stArray).getArray().get(nOp2.integerValue);
+	    				
+	    				// right now we're using the array token
+	    				extraToken1 = tokOp2; // get the most accurate values for the line and column # as possible
+                        extraToken1.tokenStr = resTemp.value;
+                        extraToken1.primClassif = Token.OPERAND;
+                        extraToken1.subClassif = resTemp.type;
+                        
+                        stk.push(extraToken1);
+                        
+                        resMain.structure.add("ARRAY ELEM REF");
+	    			} else {
+	    				stk.push(currToken); // add the operand onto the stack for future use
+	    			}
 	    			break;
 	    		case Token.OPERATOR:
 	    			// since we have an operator we need to evaluate the top two operands
@@ -1204,14 +1245,14 @@ public class Parser {
 		    			try {
 		    				tokOp2 = (Token) stk.pop(); // grab the right operand
 		    			} catch (EmptyStackException a) {
-		    				error("Missing expression operand. For operator: '"
-		    						+ currToken.tokenStr + "'", currToken);
+		    				error("Missing expression operand or Invalid expression operand type. "
+		    						+ "For operator: '" + currToken.tokenStr + "'", currToken);
 		    			}
 		    			try {
 		    				tokOp1 = (Token) stk.pop(); // grab the left operand
 		    			} catch (EmptyStackException b) {
-		    				error("Missing expression operand. For operator: '"
-		    						+ currToken.tokenStr + "'", currToken);
+		    				error("Missing expression operand or Invalid expression operand type. "
+		    						+ "For operator: '" + currToken.tokenStr + "'", currToken);
 		    			}
 
                         // set the ResultValue objects of the operands

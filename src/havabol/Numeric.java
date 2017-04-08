@@ -9,7 +9,7 @@ public class Numeric {
 
 	public Numeric(Parser parser, ResultValue res, String op, String opPos) throws ParserException {
 		if (res.value.equals("NO VALUE")) {
-			parser.error(opPos+" '"+parser.startOfExprToken.tokenStr+"' has not been initialized."+parser.startOfExprToken.tokenStr, parser.startOfExprToken);
+			parser.error(opPos+" '"+parser.startOfExprToken.tokenStr+"' has not been initialized.", parser.startOfExprToken);
 		}
 		try {
 			integerValue = Integer.parseInt(res.value);

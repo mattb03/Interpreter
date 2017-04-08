@@ -10,6 +10,7 @@ public class Token
     public int iSourceLineNr = 0;
     public int iColPos = 0;
     public boolean isArray = false;
+    public boolean isElemRef = false;
 
     @Override
 	public String toString() {
