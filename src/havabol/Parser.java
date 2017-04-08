@@ -23,7 +23,6 @@ public class Parser {
 
 
         while (true) {
-            System.out.println("current token:  "+scan.currentToken.tokenStr);
             expr = debugger.expr;
             if (scan.currentToken.tokenStr.equals("print")) {
                 ArrayList<String> arglist = new ArrayList<String>();
