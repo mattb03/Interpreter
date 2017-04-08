@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.EmptyStackException;
 import java.util.Stack;
 
+import org.omg.CORBA.INTERNAL;
+
 public class Parser {
 
     public Scanner scan;
@@ -825,7 +827,7 @@ public class Parser {
     	Scanner savedScanner = this.scan.saveState();
     	Token startToken = scan.currentToken.saveToken();
     	String temp = scan.currentToken.tokenStr + " " + scan.nextToken.tokenStr + " " + scan.getNext();
-    	int i;
+    	int controlVar;
     	// default incr variable is 1 if there is none provided
     	int incr = 1;
     	// restore the state so we can use getNext()
@@ -903,7 +905,7 @@ public class Parser {
 						scan.getNext();
 						// begin getting the incr in the for loop
 						STIdentifier incrIdent = (STIdentifier) st.getSymbol(scan.currentToken.tokenStr);
-						//incr = Integer.parseInt(incrIdent.value);
+						// check if the incr is an identifier
 						if (incrIdent == null) {
 							// if its an identifier and not in the symbol table, then error
 							if (scan.currentToken.subClassif == 1) {
@@ -923,41 +925,45 @@ public class Parser {
 							if (incrIdent.value.equals("NO VALUE")) {
 								error("The identifier " + "\"" + incrIdent.symbol + "\"" + " has no value");
 							}
-							// if the incr is not a integer or float constant, then error
-							if (scan.currentToken.subClassif != 2 && scan.currentToken.subClassif != 3) {
-								error("\"" + scan.currentToken.tokenStr + "\"" + " is not a valid increment value");
-							}
 							// if the look ahead is an operator then call expr() and assign the value to incr
-							if (scan.nextToken.subClassif == 2) {
+							if (scan.nextToken.primClassif == 2) {
 								resVal = expr(false);
 								incr = Integer.parseInt(resVal.value);
 							}
 							else {
-								// if the look ahead is not a colon or an operator, then error
+								// if the look ahead is not an operator, then it must be a colon, error if its neither
 								if (!scan.nextToken.tokenStr.equals(":")) {
 									error("\"" + scan.nextToken.tokenStr + "\"" + " must be a colon " + "\"" + ":" + "\"" + " or an operator");
 								}
-								// if the look ahead is a constant, assign the value to incr
+								// if the look ahead is a colon, then we have reached the end of the for loop condition
+								// so assign the symbol table entry to incr
 								incr = Integer.parseInt(incrIdent.value);
 							}
 
 						}
 					}
-						i = start;
-
+						// start is the initial value for i. ie. "for i = 0 ..."
+						controlVar = start;
+						int difference = 0;
 						//for (i = start; i < end; i++) {
-						while (i < end) {
+						while (controlVar < end) {
 							savedScanner = this.scan.saveState();
 							statements(true);
-							// if the control variable was changed in the loop, update the value
-							if (Integer.parseInt(startIdent.value) != start) {
-								i = Integer.parseInt(startIdent.value) + incr;
+							// was the control variable incremented by the programmer?
+							if (Integer.parseInt(startIdent.value) != controlVar) {	
+								// if true then update the control variable according to the symbol table entry
+								difference = Integer.parseInt(startIdent.value) - controlVar;
+								controlVar += difference;
 							}
-							else {
-								i += incr;
-							}
+							
+							// increment control variable by the incr
+							controlVar += incr;
+							
+							// update the control variable symbol table entry
+							startIdent.value = String.valueOf(controlVar);
+							
 							// only reset the buffer to top of loop if we are running the loop again
-							if (i < end) {
+							if (controlVar < end) {
 								this.scan = savedScanner;
 							}
 						}

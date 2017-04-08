@@ -7,7 +7,10 @@ Int j = 2;
 Int array;
 String szStr = "Can\'t wait";
 
-for i = j * 2 to 10 by 2:
+for i = j * 2 to 10 by j * 1 + i:
 	print (szStr, " i=", i);
 	i = i + 1;
+	print ("after programmer increments: i=", i);
 endfor;
+
+print("after for loop execution: i=", i);
