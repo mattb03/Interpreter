@@ -1022,7 +1022,7 @@ public class Parser {
     		tok.setPrecedence();
     		switch (tok.primClassif) {
     			case Token.OPERAND:
-    				if (tok.tokenStr.equals("to")) {
+    				if (tok.tokenStr.equals("to") || tok.tokenStr.equals("by")) {
     					while (! mainStack.isEmpty()) {
     						popped = mainStack.pop();
 	    		    		if (popped.tokenStr.equals("("))
