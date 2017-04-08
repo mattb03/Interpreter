@@ -889,16 +889,20 @@ public class Parser {
 					else {
 						// we found the identifier in the symbol table, make sure it has a value
 						if (limitIdent.value.equals("NO VALUE")) {
-							error("The identifier " + "\"" + limitIdent.symbol + "\"" + " has no value");
+							// if the limitIdent is a scalar, ie. not an array, then error
+							if (limitIdent.structure == 100) {
+								error("The identifier " + "\"" + limitIdent.symbol + "\"" + " has no value");
+							}
 						}
-						// if the look ahead is an operator then call expr() and assign the value to incr
-						if (scan.nextToken.primClassif == 2) {
+						// if the look ahead is an operator or the limit is an array, then call expr()
+						// and assign the value to end
+						if (scan.nextToken.primClassif == 2 || limitIdent.structure == -100) {
 							resVal = expr(false);
 							end = Integer.parseInt(resVal.value);
 						}
 						else {
 							// if the look ahead is not an operator, then it must be a colon, error if its neither
-							if (!scan.nextToken.tokenStr.equals(":")) {
+							if (!scan.currentToken.tokenStr.equals(":") && !scan.nextToken.tokenStr.equals(":")) {
 								error("\"" + scan.nextToken.tokenStr + "\"" + " must be a colon " + "\"" + ":" + "\"" + " or an operator");
 							}
 							// if the look ahead is a colon, then we have reached the end of the for loop condition
@@ -908,9 +912,11 @@ public class Parser {
 					// end getting the limit in the for loop,
 
 					// check if there is an incr variable
-					if (scan.nextToken.tokenStr.equals("by")) {
+					if (scan.currentToken.tokenStr.equals("by") || scan.nextToken.tokenStr.equals("by")) {
 						scan.getNext();
-						scan.getNext();
+						if (scan.currentToken.tokenStr.equals("by")) {
+							scan.getNext();
+						}
 						// begin getting the incr in the for loop
 						STIdentifier incrIdent = (STIdentifier) st.getSymbol(scan.currentToken.tokenStr);
 						// check if the incr is an identifier

@@ -4,11 +4,13 @@
 
 Int i = 5;
 Int j = 2;
+Int gooseEgg = 0;
 Int array;
 String szStr = "Can\'t wait";
 Int array[5] = 1, 2, 5;
 
-for i = array[0] to 5 by array[1]:
+// for i = 1 to 5 by 2:
+for i = array[gooseEgg] to array[j * 2 - 2] by array[j - 1]:
 	print (szStr, " i=", i);
 	i = i + 1;
 	print ("after programmer increments: i=", i);
