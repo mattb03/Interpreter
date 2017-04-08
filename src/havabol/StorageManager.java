@@ -20,7 +20,7 @@ public class StorageManager {
             this.isBounded = false;
             this.init(size, type);
         } else if (size == -100) { //  size will need to be set!!!!
-            this.isBounded = false;
+            this.isBounded = true;
         } else {
             this.isBounded = true;
             this.init(size, type);
@@ -51,14 +51,13 @@ public class StorageManager {
                 this.parser.error("Out of bounds exception");
             } else {
                 offset = index - this.size;
-                for (int i=0; i < offset; i++) {
+                for (int i=0; i < offset; i++)
                     this.val.add(this.defaultVal); // setting to defualt value
-                }
+
                 this.val.add(item);
             }
         }
-        if (this.size == -100)
-            this.size = this.val.size();
+        this.size = this.val.size();
     }
 
     public ResultValue get(int index) throws Exception {

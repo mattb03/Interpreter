@@ -1,84 +1,46 @@
-debug Token on ;
+//debug Token on ;
 //debug Assign on;
 //debug Expr on;
-//Int a = 10;
-//Float f = 3.14;
-//print(a);
 
-//Int arrayy[1 +2];
-//Int array10[10];
-Int array[] = 1,2,3;
-
-array[1] = 10.1; // should not let me assign this value!!!!!!
-
-print("HERE!!!!!!!!!!!!");
-Int array2 = 10;
-
-print(array);
-
-
-debug Exit on;
+Int fbits = 8
 
 
 
 
 
 
-Int n = 10;
 
-Int b = n^2;
-print("b = ", b);
-print(array);
-
-print("array = ", array);
-
-//Int array [a] ;
-
-//array[2] = 2;
-//print(array);
-
-1. recognize array is being declared
-
-Int fbits = 8;
-Int pbits = 10
+Int pbits = 10;
 Int offset = 12;
 
 
-
-
-print( 3.0 / 2);
-
-print(3 / 2.0);
-
-
-String flag = "virt";
+String flag = "virt;
 String flag2 = "phys";
 
 print("========== My memory program ==========");
 print("Page size is ", 2^offset);
 if flag == "virt":
     print("Virtual address space is ", 2^(pbits + offset));
+endif;
 
 if flag2 == "phys":
     print("Physical address space is ", 2^(fbits + offset));
+endif;
 
-
-// The code below does not hang.
 
 if 0 == 1:
     if 2 == 2:
-        if 3 == 3:
+        if 3 = 3:
             print("HERE");
         endif;
-    endif;
 else:
     print("other branch!");
 
-
 Int a = 10;
-Int b = 5;
+Int b = 5
 
 if a > b:
     b = 1000;
+endif;
 
 print("a = ", a,"\nb = ", b);

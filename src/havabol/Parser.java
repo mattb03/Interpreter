@@ -237,6 +237,7 @@ public class Parser {
                 return;
             } else if (scan.currentToken.tokenStr.toLowerCase().equals("if")) {
                 ifStmt();
+
             } else if (scan.currentToken.tokenStr.toLowerCase().equals("while")) {
                 whileStmt();
             } else if (scan.currentToken.tokenStr.equals("endwhile")) {
@@ -248,7 +249,10 @@ public class Parser {
                 forStmt();
             } else if (scan.currentToken.tokenStr.equals("endfor")) {
             	return;
-            }            
+            }
+
+            if (!scan.currentToken.tokenStr.equals(";"))
+                errorNoTerm("Statement not terminated");
             scan.getNext();
             if (scan.nextToken.primClassif == Token.EOF) {
                 break;
@@ -308,10 +312,10 @@ public class Parser {
             } else if (scan.currentToken.primClassif == Token.OPERAND) {
                 ResultValue resVal = expr(false);
                 entry.array.set(index, resVal);
+                index++;
             } else {
                 error("Malformed array declaration");
             }
-            index++;
         }
     }
 
@@ -921,8 +925,8 @@ public class Parser {
 		}
 		// end first argument analysis
 		// now we skip to the endfor if we are not already there
-		while (!scan.currentToken.tokenStr.equals("endfor") && 
-				!scan.currentToken.tokenStr.equals("for") && 
+		while (!scan.currentToken.tokenStr.equals("endfor") &&
+				!scan.currentToken.tokenStr.equals("for") &&
 				scan.currentToken.primClassif != scan.currentToken.EOF) {
 			scan.getNext();
 		}
@@ -1290,6 +1294,11 @@ public class Parser {
     public void error(String fmt) throws ParserException {
         throw new ParserException(scan.currentToken.iSourceLineNr
                 , fmt, scan.sourceFileNm, scan.lines[scan.currentToken.iSourceLineNr - 1]);
+    }
+
+    public void errorNoTerm(String fmt) throws ParserException {
+        throw new ParserException(scan.currentToken.iSourceLineNr -1
+                , fmt, scan.sourceFileNm, scan.lines[scan.currentToken.iSourceLineNr - 2]);
     }
 
     public void error(String fmt, Token tok) throws ParserException {
