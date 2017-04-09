@@ -1242,9 +1242,9 @@ public class Parser {
     					while (! mainStack.isEmpty()) {
     						popped = mainStack.pop();
 	    		    		if (popped.tokenStr.equals("("))
-	    		    			error("Missing ')' separator");
-//	figure out        		if (popped.isArray)
-//	if needed        			error("Missing ']' separator");
+	    		    			error("Missing ')' separator", popped);
+	    		    		if (popped.isElemRef)
+	    		    			error("Missing ']' separator", popped);
 	    		    		postAList.add(popped);
     					}
     			        return evaluateExpr(postAList);
@@ -1293,15 +1293,18 @@ public class Parser {
     								bFound = true;
     								break;
     							}
+    	    		    		if (popped.isElemRef)
+    	    		    			error("Missing ']' separator", popped);
     							postAList.add(popped);
     						}
     						if (!bFound && funcCall) {   // no matching left paren but a func has been called ie print()
-    							// TODO: call errors for missing "("
     							// TODO: add function implementations here
                                 while (! mainStack.isEmpty()) {
                                     popped = mainStack.pop();
                                     if (popped.tokenStr.equals("("))
-                                        error("Missing ')' separator");
+                                        error("Missing ')' separator", popped);
+        	    		    		if (popped.isElemRef)
+        	    		    			error("Missing ']' separator", popped);
 
                                     postAList.add(popped);
                                 }
@@ -1326,7 +1329,7 @@ public class Parser {
 	                            while (!mainStack.isEmpty()) {
 	                                popped = mainStack.pop();
 	                                if (popped.tokenStr.equals("[")) {
-	                                    error("Missing ']' separator");
+	                                    error("Missing ']' separator", popped);
 	                                }
 	                                postAList.add(popped);
 	                            }
@@ -1347,7 +1350,9 @@ public class Parser {
     	while (! mainStack.isEmpty()) {
     		popped = mainStack.pop();
     		if (popped.tokenStr.equals("("))
-    			error("Missing ')' separator");
+    			error("Missing ')' separator", popped);
+    		if (popped.isElemRef)
+    			error("Missing ']' separator", popped);
     		postAList.add(popped);
     	}
 
@@ -1574,7 +1579,7 @@ public class Parser {
 		    			} // end of inner Operator switch
 
                         // add our new value to the stack
-                        extraToken1 = tokOp1; // get the most accurate values for the line and column # as possible
+                        extraToken1 = tokOp1.saveToken(); // get the most accurate values for the line and column # as possible
                         extraToken1.tokenStr = resTemp.value;
                         extraToken1.primClassif = Token.OPERAND;
                         extraToken1.subClassif = resTemp.type;
