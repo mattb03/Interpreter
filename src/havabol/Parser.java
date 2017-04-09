@@ -900,20 +900,19 @@ public class Parser {
 					}
 					else {
 						// if were here then it is a valid array identifier
-						for (i = 0; i < setIdent.array.val.size(); i++) {
-							//array[i] = setIdent.array.val.get(i);
-						}
 						scan.getNext();
 						scan.getNext();
 						while (i < setIdent.array.val.size()) {
 							//szItem = setIdent.array.val.get(i);
-							savedScanner = this.scan.saveState();
-							STIdentifier itemEntry = new STIdentifier(szItem, 1, 5); 
-							itemEntry.value = setIdent.array.val.get(i);
-							st.putSymbol(szItem, itemEntry);
-							statements(true);
-							itemEntry = null;
-							st.table.remove(szItem);
+							if (setIdent.array.val.get(i) != null) { 
+								savedScanner = this.scan.saveState();
+								STIdentifier itemEntry = new STIdentifier(szItem, 1, 5); 
+								itemEntry.value = setIdent.array.val.get(i);
+								st.putSymbol(szItem, itemEntry);
+								statements(true);
+								itemEntry = null;
+								st.table.remove(szItem);
+							}
 							i++;
 							// only reset the buffer to top of loop if we are running the loop again
 							if (i < setIdent.array.val.size()) {

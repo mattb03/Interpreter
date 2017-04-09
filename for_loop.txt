@@ -4,15 +4,14 @@
 Int i = 100;
 
 Int gooseEgg = 0;
-String szStr = "size string";
-String sbData = "ess bee day tuh";
+Int array[5] = 1, 2, 5;
 // for i = 1 to 5 by 2:
-for char in szStr:
+for item in array:
 	//gooseEgg = gooseEgg + item;
-	print (char);
-	print ("nested ");
-	for s in sbData:
-		print (s);
-	endfor;
+	print ("item=", item, "\tgooseEgg=", gooseEgg);
 endfor;
 
+
+print("after for loop execution: i=", i);
+
+print (array[0]);
