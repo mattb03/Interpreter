@@ -1,6 +1,9 @@
 package havabol;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.EmptyStackException;
 import java.util.Stack;
 
@@ -106,7 +109,16 @@ public class Parser {
                     error("Invalid print statement");
                 }
 
-            } else if (scan.currentToken.tokenStr.equals("debug")) {
+            } else if (scan.currentToken.tokenStr.equals("LENGTH")) {
+            	
+            } else if (scan.currentToken.tokenStr.equals("SPACES")) {
+            	
+            } else if (scan.currentToken.tokenStr.equals("ELEM")) {
+            	
+            } else if (scan.currentToken.tokenStr.equals("MAXELEM")) {
+            	
+            } 
+            else if (scan.currentToken.tokenStr.equals("debug")) {
                 scan.getNext();
                 String type = scan.currentToken.tokenStr; // got type
                 scan.getNext();
@@ -1648,6 +1660,33 @@ public class Parser {
     public void error(String fmt, Token tok) throws ParserException {
         throw new ParserException(tok.iSourceLineNr
                 , fmt, scan.sourceFileNm, scan.lines[tok.iSourceLineNr - 1]);
+    }
+    
+    public int LENGTH (String str) {
+    	return str.length();
+    }
+    
+    public int SPACES (String str) {
+    	int i;
+    	int count = 0;
+    	char array[] = str.toCharArray();
+    	for (i = 0; i < array.length; i++) {
+    		if (array[i] == ' ') {
+    			count++;
+    		}
+    	}
+    	return count;
+    }
+    
+    public Object ELEM (String array) {
+    	STIdentifier arrayIdent = (STIdentifier) st.getSymbol(array);
+    	return arrayIdent.array.val.size();
+    }
+    
+    public Object MAXELEM (String array) {
+    	STIdentifier arrayIdent = (STIdentifier) st.getSymbol(array);
+    	Collections.sort(arrayIdent.array.val);
+    	return arrayIdent.array.val.get(arrayIdent.array.val.size()-1);
     }
 }
 
