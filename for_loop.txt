@@ -1,19 +1,15 @@
 //for cv = sv to limit by incr:
 //	doWork();
 //endfor;
+Int i = 100;
 
-Int i = 5;
-Int j = 2;
 Int gooseEgg = 0;
 Int array;
-String szStr = "Can\'t wait";
-Int array[5] = 1, 2, 5;
-
+Float array[5] = 1.1, 2.2, 3.3;
 // for i = 1 to 5 by 2:
-for i = array[gooseEgg] to array[j * 2 - 2] by array[j - 1]:
-	print (szStr, " i=", i);
-	i = i + 1;
-	print ("after programmer increments: i=", i);
+for item in array:
+	//gooseEgg = gooseEgg + item
+	print ("item=", item, "\tgooseEgg=", gooseEgg);
 endfor;
 
 

@@ -27,7 +27,12 @@ public class StorageManager {
         }
     }
 
-    public void init(int size, int type) {
+    @Override
+	public String toString() {
+		return "StorageManager [size=" + size + ", type=" + type + ", val=" + val + ", defaultVal=" + defaultVal + "]";
+	}
+
+	public void init(int size, int type) {
         if (size == -1) {
             for (int i=0; i < 9; i++)
                 this.val.add(this.defaultVal);

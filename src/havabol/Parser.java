@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.EmptyStackException;
 import java.util.Stack;
 
-// import org.omg.CORBA.INTERNAL;
+import com.sun.xml.internal.ws.assembler.jaxws.MustUnderstandTubeFactory;
 
 public class Parser {
 
@@ -213,6 +213,7 @@ public class Parser {
                         copyOrDefaultArray(entry);
                     } else {
                         assign(scan.currentToken);
+                        continue;
                     }
                 } else if (scan.nextToken.tokenStr.equals("[")) { // array logic!!!!!!!!!!!!!!!!!!!!!!!
                     scan.getNext(); // get "["
@@ -256,7 +257,7 @@ public class Parser {
             }
             //if (!scan.nextToken.tokenStr.equals(";"))
                 //errorNoTerm("Statement not terminated");
-
+            
             scan.getNext();
             if (scan.nextToken.primClassif == Token.EOF) {
                 break;
@@ -828,6 +829,7 @@ public class Parser {
     	Token startToken = scan.currentToken.saveToken();
     	String temp = scan.currentToken.tokenStr + " " + scan.nextToken.tokenStr + " " + scan.getNext();
     	int controlVar;
+    	int i;
     	// default incr variable is 1 if there is none provided
     	int incr = 1;
     	// restore the state so we can use getNext()
@@ -839,11 +841,71 @@ public class Parser {
 		if (scan.currentToken.subClassif == 1) {
 			// make sure its not in the symbol table
 			STIdentifier startIdent = (STIdentifier) st.getSymbol(scan.currentToken.tokenStr);
-			if (scan.nextToken.equals("in")) {
+			if (scan.nextToken.tokenStr.equals("in")) {
 				// should be a foreach loop
 				if (startIdent != null) {
 					error("\"" + scan.currentToken.tokenStr + "\"" + " has already been declared");
 				}
+				Token itemTok = scan.currentToken;
+				scan.getNext();
+				scan.getNext();
+				// setIdent will be the set of indices that we will iterate over and assign item to each time
+				STIdentifier setIdent = (STIdentifier) st.getSymbol(scan.currentToken.tokenStr);
+				Token setTok = scan.currentToken;
+				char array[];
+				if (!scan.nextToken.tokenStr.equals(":")) {
+					error("No terminating colon " + ":" + " for for loop");
+				}
+				if (setIdent == null) {
+					// if its an identifier and the symbol table entry is null, its undeclared
+					if (scan.currentToken.subClassif == 1) {
+						error("\"" + setTok + "\"" + " is an undeclared identifier");
+					}
+					// if its not an identifier and not a string literal, then its an invalid set
+					else if (scan.currentToken.subClassif != 5) {
+						error("\"" + setTok + "\"" + " must be an array or string");
+					}
+					// if we are at this line then it must be a string literal
+					// so convert the string literal to a char array
+					array = setTok.tokenStr.toCharArray();
+					scan.getNext();
+				}
+				else {
+					// if it is a declared scalar identifier, the scalar must be a string
+					if (setIdent.structure == 100) {
+						if (setIdent.type != 5) {
+							error("The identifier " + "\"" + setIdent.symbol + "\"" + " must be an array or string");
+						}
+						// if we are at this line, then it is a string identifier
+						// so convert the string value to a char array
+						array = setTok.tokenStr.toCharArray();
+					}
+					else {
+						// if were here then it is a valid array identifier
+						for (i = 0; i < setIdent.array.val.size(); i++) {
+							//array[i] = setIdent.array.val.get(i);
+						}
+						i = 0;
+						String szItem = itemTok.tokenStr;
+						scan.getNext();
+						scan.getNext();
+						while (i < setIdent.array.val.size()) {
+							//szItem = setIdent.array.val.get(i);
+							savedScanner = this.scan.saveState();
+							STIdentifier itemEntry = new STIdentifier(szItem, 1, 5); 
+							itemEntry.value = setIdent.array.val.get(i);
+							st.putSymbol(szItem, itemEntry);
+							statements(true);
+							itemEntry = null;
+							i++;
+							// only reset the buffer to top of loop if we are running the loop again
+							if (i < setIdent.array.val.size()) {
+								this.scan = savedScanner;
+							}
+						}
+					}
+				}
+				
 			}
 			else {
 				// should be a counting for loop
