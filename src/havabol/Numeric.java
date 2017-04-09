@@ -8,8 +8,11 @@ public class Numeric {
 	public int type;			// INTEGER, FLOAT
 
 	public Numeric(Parser parser, ResultValue res, String op, String opPos) throws ParserException {
+		if (res.value == null) {
+			parser.error(opPos+" of '"+op+"' has not been initialized.", parser.startOfExprToken);
+		}
 		if (res.value.equals("NO VALUE")) {
-			parser.error(opPos+" '"+parser.startOfExprToken.tokenStr+"' has not been initialized.", parser.startOfExprToken);
+			parser.error(opPos+" of '"+op+"' has not been initialized.", parser.startOfExprToken);
 		}
 		try {
 			integerValue = Integer.parseInt(res.value);
