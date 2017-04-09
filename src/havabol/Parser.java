@@ -840,6 +840,11 @@ public class Parser {
 		if (scan.currentToken.subClassif == 1) {
 			// make sure its not in the symbol table
 			STIdentifier startIdent = (STIdentifier) st.getSymbol(scan.currentToken.tokenStr);
+			if (!scan.nextToken.tokenStr.equals("=") &&
+					!scan.nextToken.tokenStr.equals("in") &&
+					!scan.nextToken.tokenStr.equals("from")) {
+				error("\"" + scan.nextToken.tokenStr + "\"" + " is not a valid for loop token");
+			}
 			if (scan.nextToken.tokenStr.equals("in") || scan.nextToken.tokenStr.equals("from")) {
 				// should be a foreach loop
 				if (startIdent != null) {
@@ -868,7 +873,7 @@ public class Parser {
 					if (delimIdent == null) {
 						// if its null, then it must be a string literal, otherwise error
 						if (delimTok.subClassif != 5) {
-							error("\"" + delimTok + "\"" + 
+							error("\"" + delimTok.tokenStr + "\"" + 
 						        " must be a declared string identifier or string literal");
 						}
 						// if its a string literal, assign the value to delim
@@ -895,11 +900,11 @@ public class Parser {
 				if (setIdent == null) {
 					// if its an identifier and the symbol table entry is null, its undeclared
 					if (setTok.subClassif == 1) {
-						error("\"" + setTok + "\"" + " is an undeclared identifier");
+						error("\"" + setTok.tokenStr + "\"" + " is an undeclared identifier");
 					}
 					// if its not an identifier and not a string literal, then its an invalid set
 					else if (setTok.subClassif != 5) {
-						error("\"" + setTok + "\"" + " must be an array or string");
+						error("\"" + setTok.tokenStr + "\"" + " must be an array or string");
 					}
 					// if we are at this line then it must be a string literal
 					// so convert the string literal to a char array

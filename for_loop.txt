@@ -8,7 +8,7 @@ Int array[5] = 1, 2, 5;
 // for i = 1 to 5 by 2:
 String szStr = "size,string,done";
 String delimiter = ",";
-for token from "size,string,dumb" by delimiter:
+for token from szStr by delimiter:
 	print (token);
 endfor;
 
