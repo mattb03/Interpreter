@@ -15,11 +15,13 @@ public class Parser {
     public SymbolTable st;
     public ParserException error;
     public Token startOfExprToken;
+    public Utility util;
 
     public Parser(String SourceFileNm, SymbolTable st) throws Exception {
         scan = new Scanner(SourceFileNm, debugger);
         debugger = new Debug(scan);
         this.st = st;
+        util = new Utility();
     }
 
     public void statements(boolean bCalled) throws Exception, ParserException {
@@ -1661,33 +1663,7 @@ public class Parser {
         throw new ParserException(tok.iSourceLineNr
                 , fmt, scan.sourceFileNm, scan.lines[tok.iSourceLineNr - 1]);
     }
-    
-    public int LENGTH (String str) {
-    	return str.length();
-    }
-    
-    public int SPACES (String str) {
-    	int i;
-    	int count = 0;
-    	char array[] = str.toCharArray();
-    	for (i = 0; i < array.length; i++) {
-    		if (array[i] == ' ') {
-    			count++;
-    		}
-    	}
-    	return count;
-    }
-    
-    public Object ELEM (String array) {
-    	STIdentifier arrayIdent = (STIdentifier) st.getSymbol(array);
-    	return arrayIdent.array.val.size();
-    }
-    
-    public Object MAXELEM (String array) {
-    	STIdentifier arrayIdent = (STIdentifier) st.getSymbol(array);
-    	Collections.sort(arrayIdent.array.val);
-    	return arrayIdent.array.val.get(arrayIdent.array.val.size()-1);
-    }
+
 }
 
 
