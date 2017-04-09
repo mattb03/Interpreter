@@ -847,12 +847,14 @@ public class Parser {
 					error("\"" + scan.currentToken.tokenStr + "\"" + " has already been declared");
 				}
 				Token itemTok = scan.currentToken;
+				String szItem = itemTok.tokenStr;
 				scan.getNext();
 				scan.getNext();
 				// setIdent will be the set of indices that we will iterate over and assign item to each time
 				STIdentifier setIdent = (STIdentifier) st.getSymbol(scan.currentToken.tokenStr);
 				Token setTok = scan.currentToken;
 				char array[];
+				i = 0;
 				if (!scan.nextToken.tokenStr.equals(":")) {
 					error("No terminating colon " + ":" + " for for loop");
 				}
@@ -878,15 +880,29 @@ public class Parser {
 						}
 						// if we are at this line, then it is a string identifier
 						// so convert the string value to a char array
-						array = setTok.tokenStr.toCharArray();
+						scan.getNext();
+						scan.getNext();
+						while (i < setIdent.value.length()) {
+							//szItem = setIdent.array.val.get(i);
+							savedScanner = this.scan.saveState();
+							STIdentifier itemEntry = new STIdentifier(szItem, 1, 5); 
+							itemEntry.value = String.valueOf(setIdent.value.charAt(i));
+							st.putSymbol(szItem, itemEntry);
+							statements(true);
+							itemEntry = null;
+							st.table.remove(szItem);
+							i++;
+							// only reset the buffer to top of loop if we are running the loop again
+							if (i < setIdent.value.length()) {
+								this.scan = savedScanner;
+							}
+						}
 					}
 					else {
 						// if were here then it is a valid array identifier
 						for (i = 0; i < setIdent.array.val.size(); i++) {
 							//array[i] = setIdent.array.val.get(i);
 						}
-						i = 0;
-						String szItem = itemTok.tokenStr;
 						scan.getNext();
 						scan.getNext();
 						while (i < setIdent.array.val.size()) {
@@ -897,6 +913,7 @@ public class Parser {
 							st.putSymbol(szItem, itemEntry);
 							statements(true);
 							itemEntry = null;
+							st.table.remove(szItem);
 							i++;
 							// only reset the buffer to top of loop if we are running the loop again
 							if (i < setIdent.array.val.size()) {
