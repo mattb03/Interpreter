@@ -6,9 +6,9 @@ Int i = 100;
 Int gooseEgg = 0;
 Int array[5] = 1, 2, 5;
 // for i = 1 to 5 by 2:
-for item in array:
+for char in "szArray":
 	//gooseEgg = gooseEgg + item;
-	print ("item=", item, "\tgooseEgg=", gooseEgg);
+	print (char);
 endfor;
 
 

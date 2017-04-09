@@ -871,6 +871,22 @@ public class Parser {
 					// so convert the string literal to a char array
 					array = setTok.tokenStr.toCharArray();
 					scan.getNext();
+					scan.getNext();
+					while (i < array.length) {
+						//szItem = setIdent.array.val.get(i);
+						savedScanner = this.scan.saveState();
+						STIdentifier itemEntry = new STIdentifier(szItem, 1, 5); 
+						itemEntry.value = String.valueOf(array[i]);
+						st.putSymbol(szItem, itemEntry);
+						statements(true);
+						itemEntry = null;
+						st.table.remove(szItem);
+						i++;
+						// only reset the buffer to top of loop if we are running the loop again
+						if (i < array.length) {
+							this.scan = savedScanner;
+						}
+					}
 				}
 				else {
 					// if it is a declared scalar identifier, the scalar must be a string
