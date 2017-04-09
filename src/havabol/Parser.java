@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.EmptyStackException;
 import java.util.Stack;
 
-import com.sun.xml.internal.ws.assembler.jaxws.MustUnderstandTubeFactory;
 
 public class Parser {
 
@@ -841,7 +840,7 @@ public class Parser {
 		if (scan.currentToken.subClassif == 1) {
 			// make sure its not in the symbol table
 			STIdentifier startIdent = (STIdentifier) st.getSymbol(scan.currentToken.tokenStr);
-			if (scan.nextToken.tokenStr.equals("in")) {
+			if (scan.nextToken.tokenStr.equals("in") || scan.nextToken.tokenStr.equals("from")) {
 				// should be a foreach loop
 				if (startIdent != null) {
 					error("\"" + scan.currentToken.tokenStr + "\"" + " has already been declared");
@@ -853,37 +852,94 @@ public class Parser {
 				// setIdent will be the set of indices that we will iterate over and assign item to each time
 				STIdentifier setIdent = (STIdentifier) st.getSymbol(scan.currentToken.tokenStr);
 				Token setTok = scan.currentToken;
-				char array[];
+				char array[] = null;
 				i = 0;
+				STIdentifier delimIdent = null;
+				Token delimTok = null;
+				String delim = "";
+				if (scan.nextToken.tokenStr.equals("by")) {
+					// should be a foreach loop with a split string delimiter
+					scan.getNext();
+					scan.getNext();
+					// get the string delimiter to split the string on
+					delimIdent = (STIdentifier) st.getSymbol(scan.currentToken.tokenStr);
+					delimTok = scan.currentToken;
+					delim = "";
+					if (delimIdent == null) {
+						// if its null, then it must be a string literal, otherwise error
+						if (delimTok.subClassif != 5) {
+							error("\"" + delimTok + "\"" + 
+						        " must be a declared string identifier or string literal");
+						}
+						// if its a string literal, assign the value to delim
+						delim = delimTok.tokenStr;
+					}
+					else {
+						// it is in the symbol table, make sure it has a value and is a string
+						if (delimIdent.value.equals("NO VALUE")) {
+							error("\"" + delimTok + "\"" + " is not initialized");
+						}
+						if (delimIdent.type != 5) {
+							error("\"" + delimTok + "\"" + " must be a string identifier");
+						}
+						// if its a string identifier, assign the value from the symbol table entry
+						// to delim
+						delim = delimIdent.value;
+					}
+				}
+				// loop must have colon ":" terminating string
 				if (!scan.nextToken.tokenStr.equals(":")) {
 					error("No terminating colon " + ":" + " for for loop");
 				}
+				
 				if (setIdent == null) {
 					// if its an identifier and the symbol table entry is null, its undeclared
-					if (scan.currentToken.subClassif == 1) {
+					if (setTok.subClassif == 1) {
 						error("\"" + setTok + "\"" + " is an undeclared identifier");
 					}
 					// if its not an identifier and not a string literal, then its an invalid set
-					else if (scan.currentToken.subClassif != 5) {
+					else if (setTok.subClassif != 5) {
 						error("\"" + setTok + "\"" + " must be an array or string");
 					}
 					// if we are at this line then it must be a string literal
 					// so convert the string literal to a char array
-					array = setTok.tokenStr.toCharArray();
+					String szArray[] = null;
+					int length = 0;
+					if (delimTok != null) {
+						// if the delimiter is a string literal, then split on the token
+						if (setIdent == null) {
+							szArray = setTok.tokenStr.split(delim);
+						}
+						// if the delimiter is an identifier for a string, then split on the ST value
+						else {
+							szArray = setIdent.value.split(delim);
+						}
+						length = szArray.length;
+					}
+					// if there is no delimiter, then its a simple foreach loop
+					if (szArray == null) {
+						array = setTok.tokenStr.toCharArray();
+						length = array.length;
+					}
 					scan.getNext();
 					scan.getNext();
-					while (i < array.length) {
+					while (i < length) {
 						//szItem = setIdent.array.val.get(i);
 						savedScanner = this.scan.saveState();
 						STIdentifier itemEntry = new STIdentifier(szItem, 1, 5); 
-						itemEntry.value = String.valueOf(array[i]);
+						if (szArray == null) {
+							itemEntry.value = String.valueOf(array[i]);
+						}
+						else {
+							itemEntry.value = String.valueOf(szArray[i]);
+						}
 						st.putSymbol(szItem, itemEntry);
 						statements(true);
 						itemEntry = null;
 						st.table.remove(szItem);
 						i++;
 						// only reset the buffer to top of loop if we are running the loop again
-						if (i < array.length) {
+						if (i < length) {
 							this.scan = savedScanner;
 						}
 					}
@@ -896,20 +952,43 @@ public class Parser {
 						}
 						// if we are at this line, then it is a string identifier
 						// so convert the string value to a char array
+						String szArray[] = null;
+						int length = 0;
+						if (delimTok != null) {
+							// if the set string is a string literal, then split on the token
+							if (setIdent == null) {
+								szArray = setTok.tokenStr.split(delim);
+							}
+							// if the delimiter is an identifier for a string, then split on the ST value
+							else {
+								szArray = setIdent.value.split(delim);
+							}
+							length = szArray.length;
+						}
+						// if there is no delimiter, then its a simple foreach loop
+						if (szArray == null) {
+							array = setTok.tokenStr.toCharArray();
+							length = array.length;
+						}
 						scan.getNext();
 						scan.getNext();
-						while (i < setIdent.value.length()) {
+						while (i < length) {
 							//szItem = setIdent.array.val.get(i);
 							savedScanner = this.scan.saveState();
 							STIdentifier itemEntry = new STIdentifier(szItem, 1, 5); 
-							itemEntry.value = String.valueOf(setIdent.value.charAt(i));
+							if (szArray == null) {
+								itemEntry.value = String.valueOf(array[i]);
+							}
+							else {
+								itemEntry.value = String.valueOf(szArray[i]);
+							}
 							st.putSymbol(szItem, itemEntry);
 							statements(true);
 							itemEntry = null;
 							st.table.remove(szItem);
 							i++;
 							// only reset the buffer to top of loop if we are running the loop again
-							if (i < setIdent.value.length()) {
+							if (i < length) {
 								this.scan = savedScanner;
 							}
 						}
