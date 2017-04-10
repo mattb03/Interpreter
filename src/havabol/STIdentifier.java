@@ -30,6 +30,7 @@ public class STIdentifier extends STEntry
     public void setValue(int index, String item) {
         this.charArray = this.value.toCharArray();
         this.charArray[index] = item.charAt(0);
+        this.value  = new String(this.charArray);
     }
 
     public StorageManager getArray() {  // maybe not needed. can just access array directly
