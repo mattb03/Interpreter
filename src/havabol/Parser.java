@@ -69,23 +69,21 @@ public class Parser {
                             error("Did not expect a comma. Found: "+scan.currentToken.tokenStr);
                         } else if (scan.currentToken.tokenStr.equals(",")) {  //  handle expr logic
                             scan.getNext(); // consume comma and call expr
-                            if (scan.currentToken.subClassif == Token.STRING) {
-                                arglist.add(scan.currentToken.tokenStr);
-                            } else {
-                                Token curr = scan.currentToken.saveToken();
-                                ResultValue res = expr(true);
-                                arglist.add(res.value);
-                                if (expr) {
-                                	if (curr.subClassif == Token.IDENTIFIER) {
-	                                    System.out.println("+++++ EXPRN +++++ :"+curr.iSourceLineNr
-	                                    		+ ": " + curr.tokenStr + " = "+res.value);
-                                	} else {
-                                		System.out.println("+++++ EXPRN +++++ :"+curr.iSourceLineNr
-                                        		+ ": "+res.value);
-                                	}
-                                }
-                                continue;
+                       
+                            Token curr = scan.currentToken.saveToken();
+                            ResultValue res = expr(true);
+                            arglist.add(res.value);
+                            if (expr) {
+                            	if (curr.subClassif == Token.IDENTIFIER) {
+                                    System.out.println("+++++ EXPRN +++++ :"+curr.iSourceLineNr
+                                    		+ ": " + curr.tokenStr + " = "+res.value);
+                            	} else {
+                            		System.out.println("+++++ EXPRN +++++ :"+curr.iSourceLineNr
+                                    		+ ": "+res.value);
+                            	}
                             }
+                            continue;
+                       
                         } else {
                             Token curr = scan.currentToken.saveToken();
                             ResultValue res = expr(true);
