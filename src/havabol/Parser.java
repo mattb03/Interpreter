@@ -1077,18 +1077,20 @@ public class Parser {
 					}
 					int start = Integer.parseInt(startIdent.value);
 					if (limitIdent == null) {
-						// if its an identifier and not in the symbol table, then error
-						if (scan.currentToken.subClassif == 1) {
-							error("\"" + scan.currentToken.tokenStr + "\"" + " is an undeclared identifier");
-						}
-						// if the limit is not a integer or float constant, then error
-						else if (scan.currentToken.subClassif != 2 && scan.currentToken.subClassif != 3) {
-							error("\"" + scan.currentToken.tokenStr + "\"" + " is not a valid ending limit");
-						}
-						// if its a valid integer or float constant, assign the ending value to it
-						else {
-							if (funcFlag == false) {
-								end = Integer.parseInt(scan.currentToken.tokenStr);
+						if (!scan.currentToken.tokenStr.equals(":")) {
+							// if its an identifier and not in the symbol table, then error
+							if (scan.currentToken.subClassif == 1) {
+								error("\"" + scan.currentToken.tokenStr + "\"" + " is an undeclared identifier");
+							}
+							// if the limit is not a integer or float constant, then error
+							else if (scan.currentToken.subClassif != 2 && scan.currentToken.subClassif != 3) {
+								error("\"" + scan.currentToken.tokenStr + "\"" + " is not a valid ending limit");
+							}
+							// if its a valid integer or float constant, assign the ending value to it
+							else {
+								if (funcFlag == false) {
+									end = Integer.parseInt(scan.currentToken.tokenStr);
+								}
 							}
 						}
 					}
