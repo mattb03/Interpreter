@@ -108,7 +108,7 @@ public class StorageManager {
     public void defaultArray(String defaultVal) throws Exception {
         this.defaultVal = defaultVal;
         for (int i = 0; i < this.val.size(); i++)
-            this.val.add(i, this.defaultVal);
+            this.val.set(i, this.defaultVal);
 
     }
 

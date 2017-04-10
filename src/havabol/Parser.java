@@ -113,15 +113,7 @@ public class Parser {
                     error("Invalid print statement");
                 }
 
-            } else if (scan.currentToken.tokenStr.equals("LENGTH")) {
-
-            } else if (scan.currentToken.tokenStr.equals("SPACES")) {
-
-            } else if (scan.currentToken.tokenStr.equals("ELEM")) {
-
-            } else if (scan.currentToken.tokenStr.equals("MAXELEM")) {
-
-            }
+            } 
             else if (scan.currentToken.tokenStr.equals("debug")) {
                 scan.getNext();
                 String type = scan.currentToken.tokenStr; // got type
@@ -306,8 +298,16 @@ public class Parser {
                 }
             }
         }
+        ResultValue resVal = null;
         // default case logic
-        ResultValue resVal = expr(false);
+        if (scan.currentToken.subClassif == Token.STRING) {
+        	resVal = new ResultValue(scan.currentToken.tokenStr);
+        	resVal.type = Token.STRING;
+        	resVal.structure.add("STRING");
+        }
+        else {
+        	resVal = expr(false);
+        }
         lEntry.array.defaultArray(resVal.value);
     }
 
