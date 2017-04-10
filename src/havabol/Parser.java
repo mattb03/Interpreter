@@ -1,6 +1,7 @@
 package havabol;
 
 import java.util.ArrayList;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -1062,7 +1063,18 @@ public class Parser {
 					scan.getNext();
 					// begin getting the limit in the for loop
 					int end = 0;
-					STIdentifier limitIdent = (STIdentifier) st.getSymbol(scan.currentToken.tokenStr);
+					boolean funcFlag = false;
+					STIdentifier limitIdent = null;
+					if (scan.currentToken.tokenStr.equals("LENGTH") ||
+							scan.currentToken.tokenStr.equals("ELEM") ||
+							scan.currentToken.tokenStr.equals("MAXELEM")) {
+						resVal = expr(false);
+						funcFlag = true;
+						end = Integer.parseInt(resVal.value);
+					}
+					else {
+						limitIdent = (STIdentifier) st.getSymbol(scan.currentToken.tokenStr);
+					}
 					int start = Integer.parseInt(startIdent.value);
 					if (limitIdent == null) {
 						// if its an identifier and not in the symbol table, then error
@@ -1075,7 +1087,9 @@ public class Parser {
 						}
 						// if its a valid integer or float constant, assign the ending value to it
 						else {
-							end = Integer.parseInt(scan.currentToken.tokenStr);
+							if (funcFlag == false) {
+								end = Integer.parseInt(scan.currentToken.tokenStr);
+							}
 						}
 					}
 					else {
@@ -1110,7 +1124,18 @@ public class Parser {
 							scan.getNext();
 						}
 						// begin getting the incr in the for loop
-						STIdentifier incrIdent = (STIdentifier) st.getSymbol(scan.currentToken.tokenStr);
+						funcFlag = false;
+						STIdentifier incrIdent = null;
+						if (scan.currentToken.tokenStr.equals("LENGTH") ||
+								scan.currentToken.tokenStr.equals("ELEM") ||
+								scan.currentToken.tokenStr.equals("MAXELEM")) {
+							resVal = expr(false);
+							funcFlag = true;
+							incr = Integer.parseInt(resVal.value);
+						}
+						else {
+							incrIdent = (STIdentifier) st.getSymbol(scan.currentToken.tokenStr);
+						}
 						// check if the incr is an identifier
 						if (incrIdent == null) {
 							// if its an identifier and not in the symbol table, then error
@@ -1123,7 +1148,9 @@ public class Parser {
 							}
 							// if its a valid integer or float constant, assign the ending value to it
 							else {
-								incr = Integer.parseInt(scan.currentToken.tokenStr);
+								if (funcFlag == false) {
+									incr = Integer.parseInt(scan.currentToken.tokenStr);
+								}							
 							}
 						}
 						else {
