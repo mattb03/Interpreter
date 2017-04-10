@@ -1503,7 +1503,11 @@ public class Parser {
 	    				resOp2.structure.add("ARRAY ELEM REF");
 
 	    				nOp2 = new Numeric(this, resOp2, currToken.tokenStr, "2nd Operand"); // must be a number
-	    				resTemp = ((STIdentifier) stArray).getArray().get(nOp2.integerValue);
+	    				if (nOp2.integerValue == -1) {
+	    					resTemp = ((STIdentifier) stArray).array.get(((STIdentifier) stArray).array.val.size() - 1);
+	    				} else {
+	    					resTemp = ((STIdentifier) stArray).array.get(nOp2.integerValue);
+	    				}
 
 	    				extraToken1 = tokOp2.saveToken(); // get the most accurate values for the line and column # as possible
                         extraToken1.tokenStr = resTemp.value;

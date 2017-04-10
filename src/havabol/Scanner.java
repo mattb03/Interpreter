@@ -68,7 +68,7 @@ public class Scanner {
             String curVal = this.currentToken.tokenStr;
             try {
                 if ( ( (operators.indexOf(curVal.charAt(0)) != -1) || curVal.equals("if") ||
-                    curVal.equals("while") || curVal.equals(",") || curVal.equals("(")) && value.equals("-") ) {
+                    curVal.equals("while") || curVal.equals(",") || curVal.equals("(") || curVal.equals("[")) && value.equals("-") ) {
                     this.nextToken.primClassif = Token.OPERATOR;
                     this.nextToken.subClassif = Token.VOID;
                     this.nextToken.tokenStr = "u-";
