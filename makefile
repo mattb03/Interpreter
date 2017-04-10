@@ -17,7 +17,10 @@ test2:
 test3:
 	$(JAVA) $(JFLAGS) havabol.HavaBol p3Input.txt
 
-simp: 
+arr:
+	$(JAVA) $(JFLAGS) havabol.HavaBol p4Array.txt
+
+simp:
 	$(JAVA) $(JFLAGS) havabol.HavaBol p3SimpExpr.txt
 
 out1:

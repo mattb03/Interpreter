@@ -876,6 +876,7 @@ public class Parser {
 				Token setTok = scan.currentToken;
 				char array[] = null;
 				i = 0;
+				int type = 0;
 				STIdentifier delimIdent = null;
 				Token delimTok = null;
 				String delim = "";
@@ -945,10 +946,17 @@ public class Parser {
 					}
 					scan.getNext();
 					scan.getNext();
+					if (startIdent == null) {
+						type = setIdent.array.type;
+					}
+					else {
+						type = startIdent.type;
+					}
 					while (i < length) {
 						//szItem = setIdent.array.val.get(i);
 						savedScanner = this.scan.saveState();
 						STIdentifier itemEntry = new STIdentifier(szItem, 1, 5);
+						itemEntry.type = type;
 						if (szArray == null) {
 							itemEntry.value = String.valueOf(array[i]);
 						}
@@ -994,6 +1002,12 @@ public class Parser {
 						}
 						scan.getNext();
 						scan.getNext();
+						if (startIdent == null) {
+							type = setIdent.array.type;
+						}
+						else {
+							type = startIdent.type;
+						}
 						while (i < length) {
 							//szItem = setIdent.array.val.get(i);
 							savedScanner = this.scan.saveState();
@@ -1019,11 +1033,18 @@ public class Parser {
 						// if were here then it is a valid array identifier
 						scan.getNext();
 						scan.getNext();
+						if (startIdent == null) {
+							type = setIdent.array.type;
+						}
+						else {
+							type = startIdent.type;
+						}
 						while (i < setIdent.array.val.size()) {
 							//szItem = setIdent.array.val.get(i);
 							if (setIdent.array.val.get(i) != null) {
 								savedScanner = this.scan.saveState();
 								STIdentifier itemEntry = new STIdentifier(szItem, 1, 5);
+								itemEntry.type = type;
 								itemEntry.value = setIdent.array.val.get(i);
 								st.putSymbol(szItem, itemEntry);
 								statements(true);
@@ -1033,7 +1054,9 @@ public class Parser {
 							// only reset the buffer to top of loop if we are running the loop again
 							if (i < setIdent.array.val.size()) {
 								this.scan = savedScanner;
-								st.table.remove(szItem);
+								if (setIdent.array.val.get(i) != null) {
+									st.table.remove(szItem);
+								}
 							}
 						}
 					}
@@ -1499,11 +1522,11 @@ public class Parser {
 	    			// and because we are using a stack, the righthand operand
 	    			// appears before the lefthand operand on a stack
 
-	    			if (currToken.tokenStr.equals("u-")) { // unary minus is handled differently
+	    			if (currToken.tokenStr.equals("u-") || currToken.tokenStr.equals("not")) { // unary minus and not are handled differently
 	    				try {
 		    				tokOp2 = (Token) stk.pop(); // grab the right operand (the only operand)
 		    			} catch (EmptyStackException a) {
-		    				error("Missing right expression operand for unary minus.", currToken);
+		    				error("Missing right expression operand for unary operator.", currToken);
 		    			}
 	    				if (tokOp2.subClassif == Token.IDENTIFIER) {
 	    					STEntry stEnt2 = st.getSymbol(tokOp2.tokenStr);
@@ -1518,8 +1541,17 @@ public class Parser {
 	    				}
 	    				resOp2.structure.add(Token.strSubClassifM[tokOp2.subClassif]);
 
-                        nOp2 = new Numeric(this, resOp2, currToken.tokenStr, "2nd Operand"); // must be a number
-                        resTemp = Utility.negative(this, nOp2);
+	    				switch (currToken.tokenStr) {
+	    				case "u-":
+	                        nOp2 = new Numeric(this, resOp2, currToken.tokenStr, "2nd Operand"); // must be a number
+	                        resTemp = Utility.negative(this, nOp2);
+	    					break;
+	    				case "not":
+	    					if (resOp2.type != Token.BOOLEAN)
+	    						error("Right operand for 'not' is not of type BOOLEAN", tokOp2);
+	    					resTemp = Utility.booleanConditionals(this, null, resOp2, "not");
+	    					break;
+	    				}
 
                         extraToken1 = tokOp2; // get the most accurate values for the line and column # as possible
                         extraToken1.tokenStr = resTemp.value;
@@ -1633,9 +1665,6 @@ public class Parser {
 			    			case "notin":
 			    				// TODO: add string subscript functionality
 			    				break;
-			    			case "not":
-			    				resTemp = Utility.booleanConditionals(this, resOp1, resOp2, "not");
-			    				break;
 			    			case "and":
 			    				resTemp = Utility.booleanConditionals(this, resOp1, resOp2, "and");
 			    				break;
@@ -1674,7 +1703,7 @@ public class Parser {
     				if (tokOp2.subClassif == Token.IDENTIFIER) {
     					STEntry stEnt2 = st.getSymbol(tokOp2.tokenStr);
     					if (stEnt2 == null) {
-    	                    error("Symbol '"+tokOp2+"' is not in Symbol Table.", tokOp2);
+    	                    error("Symbol '"+tokOp2.tokenStr+"' is not in Symbol Table.", tokOp2);
     	                }
     					if (tokOp2.isArray) {
 	    					resOp2 = new ResultValue(stEnt2.symbol);
@@ -1696,9 +1725,13 @@ public class Parser {
 	    					resTemp = Utility.SPACES(this, resOp2.value);
 	    					break;
 	    				case "ELEM":
+	    					if (! tokOp2.isArray)
+	    						error("'" + tokOp2.tokenStr + "' is not type ARRAY for function ELEM", tokOp2);
 	    					resTemp = Utility.ELEM(this, resOp2.value);
 	    					break;
 	    				case "MAXELEM":
+	    					if (! tokOp2.isArray)
+	    						error("'" + tokOp2.tokenStr + "' is not type ARRAY for function ELEM", tokOp2);
 	    					resTemp = Utility.MAXELEM(this, resOp2.value);
 	    					break;
     				}
@@ -1735,8 +1768,12 @@ public class Parser {
                         error("Symbol '"+extraToken2.tokenStr+"' is not in Symbol Table.", extraToken2);
                     }
                     if (extraToken2.isArray) {
-                    	// return an array value
-                    	resMain.value = ((STIdentifier) stExtra).array.val.toString();
+                    	// return the string of the array as the value
+                    	resMain.value = "[" + ((STIdentifier) stExtra).array.val.get(0);
+                    	for (int i = 1; i < Integer.parseInt((Utility.ELEM(this, extraToken2.tokenStr).value)); i++) {
+                    		resMain.value = resMain.value + ", " + ((STIdentifier) stExtra).array.val.get(i);
+                    	}
+                    	resMain.value = resMain.value + "]";
                     	resMain.type = ((STIdentifier) stExtra).type;
                     	resMain.structure.add("ARRAY");
                     } else {
