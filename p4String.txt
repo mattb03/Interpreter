@@ -2,6 +2,9 @@
 print("p4String.txt");
 String sA = "Pike";
 sA[2] = "p";
+
+
+//debug Exit on;
 print("Replaced 'Pike' in slot 2 with 'p' giving", sA);
 
 sA = "dog house";

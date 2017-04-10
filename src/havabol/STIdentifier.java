@@ -1,5 +1,7 @@
 package havabol;
 
+import java.util.ArrayList;
+
 public class STIdentifier extends STEntry
 
 {
@@ -7,6 +9,7 @@ public class STIdentifier extends STEntry
     public static final int ARRAY = -100;
     public int structure;
     public StorageManager array;
+    public char [] charArray;
 
     public STIdentifier (String symbol, int primClassif, int subClassif)
     {
@@ -22,6 +25,11 @@ public class STIdentifier extends STEntry
         this.array = new StorageManager(parser, size, type);
         this.structure = ARRAY;
         this.array.init(size, type);
+    }
+
+    public void setValue(int index, String item) {
+        this.charArray = this.value.toCharArray();
+        this.charArray[index] = item.charAt(0);
     }
 
     public StorageManager getArray() {  // maybe not needed. can just access array directly
