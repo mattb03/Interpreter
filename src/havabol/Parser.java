@@ -876,6 +876,7 @@ public class Parser {
 				Token setTok = scan.currentToken;
 				char array[] = null;
 				i = 0;
+				int type = 0;
 				STIdentifier delimIdent = null;
 				Token delimTok = null;
 				String delim = "";
@@ -945,10 +946,17 @@ public class Parser {
 					}
 					scan.getNext();
 					scan.getNext();
+					if (startIdent == null) {
+						type = setIdent.array.type;
+					}
+					else {
+						type = startIdent.type;
+					}
 					while (i < length) {
 						//szItem = setIdent.array.val.get(i);
 						savedScanner = this.scan.saveState();
 						STIdentifier itemEntry = new STIdentifier(szItem, 1, 5); 
+						itemEntry.type = type;
 						if (szArray == null) {
 							itemEntry.value = String.valueOf(array[i]);
 						}
@@ -994,6 +1002,12 @@ public class Parser {
 						}
 						scan.getNext();
 						scan.getNext();
+						if (startIdent == null) {
+							type = setIdent.array.type;
+						}
+						else {
+							type = startIdent.type;
+						}
 						while (i < length) {
 							//szItem = setIdent.array.val.get(i);
 							savedScanner = this.scan.saveState();
@@ -1019,11 +1033,19 @@ public class Parser {
 						// if were here then it is a valid array identifier
 						scan.getNext();
 						scan.getNext();
+						if (startIdent == null) {
+							type = setIdent.array.type;
+						}
+						else {
+							type = startIdent.type;
+						}
 						while (i < setIdent.array.val.size()) {
 							//szItem = setIdent.array.val.get(i);
+							
 							if (setIdent.array.val.get(i) != null) { 
 								savedScanner = this.scan.saveState();
 								STIdentifier itemEntry = new STIdentifier(szItem, 1, 5); 
+								itemEntry.type = type;
 								itemEntry.value = setIdent.array.val.get(i);
 								st.putSymbol(szItem, itemEntry);
 								statements(true);
@@ -1033,7 +1055,9 @@ public class Parser {
 							// only reset the buffer to top of loop if we are running the loop again
 							if (i < setIdent.array.val.size()) {
 								this.scan = savedScanner;
-								st.table.remove(szItem);
+								if (setIdent.array.val.get(i) != null) {
+									st.table.remove(szItem);
+								}
 							}
 						}
 					}
