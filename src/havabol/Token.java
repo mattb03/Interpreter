@@ -179,6 +179,9 @@ public class Token
     	if (isArray) {
     		normPreced = 16;
     		stkPreced = 0;
+    	} else if (primClassif == Token.FUNCTION) {
+    		normPreced = 16;
+    		stkPreced = 0;
     	} else if (primClassif != Token.OPERAND) {
     		String conditionals = "<><=>===!=";
 	    	if (primClassif == SEPARATOR) {
@@ -186,7 +189,6 @@ public class Token
 	    		stkPreced = 2;
 	    	} else if (tokenStr.equals("u-")) {
 	    		normPreced = stkPreced = 12;
-	    		// TODO: unary minus symbol in scanner "u-"
 	    	} else if (tokenStr.equals("^")) {
 	    		normPreced = 11;
 	    		stkPreced = 10;

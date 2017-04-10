@@ -1232,11 +1232,13 @@ public class Parser {
 
     	// go through the expr and end if there isn't a token
     	// that can be in a expr
-    	while (tok.primClassif == Token.OPERAND
+    	while ((! tok.tokenStr.equals("print")) && 
+    			(tok.primClassif == Token.OPERAND
     			|| tok.primClassif == Token.OPERATOR
+    			|| tok.primClassif == Token.FUNCTION
     			|| tok.tokenStr.equals("(")
     			|| tok.tokenStr.equals(")")
-    			|| tok.tokenStr.equals("]")) {
+    			|| tok.tokenStr.equals("]"))) {
     		tok.setPrecedence();
     		switch (tok.primClassif) {
     			case Token.OPERAND:
@@ -1247,6 +1249,8 @@ public class Parser {
 	    		    			error("Missing ')' separator", popped);
 	    		    		if (popped.isElemRef)
 	    		    			error("Missing ']' separator", popped);
+	    		    		if (popped.primClassif == Token.FUNCTION)
+	    		    			error("Missing ')' separator", popped);
 	    		    		postAList.add(popped);
     					}
     			        return evaluateExpr(postAList);
@@ -1298,6 +1302,10 @@ public class Parser {
     	    		    		if (popped.isElemRef)
     	    		    			error("Missing ']' separator", popped);
     							postAList.add(popped);
+    							if (popped.primClassif == Token.FUNCTION) {
+    								bFound = true;
+    								break;
+    							}
     						}
     						if (!bFound && funcCall) {   // no matching left paren but a func has been called ie print()
     							// TODO: add function implementations here
@@ -1307,6 +1315,8 @@ public class Parser {
                                         error("Missing ')' separator", popped);
         	    		    		if (popped.isElemRef)
         	    		    			error("Missing ']' separator", popped);
+        	    		    		if (popped.primClassif == Token.FUNCTION)
+        	    		    			error("Missing ')' separator", popped);
 
                                     postAList.add(popped);
                                 }
@@ -1330,9 +1340,12 @@ public class Parser {
 	                        if (!bArrayFound && funcCall) {
 	                            while (!mainStack.isEmpty()) {
 	                                popped = mainStack.pop();
-	                                if (popped.tokenStr.equals("[")) {
+	                        		if (popped.tokenStr.equals("("))
+	                        			error("Missing ')' separator", popped);
+	                                if (popped.tokenStr.equals("["))
 	                                    error("Missing ']' separator", popped);
-	                                }
+	    	    		    		if (popped.primClassif == Token.FUNCTION)
+	    	    		    			error("Missing ')' separator", popped);
 	                                postAList.add(popped);
 	                            }
 	                            return evaluateExpr(postAList);
@@ -1342,6 +1355,14 @@ public class Parser {
     						error("Invalid separator in expression", startOfExprToken);
     						break;
     				}
+    				break;
+    			case Token.FUNCTION:
+					mainStack.push(tok);
+					if (scan.nextToken.tokenStr.equals("(")) {
+						scan.getNext(); // consume the '[', we don't want it in the list
+					} else {
+						error("FUNCTION '" + tok.tokenStr + "' missing '(' separator", tok);
+					}
     				break;
     			default:
     				error("Invalid operator/operand in expression", startOfExprToken);
@@ -1355,6 +1376,8 @@ public class Parser {
     			error("Missing ')' separator", popped);
     		if (popped.isElemRef)
     			error("Missing ']' separator", popped);
+    		if (popped.primClassif == Token.FUNCTION)
+    			error("Missing ')' separator", popped);
     		postAList.add(popped);
     	}
 
@@ -1414,8 +1437,7 @@ public class Parser {
 	    				nOp2 = new Numeric(this, resOp2, currToken.tokenStr, "2nd Operand"); // must be a number
 	    				resTemp = ((STIdentifier) stArray).getArray().get(nOp2.integerValue);
 	    				
-	    				// right now we're using the array token
-	    				extraToken1 = tokOp2; // get the most accurate values for the line and column # as possible
+	    				extraToken1 = tokOp2.saveToken(); // get the most accurate values for the line and column # as possible
                         extraToken1.tokenStr = resTemp.value;
                         extraToken1.primClassif = Token.OPERAND;
                         extraToken1.subClassif = resTemp.type;
@@ -1597,9 +1619,56 @@ public class Parser {
 		    			}
 	    			} // end of unary if
 		    		break; // end of operator case
-		    		default:
-		    			error("Invalid operand in expression: '"
-								+ currToken.tokenStr + "'", startOfExprToken);
+	    		case Token.FUNCTION:
+	    			// all functions need one operand
+    				try {
+	    				tokOp2 = (Token) stk.pop(); // grab the right operand (the only operand)
+	    			} catch (EmptyStackException a) {
+	    				error("Missing operand for '" + currToken.tokenStr + "' function.", currToken);
+	    			}
+    				if (tokOp2.subClassif == Token.IDENTIFIER) {
+    					STEntry stEnt2 = st.getSymbol(tokOp2.tokenStr);
+    					if (stEnt2 == null) {
+    	                    error("Symbol '"+tokOp2+"' is not in Symbol Table.", tokOp2);
+    	                }
+    					if (tokOp2.isArray) {
+	    					resOp2 = new ResultValue(stEnt2.symbol);
+	    					resOp2.type = ((STIdentifier)stEnt2).array.type;
+    					} else {
+	    					resOp2 = new ResultValue(stEnt2.value);
+	    					resOp2.type = ((STIdentifier)stEnt2).type;
+    					}
+    				} else {
+    					resOp2 = new ResultValue(tokOp2.tokenStr);
+    					resOp2.type = tokOp2.subClassif;
+    				}
+    				
+    				switch (currToken.tokenStr) {
+	    				case "LENGTH":
+	    					resTemp = Utility.LENGTH(this, resOp2.value);
+	    					break;
+	    				case "SPACES":
+	    					resTemp = Utility.SPACES(this, resOp2.value);
+	    					break;
+	    				case "ELEM":
+	    					resTemp = Utility.ELEM(this, resOp2.value);
+	    					break;
+	    				case "MAXELEM":
+	    					resTemp = Utility.MAXELEM(this, resOp2.value);
+	    					break;
+    				}
+    				// add our new value to the stack
+                    extraToken1 = tokOp2.saveToken(); // get the most accurate values for the line and column # as possible
+                    extraToken1.tokenStr = resTemp.value;
+                    extraToken1.primClassif = Token.OPERAND;
+                    extraToken1.subClassif = resTemp.type;
+                    stk.push(extraToken1);
+                    
+                    resMain.structure.add(resTemp.structure.get(0));
+	    			break;
+	    		default:
+	    			error("Invalid operand in expression: '"
+							+ currToken.tokenStr + "'", startOfExprToken);
     		} // end of primClassif switch
 
 
