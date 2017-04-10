@@ -38,9 +38,19 @@ public class StorageManager {
 
     public void add(int index, ResultValue resVal) throws Exception {
         String item = resVal.value;
+        int ind;
+        System.out.println("this type: "+this.type+"\nrevVal type: "+resVal.type);
         if (this.type != resVal.type) {
-            this.parser.error("Incompatible array value type");
+            if (this.type == Token.INTEGER && resVal.type == Token.FLOAT) {
+                ind = item.indexOf(".");
+                item = item.substring(0, ind);
+            } else if (this.type == Token.FLOAT && resVal.type == Token.INTEGER) {
+                item += ".00";
+            } else {
+                this.parser.error("Incompatible array value type");
+            }
         }
+
         this.val.add(index, item);
 
     }

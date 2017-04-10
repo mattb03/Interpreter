@@ -20,6 +20,17 @@ test3:
 arr:
 	$(JAVA) $(JFLAGS) havabol.HavaBol p4Array.txt
 
+string:
+	$(JAVA) $(JFLAGS) havabol.HavaBol p4String.txt
+expr:
+	$(JAVA) $(JFLAGS) havabol.HavaBol p4Expr.txt
+func:
+	$(JAVA) $(JFLAGS) havabol.HavaBol p4Func.txt
+
+
+
+
+
 simp:
 	$(JAVA) $(JFLAGS) havabol.HavaBol p3SimpExpr.txt
 

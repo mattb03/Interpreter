@@ -69,7 +69,7 @@ public class Parser {
                             error("Did not expect a comma. Found: "+scan.currentToken.tokenStr);
                         } else if (scan.currentToken.tokenStr.equals(",")) {  //  handle expr logic
                             scan.getNext(); // consume comma and call expr
-                       
+
                             Token curr = scan.currentToken.saveToken();
                             ResultValue res = expr(true);
                             arglist.add(res.value);
@@ -83,7 +83,7 @@ public class Parser {
                             	}
                             }
                             continue;
-                       
+
                         } else {
                             Token curr = scan.currentToken.saveToken();
                             ResultValue res = expr(true);
@@ -111,7 +111,7 @@ public class Parser {
                     error("Invalid print statement");
                 }
 
-            } 
+            }
             else if (scan.currentToken.tokenStr.equals("debug")) {
                 scan.getNext();
                 String type = scan.currentToken.tokenStr; // got type
