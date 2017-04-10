@@ -14,7 +14,7 @@ public class STEntry
     public String primClassifStr = "??";
     public int subClassif;
     public String subClassifStr = "VOID";
-    public String value = "NO VALUE";
+    public String value = null;
     public int type = VOID;
 
     public STEntry(String symbol, int primClassif, int subClassif)

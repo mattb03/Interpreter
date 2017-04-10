@@ -212,10 +212,10 @@ public class Token
 	    	}
     	}
     }
-    
+
     public Token saveToken() {
     	Token newToken = new Token("");
-    	
+
     	newToken.tokenStr = this.tokenStr;
     	newToken.primClassif = this.primClassif;
         newToken.subClassif = this.subClassif;

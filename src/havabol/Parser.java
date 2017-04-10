@@ -8,7 +8,6 @@ import java.util.Collections;
 import java.util.EmptyStackException;
 import java.util.Stack;
 
-import com.sun.swing.internal.plaf.metal.resources.metal_zh_TW;
 
 
 public class Parser {
@@ -115,14 +114,14 @@ public class Parser {
                 }
 
             } else if (scan.currentToken.tokenStr.equals("LENGTH")) {
-            	
+
             } else if (scan.currentToken.tokenStr.equals("SPACES")) {
-            	
+
             } else if (scan.currentToken.tokenStr.equals("ELEM")) {
-            	
+
             } else if (scan.currentToken.tokenStr.equals("MAXELEM")) {
-            	
-            } 
+
+            }
             else if (scan.currentToken.tokenStr.equals("debug")) {
                 scan.getNext();
                 String type = scan.currentToken.tokenStr; // got type
@@ -168,7 +167,7 @@ public class Parser {
                     if (!scan.nextToken.tokenStr.equals("[")) { // put in symbol table if not an array declaration
                         STIdentifier entry = (STIdentifier) st.getSymbol(tokk.tokenStr);
                         if (entry != null)
-                    	    entry.value = "NO VALUE";
+                    	    entry.value = null;
                         else {
                             st.putSymbol(tokk.tokenStr, new STIdentifier(tokk.tokenStr,
                                         tokk.primClassif, tokk.subClassif));
@@ -206,6 +205,7 @@ public class Parser {
                                     STIdentifier array = new STIdentifier(this,
                                         tokk.tokenStr, tokk.primClassif, tokk.subClassif, size, type);
                                     st.putArray(tokk.tokenStr, array);
+
                                 }
                             } catch (NumberFormatException e) { // if a float or other we get here
                                 error("'"+this.startOfExprToken.tokenStr+"' is not a valid size parameter");
@@ -273,7 +273,7 @@ public class Parser {
             }
             //if (!scan.nextToken.tokenStr.equals(";"))
                 //errorNoTerm("Statement not terminated");
-            
+
             scan.getNext();
             if (scan.nextToken.primClassif == Token.EOF) {
                 break;
@@ -332,7 +332,7 @@ public class Parser {
                 error("EOF reached");
             } else if (scan.currentToken.primClassif == Token.OPERAND) {
                 ResultValue resVal = expr(false);
-                entry.array.set(index, resVal);
+                entry.array.add(index, resVal);
                 index++;
             } else {
                 error("Malformed array declaration");
@@ -890,7 +890,7 @@ public class Parser {
 					if (delimIdent == null) {
 						// if its null, then it must be a string literal, otherwise error
 						if (delimTok.subClassif != 5) {
-							error("\"" + delimTok.tokenStr + "\"" + 
+							error("\"" + delimTok.tokenStr + "\"" +
 						        " must be a declared string identifier or string literal");
 						}
 						// if its a string literal, assign the value to delim
@@ -898,7 +898,7 @@ public class Parser {
 					}
 					else {
 						// it is in the symbol table, make sure it has a value and is a string
-						if (delimIdent.value.equals("NO VALUE")) {
+						if (delimIdent.value == null) {
 							error("\"" + delimTok + "\"" + " is not initialized");
 						}
 						if (delimIdent.type != 5) {
@@ -913,7 +913,7 @@ public class Parser {
 				if (!scan.nextToken.tokenStr.equals(":")) {
 					error("No terminating colon " + ":" + " for for loop");
 				}
-				
+
 				if (setIdent == null) {
 					// if its an identifier and the symbol table entry is null, its undeclared
 					if (setTok.subClassif == 1) {
@@ -948,7 +948,7 @@ public class Parser {
 					while (i < length) {
 						//szItem = setIdent.array.val.get(i);
 						savedScanner = this.scan.saveState();
-						STIdentifier itemEntry = new STIdentifier(szItem, 1, 5); 
+						STIdentifier itemEntry = new STIdentifier(szItem, 1, 5);
 						if (szArray == null) {
 							itemEntry.value = String.valueOf(array[i]);
 						}
@@ -997,7 +997,7 @@ public class Parser {
 						while (i < length) {
 							//szItem = setIdent.array.val.get(i);
 							savedScanner = this.scan.saveState();
-							STIdentifier itemEntry = new STIdentifier(szItem, 1, 5); 
+							STIdentifier itemEntry = new STIdentifier(szItem, 1, 5);
 							if (szArray == null) {
 								itemEntry.value = String.valueOf(array[i]);
 							}
@@ -1021,9 +1021,9 @@ public class Parser {
 						scan.getNext();
 						while (i < setIdent.array.val.size()) {
 							//szItem = setIdent.array.val.get(i);
-							if (setIdent.array.val.get(i) != null) { 
+							if (setIdent.array.val.get(i) != null) {
 								savedScanner = this.scan.saveState();
-								STIdentifier itemEntry = new STIdentifier(szItem, 1, 5); 
+								STIdentifier itemEntry = new STIdentifier(szItem, 1, 5);
 								itemEntry.value = setIdent.array.val.get(i);
 								st.putSymbol(szItem, itemEntry);
 								statements(true);
@@ -1038,7 +1038,7 @@ public class Parser {
 						}
 					}
 				}
-				
+
 			}
 			else {
 				// should be a counting for loop
@@ -1109,7 +1109,7 @@ public class Parser {
 					}
 					else {
 						// we found the identifier in the symbol table, make sure it has a value
-						if (limitIdent.value.equals("NO VALUE")) {
+						if (limitIdent.value == null) {
 							// if the limitIdent is a scalar, ie. not an array, then error
 							if (limitIdent.structure == 100) {
 								error("The identifier " + "\"" + limitIdent.symbol + "\"" + " has no value");
@@ -1168,12 +1168,12 @@ public class Parser {
 							else {
 								if (funcFlag == false) {
 									incr = Integer.parseInt(scan.currentToken.tokenStr);
-								}							
+								}
 							}
 						}
 						else {
 							// we found the identifier in the symbol table, make sure it has a value
-							if (incrIdent.value.equals("NO VALUE")) {
+							if (incrIdent.value == null) {
 								// if the incrIdent is a scalar, ie. not an array, then error
 								if (incrIdent.structure == 100) {
 									error("The identifier " + "\"" + incrIdent.symbol + "\"" + " has no value");
@@ -1205,20 +1205,20 @@ public class Parser {
 						while (controlVar < end) {
 							savedScanner = this.scan.saveState();
 							statements(true);
-							
+
 							// was the control variable incremented by the programmer?
-							if (Integer.parseInt(startIdent.value) != controlVar) {	
+							if (Integer.parseInt(startIdent.value) != controlVar) {
 								// if true then update the control variable according to the symbol table entry
 								difference = Integer.parseInt(startIdent.value) - controlVar;
 								controlVar += difference;
 							}
-							
+
 							// increment control variable by the incr
 							controlVar += incr;
-							
+
 							// update the control variable symbol table entry
 							startIdent.value = String.valueOf(controlVar);
-							
+
 							// only reset the buffer to top of loop if we are running the loop again
 							if (controlVar < end) {
 								this.scan = savedScanner;
@@ -1277,7 +1277,7 @@ public class Parser {
 
     	// go through the expr and end if there isn't a token
     	// that can be in a expr
-    	while ((! tok.tokenStr.equals("print")) && 
+    	while ((! tok.tokenStr.equals("print")) &&
     			(tok.primClassif == Token.OPERAND
     			|| tok.primClassif == Token.OPERATOR
     			|| tok.primClassif == Token.FUNCTION
@@ -1318,7 +1318,7 @@ public class Parser {
     					// operand is a Numeric add it to the postfix
     					postAList.add(tok);
     				}
-    				
+
     				break;
     			case Token.OPERATOR:
     				while (! mainStack.isEmpty()) {
@@ -1370,18 +1370,18 @@ public class Parser {
     						break;
                         case "]":
 	                        bArrayFound = false;
-	                        
+
 	                        while (! mainStack.isEmpty()) {
 	                        	popped = mainStack.pop();
 	                        	postAList.add(popped);
-	                        	
+
 	                        	if (popped.isArray) {
 	                        		bArrayFound = true;
 	                        		break;
 	                        	}
-	                        	
+
 	                        }
-	
+
 	                        if (!bArrayFound && funcCall) {
 	                            while (!mainStack.isEmpty()) {
 	                                popped = mainStack.pop();
@@ -1478,17 +1478,17 @@ public class Parser {
 	    					resOp2.type = tokOp2.subClassif;
 	    				}
 	    				resOp2.structure.add("ARRAY ELEM REF");
-	    				
+
 	    				nOp2 = new Numeric(this, resOp2, currToken.tokenStr, "2nd Operand"); // must be a number
 	    				resTemp = ((STIdentifier) stArray).getArray().get(nOp2.integerValue);
-	    				
+
 	    				extraToken1 = tokOp2.saveToken(); // get the most accurate values for the line and column # as possible
                         extraToken1.tokenStr = resTemp.value;
                         extraToken1.primClassif = Token.OPERAND;
                         extraToken1.subClassif = resTemp.type;
-                        
+
                         stk.push(extraToken1);
-                        
+
                         resMain.structure.add("ARRAY ELEM REF");
 	    			} else {
 	    				stk.push(currToken); // add the operand onto the stack for future use
@@ -1687,7 +1687,7 @@ public class Parser {
     					resOp2 = new ResultValue(tokOp2.tokenStr);
     					resOp2.type = tokOp2.subClassif;
     				}
-    				
+
     				switch (currToken.tokenStr) {
 	    				case "LENGTH":
 	    					resTemp = Utility.LENGTH(this, resOp2.value);
@@ -1708,7 +1708,7 @@ public class Parser {
                     extraToken1.primClassif = Token.OPERAND;
                     extraToken1.subClassif = resTemp.type;
                     stk.push(extraToken1);
-                    
+
                     resMain.structure.add(resTemp.structure.get(0));
 	    			break;
 	    		default:

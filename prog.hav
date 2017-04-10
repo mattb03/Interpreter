@@ -2,14 +2,26 @@
 //debug Assign on;
 //debug Expr on;
 Int blah;
+print(blah);
+
 Int fbits = 8;
 
+Int arr[] = 1,2,3,4;
 
+Int arr2[unbound];
+arr2[8] = 9999;
+print("arr2: ", arr2);
 
-Int arr[fbits];
-arr[3] = 2;
+arr[0] = 1000;
+print(arr);
 
+String str = "Chris";
 
+print("len = ", LENGTH(str));
+print("spaces = ", SPACES(str));
+print("elem = ", ELEM(arr));
+print("maxelem = ", MAXELEM(arr));
+debug Exit on;
 
 Int pbits = 10;
 Int offset = 12;

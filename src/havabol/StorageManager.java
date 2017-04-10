@@ -18,12 +18,9 @@ public class StorageManager {
         this.parser = parser;
         if (size == -1) {
             this.isBounded = false;
-            this.init(size, type);
-        } else if (size == -100) { //  size will need to be set!!!!
+            this.size = this.val.size();
+        } else if (size == -100 || size > 0) { //  size will need to be set!!!!
             this.isBounded = true;
-        } else {
-            this.isBounded = true;
-            this.init(size, type);
         }
     }
 
@@ -33,13 +30,19 @@ public class StorageManager {
 	}
 
 	public void init(int size, int type) {
-        if (size == -1) {
-            for (int i=0; i < 9; i++)
-                this.val.add(this.defaultVal);
-        } else {  // normal size
+        if (size > 0) {  // normal size
             for (int i=0; i < size; i++)
                 this.val.add(this.defaultVal);
         }
+    }
+
+    public void add(int index, ResultValue resVal) throws Exception {
+        String item = resVal.value;
+        if (this.type != resVal.type) {
+            this.parser.error("Incompatible array value type");
+        }
+        this.val.add(index, item);
+
     }
 
     public void set(int index, ResultValue resVal) throws Exception {
@@ -50,7 +53,7 @@ public class StorageManager {
         }
 
         try {
-            this.val.add(index, item);
+            this.val.set(index, item);
         } catch (Exception e) {
             if (this.isBounded) {
                 this.parser.error("Out of bounds exception");
