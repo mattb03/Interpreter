@@ -36,21 +36,19 @@ public class StorageManager {
         }
     }
 
-    public void add(int index, ResultValue resVal) throws Exception {
+    public void add(int index, ResultValue resVal, String token) throws Exception {
         String item = resVal.value;
-        int ind;
-        System.out.println("this type: "+this.type+"\nrevVal type: "+resVal.type);
+        //System.out.println("this type: "+this.type+"\nrevVal type: "+resVal.type);
         if (this.type != resVal.type) {
-            if (this.type == Token.INTEGER && resVal.type == Token.FLOAT) {
-                ind = item.indexOf(".");
-                item = item.substring(0, ind);
-            } else if (this.type == Token.FLOAT && resVal.type == Token.INTEGER) {
-                item += ".00";
-            } else {
-                this.parser.error("Incompatible array value type");
+            Numeric num = new Numeric(this.parser, resVal, token, "Index "+String.valueOf(index));
+            if (this.type == Token.INTEGER) {
+                item = String.valueOf(num.integerValue);
+            } else if (this.type == Token.FLOAT) {
+                item = String.valueOf(num.doubleValue);
+            } else if (this.type == Token.STRING) {
+                item = num.strValue;
             }
         }
-
         this.val.add(index, item);
 
     }

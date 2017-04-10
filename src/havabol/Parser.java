@@ -223,6 +223,9 @@ public class Parser {
                     }
                 } else if (scan.nextToken.tokenStr.equals("[")) { // array logic!!!!!!!!!!!!!!!!!!!!!!!
                     scan.getNext(); // get "["
+                    if (entry.structure == STIdentifier.SCALAR) {
+                        System.out.println("BOOM");
+                    }
                     if (scan.nextToken.subClassif != Token.IDENTIFIER && scan.nextToken.subClassif != Token.INTEGER)
                         error("Malformed array declaration");
                     scan.getNext(); // get index
@@ -330,7 +333,7 @@ public class Parser {
                 error("EOF reached");
             } else if (scan.currentToken.primClassif == Token.OPERAND) {
                 ResultValue resVal = expr(false);
-                entry.array.add(index, resVal);
+                entry.array.add(index, resVal, curSymbol.tokenStr);
                 index++;
             } else {
                 error("Malformed array declaration");
