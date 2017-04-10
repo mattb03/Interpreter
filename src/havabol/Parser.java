@@ -958,11 +958,11 @@ public class Parser {
 						st.putSymbol(szItem, itemEntry);
 						statements(true);
 						itemEntry = null;
-						st.table.remove(szItem);
 						i++;
 						// only reset the buffer to top of loop if we are running the loop again
 						if (i < length) {
 							this.scan = savedScanner;
+							st.table.remove(szItem);
 						}
 					}
 				}
@@ -1007,11 +1007,11 @@ public class Parser {
 							st.putSymbol(szItem, itemEntry);
 							statements(true);
 							itemEntry = null;
-							st.table.remove(szItem);
 							i++;
 							// only reset the buffer to top of loop if we are running the loop again
 							if (i < length) {
 								this.scan = savedScanner;
+								st.table.remove(szItem);
 							}
 						}
 					}
@@ -1028,12 +1028,12 @@ public class Parser {
 								st.putSymbol(szItem, itemEntry);
 								statements(true);
 								itemEntry = null;
-								st.table.remove(szItem);
 							}
 							i++;
 							// only reset the buffer to top of loop if we are running the loop again
 							if (i < setIdent.array.val.size()) {
 								this.scan = savedScanner;
+								st.table.remove(szItem);
 							}
 						}
 					}
