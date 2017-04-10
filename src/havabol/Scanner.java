@@ -196,7 +196,9 @@ public class Scanner {
             this.nextToken.primClassif = Token.CONTROL;
             this.nextToken.subClassif = Token.DECLARE;
         }
-        else if (value.equals("print"))
+        // recognize builtin functions
+        else if (value.equals("print") || value.equals("LENGTH") || value.equals("SPACES")
+        		|| value.equals("ELEM") || value.equals("MAXELEM"))
         {
         	this.nextToken.primClassif = Token.FUNCTION;
         	this.nextToken.subClassif = Token.BUILTIN;

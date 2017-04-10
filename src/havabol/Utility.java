@@ -1,7 +1,5 @@
 package havabol;
 
-import java.util.Collections;
-
 public class Utility {
 
 	public static ResultValue add(Parser parser, Numeric nOp1, Numeric nOp2) throws ParserException {
@@ -272,53 +270,53 @@ public class Utility {
 	}
     
 	// returns the length of the string
-    public ResultValue LENGTH (Parser parser, String str) {
+    public static ResultValue LENGTH(Parser parser, String str) {
     	ResultValue resVal = new ResultValue(String.valueOf(str.length()));
     	resVal.type = 2;
-    	resVal.structure.set(0, "primitive");
+    	resVal.structure.add("LENGTH");
     	return resVal;
     }
     
     // returns T if the string is empty or nothing but spaces, F otherwise
-    public ResultValue SPACES (Parser parser, String str) {
+    public static ResultValue SPACES(Parser parser, String str) {
     	int i;
-    	int count = 0;
     	char array[] = str.toCharArray();    	
-    	ResultValue resVal = new ResultValue(String.valueOf("F"));
+    	ResultValue resVal = new ResultValue("F");
     	resVal.type = 4;
-    	resVal.structure.set(0, "primitive");
+    	resVal.structure.add("SPACES");
     	for (i = 0; i < array.length; i++) {
     		if (array[i] != ' ') {
     			return resVal;
     		}
     	}
-    	resVal.value = String.valueOf("T");
+    	resVal.value = "T";
     	return resVal;
     }
     
-    // returns the number initialized elements
-    public ResultValue ELEM (Parser parser, String array) {
+    // returns the index of the highest initialized element + 1
+    public static ResultValue ELEM(Parser parser, String array) {
     	STIdentifier arrayIdent = (STIdentifier) parser.st.getSymbol(array);
     	int i = 0;
-    	int count = 0;
-    	for (i = 0; i < arrayIdent.array.val.size(); i++) {
+    	int index = 0;
+    	for (i = 0; i < arrayIdent.array.size; i++) {
     		if (arrayIdent.array.val.get(i) != null) {
-    			count++;
+    			index = i;
     		}
     	}
-    	ResultValue resVal = new ResultValue(String.valueOf(count));
+    	index += 1;
+    	ResultValue resVal = new ResultValue(String.valueOf(index));
     	resVal.type = 2;
-    	resVal.structure.set(0, "primitive");
+    	resVal.structure.add("ELEM");
     	return resVal;
     }
     
     // returns the number of elements in the array, whether initialized or not
-    public Object MAXELEM (Parser parser, String array) {
+    public static ResultValue MAXELEM(Parser parser, String array) {
     	STIdentifier arrayIdent = (STIdentifier) parser.st.getSymbol(array);
-    	Collections.sort(arrayIdent.array.val);
-    	ResultValue resVal = new ResultValue(String.valueOf(arrayIdent.array.val.size()));
+    	//Collections.sort(arrayIdent.array.val);
+    	ResultValue resVal = new ResultValue(String.valueOf(arrayIdent.array.size));
     	resVal.type = 2;
-    	resVal.structure.set(0, "primitive");
+    	resVal.structure.add("MAXELEM");
     	return resVal;
     }
 
