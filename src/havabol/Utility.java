@@ -282,7 +282,6 @@ public class Utility {
     // returns T if the string is empty or nothing but spaces, F otherwise
     public ResultValue SPACES (Parser parser, String str) {
     	int i;
-    	int count = 0;
     	char array[] = str.toCharArray();    	
     	ResultValue resVal = new ResultValue(String.valueOf("F"));
     	resVal.type = 4;
