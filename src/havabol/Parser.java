@@ -8,6 +8,8 @@ import java.util.Collections;
 import java.util.EmptyStackException;
 import java.util.Stack;
 
+import com.sun.swing.internal.plaf.metal.resources.metal_zh_TW;
+
 
 public class Parser {
 
@@ -862,9 +864,9 @@ public class Parser {
 			}
 			if (scan.nextToken.tokenStr.equals("in") || scan.nextToken.tokenStr.equals("from")) {
 				// should be a foreach loop
-				if (startIdent != null) {
+				/*if (startIdent != null) {
 					error("\"" + scan.currentToken.tokenStr + "\"" + " has already been declared");
-				}
+				}*/
 				Token itemTok = scan.currentToken;
 				String szItem = itemTok.tokenStr;
 				scan.getNext();
@@ -1040,9 +1042,9 @@ public class Parser {
 			}
 			else {
 				// should be a counting for loop
-				if (startIdent == null) {
+				/*if (startIdent == null) {
 					error("Variable " + "\"" + scan.currentToken.tokenStr + "\"" + " has not been declared");
-				}
+				}*/
 				// begin second argument analysis
 				ResultValue resVal = null;
 				if (!scan.nextToken.tokenStr.equals("to")) {
@@ -1053,6 +1055,14 @@ public class Parser {
 							resVal = expr(false);
 						}
 						if (scan.nextToken.tokenStr.equals("=")) {
+							if (startIdent == null) {
+								int prim = scan.currentToken.primClassif;
+								int sub = scan.currentToken.subClassif;
+								startIdent = new STIdentifier(scan.currentToken.tokenStr, prim, sub);
+								startIdent.type = 2;
+								st.table.put(scan.currentToken.tokenStr, startIdent);
+								//st.putSymbol(scan.currentToken.tokenStr, startIdent);
+							}
 							assign(scan.currentToken);
 						}
 					}
@@ -1069,7 +1079,7 @@ public class Parser {
 							scan.currentToken.tokenStr.equals("ELEM") ||
 							scan.currentToken.tokenStr.equals("MAXELEM")) {
 						resVal = expr(false);
-						funcFlag = true;
+						funcFlag = false;
 						end = Integer.parseInt(resVal.value);
 					}
 					else {
@@ -1078,6 +1088,9 @@ public class Parser {
 					int start = Integer.parseInt(startIdent.value);
 					if (limitIdent == null) {
 						if (!scan.currentToken.tokenStr.equals(":")) {
+							if (scan.currentToken.tokenStr.equals("by")) {
+								scan.getNext();
+							}
 							// if its an identifier and not in the symbol table, then error
 							if (scan.currentToken.subClassif == 1) {
 								error("\"" + scan.currentToken.tokenStr + "\"" + " is an undeclared identifier");
@@ -1088,7 +1101,7 @@ public class Parser {
 							}
 							// if its a valid integer or float constant, assign the ending value to it
 							else {
-								if (funcFlag == false) {
+								if (funcFlag == false && end == 0) {
 									end = Integer.parseInt(scan.currentToken.tokenStr);
 								}
 							}
@@ -1120,8 +1133,11 @@ public class Parser {
 					// end getting the limit in the for loop,
 
 					// check if there is an incr variable
-					if (scan.currentToken.tokenStr.equals("by") || scan.nextToken.tokenStr.equals("by")) {
-						scan.getNext();
+					if (scan.currentToken.tokenStr.equals("by") || scan.nextToken.tokenStr.equals("by") ||
+							scan.nextToken.tokenStr.equals(":")) {
+						if (!scan.nextToken.tokenStr.equals(":")) {
+							scan.getNext();
+						}
 						if (scan.currentToken.tokenStr.equals("by")) {
 							scan.getNext();
 						}
