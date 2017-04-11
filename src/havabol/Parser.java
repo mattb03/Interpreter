@@ -99,7 +99,6 @@ public class Parser {
                     if (scan.nextToken.tokenStr.equals(";")) {
                         for (int i=0; i < arglist.size(); i++) {
                             String str = arglist.get(i);
-    // type
                             System.out.print(str);
                         }
                         System.out.println();
@@ -128,7 +127,6 @@ public class Parser {
                 if (scan.currentToken.equals(";")) {
                     error("Expected ';'. Found: "+scan.currentToken.tokenStr);
                 }
-    // type
             // if we come across a declare statement. i.e. Int, String, Bool ...
             } else if (scan.currentToken.subClassif == Token.DECLARE) {
                 // if nextToken is not an identifier throw an error
@@ -152,7 +150,7 @@ public class Parser {
                     scan.getNext(); // get var ... i.e. Int var
 
 
-                    //put this token into symbol table!!!
+                    //non array logic
                     Token tokk = scan.currentToken; //
                     if (!scan.nextToken.tokenStr.equals("[")) { // put in symbol table if not an array declaration
                         STIdentifier entry = (STIdentifier) st.getSymbol(tokk.tokenStr);
@@ -167,8 +165,10 @@ public class Parser {
                                 continue;
                             } else if (scan.nextToken.tokenStr.equals("=")) {
                                 assign(scan.currentToken);
+                                if (!scan.nextToken.tokenStr.equals(";"))
+                                    errorNoTerm("Assign statement not terminated. Expected ';'");
                             } else {
-                                error("Invalid assign. Found : " + scan.nextToken.tokenStr, scan.nextToken);
+                                error("Invalid assign. Token '=' or ';' expected");
                             }
 
                         }
@@ -234,7 +234,7 @@ public class Parser {
                         //scan.getNext();
 
                         if (!scan.nextToken.tokenStr.equals(";")) {
-                            error("Statement is not terminated");
+                            errorNoTerm("Statement is not terminated. Expected ';'");
                         }
                         if (item.subClassif != Token.STRING) {
                             error(item.tokenStr+" must be of type STRING");
@@ -350,6 +350,8 @@ public class Parser {
                 ResultValue resVal = expr(false);
                 entry.array.add(index, resVal, curSymbol.tokenStr);
                 index++;
+            } else if (scan.currentToken.subClassif == Token.DECLARE) {
+                errorNoTerm("Array declaration not terminated. Expected ';'");
             } else {
                 error("Malformed array declaration");
             }
@@ -491,7 +493,8 @@ public class Parser {
                                     		+ ": " + curr.tokenStr + " = "+val2);
                 }
             }
-        } else { // rToken is not an identifier
+
+        } else { // rToken is not an identifier    ie.   num = 10;
             if (scan.nextToken.tokenStr.equals(";")) {
                 String val = "";
                 if (ltype != rToken.subClassif) {
@@ -1531,7 +1534,7 @@ public class Parser {
 	    				}
 	    				if (currToken.isArray) {
 		    				resOp2.structure.add("ARRAY ELEM REF");
-	
+
 		    				nOp2 = new Numeric(this, resOp2, currToken.tokenStr, "2nd Operand"); // must be a number
 		    				if (nOp2.integerValue == -1) {
 		    					resTemp = ((STIdentifier) stArray).array.get(((STIdentifier) stArray).array.val.size() - 1);
@@ -1540,13 +1543,13 @@ public class Parser {
 		    				}
 	    				} else { // we have a string index reference
 	    					resOp2.structure.add("STRING ELEM REF");
-	    					
+
 	    					nOp2 = new Numeric(this, resOp2, currToken.tokenStr, "2nd Operand"); // must be a number
 	    					if (nOp2.integerValue == -1) {
-	    						resTemp.value = ((STIdentifier) stArray).getValue(((STIdentifier) stArray).value.length());
+	    						resTemp.value = ((STIdentifier) stArray).getValue(((STIdentifier) stArray).value.length(), this);
 	    						resTemp.type = Token.STRING;
 	    					} else {
-	    						resTemp.value = ((STIdentifier) stArray).getValue(nOp2.integerValue);
+	    						resTemp.value = ((STIdentifier) stArray).getValue(nOp2.integerValue, this);
 	    						resTemp.type = Token.STRING;
 	    					}
 	    				}

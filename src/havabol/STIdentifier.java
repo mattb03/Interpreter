@@ -38,10 +38,16 @@ public class STIdentifier extends STEntry
     	res += last;
     	this.value = res;
     }
-    
-    public String getValue(int index) {
+
+    public String getValue(int index, Parser parser) throws Exception {
+        String res = "";
     	char [] charArray = this.value.toCharArray();
-    	return String.valueOf(charArray[index]);
+        try {
+            res = String.valueOf(charArray[index]);
+        } catch (Exception e) {
+            parser.error("Out of bounds");
+        }
+        return res;
     }
 
     public StorageManager getArray() {  // maybe not needed. can just access array directly
