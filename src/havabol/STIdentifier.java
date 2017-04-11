@@ -9,7 +9,6 @@ public class STIdentifier extends STEntry
     public static final int ARRAY = -100;
     public int structure;
     public StorageManager array;
-    public char [] charArray;
 
     public STIdentifier (String symbol, int primClassif, int subClassif)
     {
@@ -28,9 +27,16 @@ public class STIdentifier extends STEntry
     }
 
     public void setValue(int index, String item) {
-        this.charArray = this.value.toCharArray();
-        this.charArray[index] = item.charAt(0);
-        this.value  = new String(this.charArray);
+    	int len = item.length();
+    	String last = "";
+    	// create first substring
+    	String first = this.value.substring(index);
+    	String res = first + item;
+    	if (first.length() < res.length()) {
+    		last = res.substring(index, index + len);
+    	}
+    	res += last;
+    	this.value = last;
     }
 
     public StorageManager getArray() {  // maybe not needed. can just access array directly
