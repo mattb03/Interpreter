@@ -9,7 +9,7 @@ print("name=", name, "length=", LENGTH(name));
 name = "Joe";
 print("concat name=", name#' '#"King", "length=", LENGTH(name#' '#"King"));
 
-Float gradeM[10] = 100, 99, 70.5;  // max elements of 10, but 
+Float gradeM[10] = 100, 99, 70.5;  // max elements of 10, but
                                    // only 3 populated
 print("gradeM has max elements of", MAXELEM(gradeM)
     , " and", ELEM(gradeM), " are populated");
@@ -21,7 +21,7 @@ print("temperatureM has max elements of", MAXELEM(temperatureM)
 String nameM[20];                  // max elements of 20, not populated
 print("nameM has max elements of", MAXELEM(nameM)
     , " and", ELEM(nameM), " are populated");
- 
+
 Int value = 5;
 Int arrayM[value * 5];         // max elements of 25
 print("arrayM has max elements of", MAXELEM(arrayM)
@@ -32,10 +32,10 @@ print("weirdM has max elements of", MAXELEM(weirdM)
     , " and", ELEM(weirdM), " are populated");
 
 String name = "Joe";
-print("concat name=", name#' '#"King", "length=", LENGTH(name#' '#"King"));  
+print("concat name=", name#' '#"King", "length=", LENGTH(name#' '#"King"));
 
 name = "Lee";
-print("concat name=", name#' '#"King", "length=", LENGTH(name#' '#"King")); 
+print("concat name=", name#' '#"King", "length=", LENGTH(name#' '#"King"));
 print("1+LENGTH('Lee King')*2=", 1+LENGTH(name#' '#"King")*2);
 
 String str = "";

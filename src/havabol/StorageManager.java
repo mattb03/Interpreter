@@ -5,6 +5,7 @@ public class StorageManager {
     // size
     // -1 means unbounded, -100 = unknown
     public boolean isBounded;
+    public boolean sizeUnknown = false;
     public int size;
     public int type;
     public ArrayList<String> val;
@@ -19,7 +20,10 @@ public class StorageManager {
         if (size == -1) {
             this.isBounded = false;
             this.size = this.val.size();
-        } else if (size == -100 || size > 0) { //  size will need to be set!!!!
+        } else if (size == -100)  { //  size will need to be set!!!!
+            this.isBounded = true;
+            this.sizeUnknown = true;
+        } else if (size > 0) {
             this.isBounded = true;
         }
     }
@@ -50,16 +54,24 @@ public class StorageManager {
             }
         }
         this.val.add(index, item);
+        this.size = this.val.size();
+
 
     }
 
-    public void set(int index, ResultValue resVal) throws Exception {
+    public void set(int index, ResultValue resVal, String token) throws Exception {
         int offset;
         String item = resVal.value;
         if (this.type != resVal.type) {
-            this.parser.error("Incompatible array value type");
+            Numeric num = new Numeric(this.parser, resVal, token, "Index "+String.valueOf(index));
+            if (this.type == Token.INTEGER) {
+                item = String.valueOf(num.integerValue);
+            } else if (this.type == Token.FLOAT) {
+                item = String.valueOf(num.doubleValue);
+            } else if (this.type == Token.STRING) {
+                item = num.strValue;
+            }
         }
-
         try {
             this.val.set(index, item);
         } catch (Exception e) {
@@ -69,7 +81,6 @@ public class StorageManager {
                 offset = index - this.size;
                 for (int i=0; i < offset; i++)
                     this.val.add(this.defaultVal); // setting to defualt value
-
                 this.val.add(item);
             }
         }

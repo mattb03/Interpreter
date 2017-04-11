@@ -8,11 +8,11 @@ print("The first letter of ",name," is ",name[0]);
 
 
 Float farray[10];
-farray = 3.14;
+farray  = 3.14;
+
 farray[0] = 1.1;
 
 Int fbits = 8;
-
 Int arr[] = 1,2,3,4;
 Int arr2[unbound];
 arr2[8] = 9999;
@@ -25,7 +25,7 @@ String str = "Chris";
 print("len = ", LENGTH(str));
 print("spaces = ", SPACES(str));
 print("elem = ", ELEM(arr));
-print("maxelem = ", MAXELEM(arr));
+print("maxelem = ",=, MAXELEM(arr));
 
 
 

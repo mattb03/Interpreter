@@ -165,10 +165,12 @@ public class Parser {
                                 continue;
                             } else if (scan.nextToken.tokenStr.equals("=")) {
                                 assign(scan.currentToken);
-                                if (!scan.nextToken.tokenStr.equals(";"))
+                                if (scan.currentToken.tokenStr.equals(","))
+                                    error("Malformed array declaration"+scan.nextToken);
+                                else if (!scan.nextToken.tokenStr.equals(";"))
                                     errorNoTerm("Assign statement not terminated. Expected ';'");
                             } else {
-                                error("Invalid assign. Token '=' or ';' expected");
+                                error("Invalid non-array assignment. Token '=' or ';' expected. Found '"+scan.nextToken.tokenStr+"'");
                             }
 
                         }
@@ -189,7 +191,7 @@ public class Parser {
                                     STIdentifier array = new STIdentifier(this,
                                         tokk.tokenStr, tokk.primClassif, tokk.subClassif, -1, type);
                                     st.putArray(tokk.tokenStr, array);
-                                } else {
+                                } else { //
                                     ResultValue result = expr(true);
                                     int size = Integer.parseInt(result.value);  // check if its value is an int or not
                                     STIdentifier array = new STIdentifier(this,
@@ -251,8 +253,10 @@ public class Parser {
                             error("Invalid array statement. Expected '='");
                         scan.getNext();
                         ResultValue resVal = expr(false);
-                        entry.array.set(Integer.parseInt(ind.value), resVal);
+                        entry.array.set(Integer.parseInt(ind.value), resVal, "");
                     }
+                } else {
+                    error("Invalid assignment syntax");
                 }
             } else if (scan.currentToken.tokenStr.equals("endif")) {
                 if (!bCalled) {
@@ -348,7 +352,10 @@ public class Parser {
                 error("EOF reached");
             } else if (scan.currentToken.primClassif == Token.OPERAND) {
                 ResultValue resVal = expr(false);
-                entry.array.add(index, resVal, curSymbol.tokenStr);
+                if (entry.array.sizeUnknown)
+                    entry.array.add(index, resVal, curSymbol.tokenStr);
+                else
+                    entry.array.set(index, resVal, curSymbol.tokenStr);
                 index++;
             } else if (scan.currentToken.subClassif == Token.DECLARE) {
                 errorNoTerm("Array declaration not terminated. Expected ';'");
@@ -1616,14 +1623,14 @@ public class Parser {
 		    			try {
 		    				tokOp2 = (Token) stk.pop(); // grab the right operand
 		    			} catch (EmptyStackException a) {
-		    				error("Missing expression operand or Invalid expression operand type. "
-		    						+ "For operator: '" + currToken.tokenStr + "'", currToken);
+		    				error("Missing expression operand "
+		    						+ "for operator: '" + currToken.tokenStr + "'", currToken);
 		    			}
 		    			try {
 		    				tokOp1 = (Token) stk.pop(); // grab the left operand
 		    			} catch (EmptyStackException b) {
-		    				error("Missing expression operand or Invalid expression operand type. "
-		    						+ "For operator: '" + currToken.tokenStr + "'", currToken);
+		    				error("Missing expression operand "
+		    						+ "for operator: '" + currToken.tokenStr + "'", currToken);
 		    			}
 
                         // set the ResultValue objects of the operands
