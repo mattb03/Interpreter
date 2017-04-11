@@ -1,0 +1,16 @@
+java -classpath bin havabol.HavaBol p4Func.txt
+p4Func.txt
+name=Anitalength=5
+name=Anita Bytelength=10
+concat name=Joe Kinglength=8
+gradeM has max elements of10 and3 are populated
+temperatureM has max elements of-100 and0 are populated
+nameM has max elements of20 and0 are populated
+arrayM has max elements of25 and0 are populated
+weirdM has max elements of-100 and0 are populated
+concat name=null Kinglength=9
+concat name=Lee Kinglength=8
+1+LENGTH('Lee King')*2=17
+str=SPACES(str)=T
+str= SPACES(str)=T
+str= LENGTH(SPACES(str))=1
