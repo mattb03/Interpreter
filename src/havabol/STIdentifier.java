@@ -30,13 +30,13 @@ public class STIdentifier extends STEntry
     	int len = item.length();
     	String last = "";
     	// create first substring
-    	String first = this.value.substring(index);
+    	String first = this.value.substring(0, index);
     	String res = first + item;
-    	if (first.length() < res.length()) {
-    		last = res.substring(index, index + len);
+    	if (this.value.length() > res.length()) {
+    		last = value.substring(res.length(), this.value.length());
     	}
     	res += last;
-    	this.value = last;
+    	this.value = res;
     }
     
     public String getValue(int index) {

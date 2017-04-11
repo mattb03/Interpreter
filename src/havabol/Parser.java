@@ -224,7 +224,6 @@ public class Parser {
                 } else if (scan.nextToken.tokenStr.equals("[")) { // array logic!!!!!!!!!!!!!!!!!!!!!!!
                     scan.getNext(); // get "["
                     scan.getNext();
-                        System.out.println("currentToken: "+scan.currentToken.tokenStr);
 
                     if (entry.structure == STIdentifier.SCALAR) {
                         ResultValue resVal = expr(true);
