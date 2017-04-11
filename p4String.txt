@@ -3,6 +3,10 @@ print("p4String.txt");
 String sA = "Pike";
 sA[2] = "p";
 
+Int array[10];
+array[0] = 999;
+
+
 
 //debug Exit on;
 print("Replaced 'Pike' in slot 2 with 'p' giving", sA);
