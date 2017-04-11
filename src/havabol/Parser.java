@@ -227,15 +227,12 @@ public class Parser {
                         System.out.println("currentToken: "+scan.currentToken.tokenStr);
 
                     if (entry.structure == STIdentifier.SCALAR) {
-                        System.out.println("BOOM");
                         ResultValue resVal = expr(true);
                         int ind = Integer.parseInt(resVal.value);
-                        System.out.println("currentToken: "+scan.currentToken.tokenStr);
                         scan.getNext(); // get '='
                         scan.getNext(); // get str token
                         Token item = scan.currentToken;
                         //scan.getNext();
-                        System.out.println("nextToken: "+scan.nextToken.tokenStr);
 
                         if (!scan.nextToken.tokenStr.equals(";")) {
                             error("Statement is not terminated");
@@ -246,9 +243,9 @@ public class Parser {
                         entry.setValue(ind, item.tokenStr);
 
                     } else if (entry.structure == STIdentifier.ARRAY) { // array logic
-                        if (scan.nextToken.subClassif != Token.IDENTIFIER && scan.nextToken.subClassif != Token.INTEGER)
+                        if (scan.currentToken.subClassif != Token.IDENTIFIER && scan.currentToken.subClassif != Token.INTEGER)
                             error("Malformed array declaration");
-                        scan.getNext(); // get index
+                        //scan.getNext(); // get index
                         ResultValue ind  = expr(true);  // pass in true to expr if using an array or inside a func
                         scan.getNext(); // got '='
                         if (!scan.currentToken.tokenStr.equals("="))
