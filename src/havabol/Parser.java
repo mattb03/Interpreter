@@ -1313,7 +1313,7 @@ public class Parser {
         Token tok = new Token();
         Token popped = new Token();
 
-        boolean bFound, bArrayFound;
+        boolean bFound, bRefFound;
 
         tok = scan.currentToken;
         startOfExprToken = scan.currentToken.saveToken();
@@ -1355,7 +1355,20 @@ public class Parser {
     						}
     					} else {
     						// operand is a Scalar Identifier
-    						postAList.add(tok);
+    						// test for string reference
+    						if (((STIdentifier) st.getSymbol(tok.tokenStr)).type == Token.STRING) {
+    							if (scan.nextToken.tokenStr.equals("[")) {
+        				    		tok.normPreced = 16;
+        				    		tok.stkPreced = 0;
+        				    		mainStack.push(tok);
+        							scan.getNext(); // consume the '[', we don't want it in the list
+        							tok.isElemRef = true; // denote that this is an array element reference
+        						} else {
+        							postAList.add(tok);
+        						}
+    						} else {
+    							postAList.add(tok);
+    						}
     					}
     				} catch (Exception e) {
     					// operand is a Numeric add it to the postfix
@@ -1412,20 +1425,20 @@ public class Parser {
     					    }
     						break;
                         case "]":
-	                        bArrayFound = false;
+	                        bRefFound = false;
 
 	                        while (! mainStack.isEmpty()) {
 	                        	popped = mainStack.pop();
 	                        	postAList.add(popped);
 
-	                        	if (popped.isArray) {
-	                        		bArrayFound = true;
+	                        	if (popped.isElemRef) {
+	                        		bRefFound = true;
 	                        		break;
 	                        	}
 
 	                        }
 
-	                        if (!bArrayFound && funcCall) {
+	                        if (!bRefFound && funcCall) {
 	                            while (!mainStack.isEmpty()) {
 	                                popped = mainStack.pop();
 	                        		if (popped.tokenStr.equals("("))
@@ -1520,13 +1533,26 @@ public class Parser {
 	    					resOp2 = new ResultValue(tokOp2.tokenStr);
 	    					resOp2.type = tokOp2.subClassif;
 	    				}
-	    				resOp2.structure.add("ARRAY ELEM REF");
-
-	    				nOp2 = new Numeric(this, resOp2, currToken.tokenStr, "2nd Operand"); // must be a number
-	    				if (nOp2.integerValue == -1) {
-	    					resTemp = ((STIdentifier) stArray).array.get(((STIdentifier) stArray).array.val.size() - 1);
-	    				} else {
-	    					resTemp = ((STIdentifier) stArray).array.get(nOp2.integerValue);
+	    				if (currToken.isArray) {
+		    				resOp2.structure.add("ARRAY ELEM REF");
+	
+		    				nOp2 = new Numeric(this, resOp2, currToken.tokenStr, "2nd Operand"); // must be a number
+		    				if (nOp2.integerValue == -1) {
+		    					resTemp = ((STIdentifier) stArray).array.get(((STIdentifier) stArray).array.val.size() - 1);
+		    				} else {
+		    					resTemp = ((STIdentifier) stArray).array.get(nOp2.integerValue);
+		    				}
+	    				} else { // we have a string index reference
+	    					resOp2.structure.add("STRING ELEM REF");
+	    					
+	    					nOp2 = new Numeric(this, resOp2, currToken.tokenStr, "2nd Operand"); // must be a number
+	    					if (nOp2.integerValue == -1) {
+	    						resTemp.value = ((STIdentifier) stArray).getValue(((STIdentifier) stArray).value.length());
+	    						resTemp.type = Token.STRING;
+	    					} else {
+	    						resTemp.value = ((STIdentifier) stArray).getValue(nOp2.integerValue);
+	    						resTemp.type = Token.STRING;
+	    					}
 	    				}
 
 	    				extraToken1 = tokOp2.saveToken(); // get the most accurate values for the line and column # as possible
