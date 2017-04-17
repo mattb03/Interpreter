@@ -8,6 +8,8 @@ import java.util.Collections;
 import java.util.EmptyStackException;
 import java.util.Stack;
 
+import com.sun.swing.internal.plaf.basic.resources.basic;
+
 
 
 public class Parser {
@@ -906,6 +908,7 @@ public class Parser {
 				STIdentifier delimIdent = null;
 				Token delimTok = null;
 				String delim = "";
+				boolean byFlag = false;
 				if (scan.nextToken.tokenStr.equals("by")) {
 					// should be a foreach loop with a split string delimiter
 					scan.getNext();
@@ -1123,6 +1126,7 @@ public class Parser {
 					// begin getting the limit in the for loop
 					int end = 0;
 					boolean funcFlag = false;
+					boolean byFlag = false;
 					STIdentifier limitIdent = null;
 					if (scan.currentToken.tokenStr.equals("LENGTH") ||
 							scan.currentToken.tokenStr.equals("ELEM") ||
@@ -1188,6 +1192,7 @@ public class Parser {
 							scan.getNext();
 						}
 						if (scan.currentToken.tokenStr.equals("by")) {
+							byFlag = true;
 							scan.getNext();
 						}
 						// begin getting the incr in the for loop
@@ -1216,7 +1221,9 @@ public class Parser {
 							// if its a valid integer or float constant, assign the ending value to it
 							else {
 								if (funcFlag == false) {
-									incr = Integer.parseInt(scan.currentToken.tokenStr);
+									if (byFlag == true) {
+										incr = Integer.parseInt(scan.currentToken.tokenStr);
+									}
 								}
 							}
 						}
@@ -1251,6 +1258,9 @@ public class Parser {
 						controlVar = start;
 						int difference = 0;
 						//for (i = start; i < end; i++) {
+						if (scan.nextToken.tokenStr.equals(":")) {
+							scan.getNext();
+						}
 						while (controlVar < end) {
 							savedScanner = this.scan.saveState();
 							statements(true);

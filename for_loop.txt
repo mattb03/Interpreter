@@ -5,12 +5,15 @@ Int i = 100;
 
 Int gooseEgg = 0;
 Int array[5] = 1, 2, 5;
-// for i = 1 to 5 by 2:
+// for i = 1 to 5:
 String szStr = "size,string,done";
-String delimiter = ",";
-for token from szStr by delimiter:
-	print (token);
+
+Int dos = 2;
+for i = 0 to 5:
+	print ("i=", i);
 endfor;
+
+
 
 
 print("after for loop execution: i=", i);
