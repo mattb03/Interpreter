@@ -68,6 +68,7 @@ public class StorageManager {
                 item = String.valueOf(num.integerValue);
             } else if (this.type == Token.FLOAT) {
                 item = String.valueOf(num.doubleValue);
+                item += "0";
             } else if (this.type == Token.STRING) {
                 item = num.strValue;
             }

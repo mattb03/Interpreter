@@ -2,30 +2,91 @@
 //debug Assign on;
 //debug Expr on;
 
+
+
+String del = ",";
+
+//print("del = ", del);
+
+Int nums[10] = 1,2,3,4,5,6,7,8,9,10;
+//print("len of nums is : ", LENGTH(nums));
+
+
+for i in nums:
+    print("i = ", i);
+endfor;
+
+Int i = 0;
+print("Int i = ", i);
+Int n = 10;
+//print(n);
+
+
 String name = "Chris";
+
+for letter in name:
+    print(letter, " : ", i);
+    i = i + 1;
+endfor;
+
+debug Exit on;
+
+
+
+
+
 print("The first letter of ",name," is ",name[0]);
+//for letter in name:
+//    print(letter);
+//endfor;
+print("for loop counter type");
+for i=0 to n by 3:
+    print("i in for loop = ", i);
+endfor;
+
+debug Exit on;
+String arr2[10];
+arr2[0] = "\a\a\a\a\a";
+print(arr2);
+
+Int array[unbound];
+array[10] = 320000000;
+print(array);
+Int array2[10];
+array2[0] = 22;
+array2[2] = 15;
+
+array2 = array
+
+print(array2);
+
+
+Float floatarray[10];
+floatarray[0] = 1000;
+print(floatarray[0]);
 
 
 
 Float farray[10];
 farray  = 3.14;
 
-farray[0] = 1.1;
+farray[5] = 1.1;
 
 Int fbits = 8;
 Int arr[] = 1,2,3,4;
-Int arr2[unbound];
+Int arr2[unbound]
 arr2[8] = 9999;
 print("arr2: ", arr2);
 
 arr[0] = 1000;
 print(arr);
 
+
 String str = "Chris";
 print("len = ", LENGTH(str));
 print("spaces = ", SPACES(str));
 print("elem = ", ELEM(arr));
-print("maxelem = ",=, MAXELEM(arr));
+print("maxelem = ", MAXELEM(arr));
 
 
 

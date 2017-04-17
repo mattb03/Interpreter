@@ -8,8 +8,6 @@ import java.util.Collections;
 import java.util.EmptyStackException;
 import java.util.Stack;
 
-import com.sun.swing.internal.plaf.basic.resources.basic;
-
 
 
 public class Parser {
@@ -151,31 +149,27 @@ public class Parser {
                         type = Token.DATE;
                     scan.getNext(); // get var ... i.e. Int var
 
-
                     //non array logic
                     Token tokk = scan.currentToken; //
                     if (!scan.nextToken.tokenStr.equals("[")) { // put in symbol table if not an array declaration
-                        STIdentifier entry = (STIdentifier) st.getSymbol(tokk.tokenStr);
-                        if (entry != null)
-                    	    entry.value = null;
-                        else {
-                            st.putSymbol(tokk.tokenStr, new STIdentifier(tokk.tokenStr,
-                                        tokk.primClassif, tokk.subClassif));
-                            st.getSymbol(tokk.tokenStr).type = type;
-                            if (scan.nextToken.tokenStr.equals(";")) {
-                                scan.getNext();
-                                continue;
-                            } else if (scan.nextToken.tokenStr.equals("=")) {
-                                assign(scan.currentToken);
-                                if (scan.currentToken.tokenStr.equals(","))
-                                    error("Malformed array declaration"+scan.nextToken);
-                                else if (!scan.nextToken.tokenStr.equals(";"))
-                                    errorNoTerm("Assign statement not terminated. Expected ';'");
-                            } else {
-                                error("Invalid non-array assignment. Token '=' or ';' expected. Found '"+scan.nextToken.tokenStr+"'");
+                        st.putSymbol(tokk.tokenStr, new STIdentifier(tokk.tokenStr,
+                                    tokk.primClassif, tokk.subClassif));
+                        st.getSymbol(tokk.tokenStr).type = type;
+                        if (scan.nextToken.tokenStr.equals(";")) {
+                            scan.getNext();
+                            continue;
+                        } else if (scan.nextToken.tokenStr.equals("=")) {
+                            assign(scan.currentToken);
+                            if (scan.currentToken.tokenStr.equals(","))
+                                error("Malformed array declaration"+scan.nextToken);
+                            else if (!scan.currentToken.tokenStr.equals(";")) {
+                                errorNoTerm("Assign statement not terminated. Expected ';'");
                             }
 
+                        } else {
+                            error("Invalid non-array assignment. Token '=' or ';' expected. Found '"+scan.nextToken.tokenStr+"'");
                         }
+
                     }
 
                     if (scan.nextToken.tokenStr.equals("[")) {   //start of array logic
@@ -227,10 +221,10 @@ public class Parser {
                     }
                 } else if (scan.nextToken.tokenStr.equals("[")) { // array logic!!!!!!!!!!!!!!!!!!!!!!!
                     scan.getNext(); // get "["
-                    scan.getNext();
+                    scan.getNext();  // get
 
                     if (entry.structure == STIdentifier.SCALAR) {
-                        ResultValue resVal = expr(true);
+                        ResultValue resVal = expr(true); // expr ends on right bracket
                         int ind = Integer.parseInt(resVal.value);
                         scan.getNext(); // get '='
                         scan.getNext(); // get str token
@@ -248,12 +242,11 @@ public class Parser {
                     } else if (entry.structure == STIdentifier.ARRAY) { // array logic
                         if (scan.currentToken.subClassif != Token.IDENTIFIER && scan.currentToken.subClassif != Token.INTEGER)
                             error("Malformed array declaration");
-                        //scan.getNext(); // get index
-                        ResultValue ind  = expr(true);  // pass in true to expr if using an array or inside a func
+                        ResultValue ind  = expr(true);  // pass in true to expr if using an array or inside a func; and expr get me the index if its an expression or not
                         scan.getNext(); // got '='
                         if (!scan.currentToken.tokenStr.equals("="))
                             error("Invalid array statement. Expected '='");
-                        scan.getNext();
+                        scan.getNext(); // got token
                         ResultValue resVal = expr(false);
                         entry.array.set(Integer.parseInt(ind.value), resVal, "");
                     }
@@ -285,8 +278,6 @@ public class Parser {
             } else if (scan.currentToken.tokenStr.equals("endfor")) {
             	return;
             }
-            //if (!scan.nextToken.tokenStr.equals(";"))
-                //errorNoTerm("Statement not terminated");
 
             scan.getNext();
             if (scan.nextToken.primClassif == Token.EOF) {
@@ -337,13 +328,6 @@ public class Parser {
         scan.getNext(); // currentToken is now "="
         scan.getNext(); // currentToken is now some val
         STIdentifier entry = (STIdentifier) st.getSymbol(curSymbol.tokenStr);
-        /*if (single) {
-            ResultValue resVal = expr(false);
-            if (!scan.currentToken.tokenStr.equals(";")) {
-                error("Array assignment statement is not terminated");
-            }
-            entry.array.set(index, resVal);
-        }*/
         int index = 0;
         while (true) {
             if (scan.currentToken.tokenStr.equals(";")) {
@@ -367,251 +351,65 @@ public class Parser {
         }
     }
 
-    public void assign(Token curSymbol) throws Exception {
+    public void assign(Token curSymbol) throws Exception {  // current token is 'a'   Int a = val
         Boolean show = debugger.assign;
         Boolean expr = debugger.expr;
         String value = "";
         Token curr = curSymbol.saveToken();
         STIdentifier entryL = (STIdentifier)st.getSymbol(curr.tokenStr);
-
-
         int ltype = st.getSymbol(curSymbol.tokenStr).type;  // get type of left op
         scan.getNext(); // get equals sign
-        scan.getNext(); // get val (right op)
+        scan.getNext(); // get val (right op), could possibly be unary minus
         Token rToken = scan.currentToken;
-        if (rToken.subClassif == Token.IDENTIFIER) { //  case declare or not:   String s = i;
-            STIdentifier entryR = (STIdentifier)st.getSymbol(rToken.tokenStr);
-            if (entryR == null) {
-                error("Symbol '"+rToken.tokenStr+"' is not in Symbol Table.");
-            }
-            // get right op type
-            int rtype = entryR.type;
-            if (scan.nextToken.tokenStr.equals(";")) {  // only one identifier
-                if (ltype != rtype) {
-                    if (ltype == Token.INTEGER && rtype == Token.FLOAT) {
-                        String val = entryR.value; // get the float val from rside
-                        int index = val.indexOf(".");
-                        val = val.substring(0, index); // remove deciaml and other numbers
-                        entryL.value = val; // set left sides val to this new val
-                        if (show) {
-                        	System.out.println("==== ASSIGN  ==== :"+curr.iSourceLineNr
-                                		+ ": " + curr.tokenStr + " = "+val);
-                        }
-                    } else if (ltype == Token.FLOAT && rtype == Token.INTEGER) {
-                        String val = entryR.value;   // get the int val from rside , must cast to a float 2 -> 2.0
-                        val += ".00";
-                        entryL.value = val;
-                        if (show) {
-                            System.out.println("==== ASSIGN  ==== :"+curr.iSourceLineNr
-                                		+ ": " + curr.tokenStr + " = "+val);
-                        }
-                    } else if ((ltype == Token.STRING && rtype == Token.INTEGER)
-                        || (ltype == Token.STRING && rtype == Token.FLOAT)) {
+        ResultValue resExpr = expr(false);
+        int assignType = resExpr.type;
+        if (ltype != assignType) {
+            if ((ltype == Token.INTEGER && assignType == Token.FLOAT)
+                || (ltype == Token.FLOAT && assignType == Token.INTEGER)) {
 
-                        entryL.value = entryR.value;
-                        String val = entryL.value;
-                        if (show) {
-                            System.out.println("==== ASSIGN  ==== :"+curr.iSourceLineNr+
-                                ": "+curr.tokenStr+" = "+val);
-                        }
-                    } else if (ltype == Token.STRING && rtype == Token.BOOLEAN) {
-                        entryL.value = entryR.value;
-                        String val = entryL.value;
-                        if (show) {
-                            System.out.println("==== ASSIGN  ==== :"+curr.iSourceLineNr+
-                                ": "+curr.tokenStr+" = "+val);
-                        }
-                    } else if (ltype == Token.BOOLEAN && rtype == Token.STRING) {
-                        if (entryR.value.equals("T") || entryR.value.equals("F")) {
-                            entryL.value = entryR.value;
-                            String val = entryL.value;
-                            if (show) {
-                                System.out.println("==== ASSIGN  ==== :"+curr.iSourceLineNr+
-                                    ": "+curr.tokenStr+" = "+val);
-                            }
-                        } else { // this code will never be executed as a boolean ident will always be T or F
-                            error("Incompatible types. Cannot assign "+
-                                Token.strSubClassifM[rtype]+" to "+
-                                Token.strSubClassifM[ltype]+
-                                " when STRING is not 'T' or 'F'");
-                        }
-                    } else {
-                        error("Incompatible types. Cannot assign "+
-                            scan.currentToken.strSubClassifM[rtype]+
-                            " to "+curr.strSubClassifM[ltype]);
+                if (ltype == Token.INTEGER) {
+                    value = resExpr.value;
+                    int index = value.indexOf(".");
+                    value = value.substring(0, index);
+                } else if (ltype == Token.FLOAT) {  // left side is Float
+                    value = resExpr.value;
+                    value += ".00";
+                } else if (ltype == Token.STRING) {
+                    value = resExpr.value;
+                    if (expr) {
+                        System.out.println("+++++ EXPRN +++++ :"+curr.iSourceLineNr
+                            + ": " + curr.tokenStr + " = "+value);
                     }
-
-
-                } else {
-                    // same type identifier assignment
-                    String val = st.getSymbol(rToken.tokenStr).value;  // get side val
-                    entryL.value = val;  //  set left side val to right sides val
-                    if (show) {
-                        System.out.println("==== ASSIGN  ==== :"+curr.iSourceLineNr
-                                    		+ ": " + curr.tokenStr + " = "+val);
-                    }
-                }
-            } else {  // IDENTIFIER next token not a ';'  possible valid expression I.e  Int a = a + 2;
-                ResultValue resExpr = expr(false);
-                int assignType = resExpr.type;
-                if (ltype != assignType) {
-                    if ((ltype == Token.INTEGER && assignType == Token.FLOAT)
-                        || (ltype == Token.FLOAT && assignType == Token.INTEGER)) {
-
-                        if (ltype == Token.INTEGER) {
-                            value = resExpr.value;
-                            int index = value.indexOf(".");
-                            value = value.substring(0, index);
-                        } else {  // left side is Float
-                            value = resExpr.value;
-                            value += ".00";
-                        }
-                    } else if (ltype == Token.STRING) {
-                        value = resExpr.value;
-                        if (expr) {
-                            System.out.println("+++++ EXPRN +++++ :"+curr.iSourceLineNr
-                                + ": " + curr.tokenStr + " = "+value);
-                        }
-                    } else if (ltype == Token.BOOLEAN && assignType == Token.STRING) {
-                        value = resExpr.value;
-                        if (value.equals("T") || value.equals("F")) {
-                            ;
-                        } else {
-                            error("Incompatible types. Cannot assign "+
-                                Token.strSubClassifM[assignType]+
-                                " to "+Token.strSubClassifM[ltype]+
-                                " when STRING is a not a 'T' or 'F'");
-                        }
-                        if (expr) {
-                            System.out.println("+++++ EXPRN +++++ :"+curr.iSourceLineNr
-                                + ": " + curr.tokenStr + " = "+value);
-                        }
+                } else if (ltype == Token.BOOLEAN && assignType == Token.STRING) {
+                    value = resExpr.value;
+                    if (value.equals("T") || value.equals("F")) {
+                        ;
                     } else {
                         error("Incompatible types. Cannot assign "+
                             Token.strSubClassifM[assignType]+
-                            " to "+Token.strSubClassifM[ltype]);
+                            " to "+Token.strSubClassifM[ltype]+
+                            " when STRING is a not a 'T' or 'F'");
                     }
-
-                } else {  // they are the same type
-                    value = resExpr.value;
-                }
-                entryL.value = value;
-                String val2 = entryL.value;
-                if (expr) {
-                    System.out.println("+++++ EXPRN +++++ :"+curr.iSourceLineNr
-                                    		+ ": " + curr.tokenStr + " = "+val2);
-                }
-            }
-
-        } else { // rToken is not an identifier    ie.   num = 10;
-            if (scan.nextToken.tokenStr.equals(";")) {
-                String val = "";
-                if (ltype != rToken.subClassif) {
-                    if (ltype == Token.INTEGER && rToken.subClassif == Token.FLOAT) {
-                        int index = rToken.tokenStr.indexOf(".");
-                        val = st.getSymbol(curSymbol.tokenStr).value = rToken.tokenStr.substring(0, index);
-                    } else  if (ltype == Token.FLOAT && rToken.subClassif == Token.INTEGER) {
-                    	st.getSymbol(curSymbol.tokenStr).value = rToken.tokenStr + ".00";
-                    	val = st.getSymbol(curSymbol.tokenStr).value;
-                    	//st.setDataType((STIdentifier)st.getSymbol(curSymbol.tokenStr), ltype);
-                        if (show) {
-                            System.out.println("==== ASSIGN  ==== :"+curr.iSourceLineNr
-                                        + ": " + curr.tokenStr + " = "+val);
-                        }
-                    } else if ((ltype == Token.STRING && rToken.subClassif == Token.INTEGER)
-                        || (ltype == Token.STRING && rToken.subClassif == Token.FLOAT)) {
-
-                        entryL.value = rToken.tokenStr;
-                        val = entryL.value;
-                        if (show) {
-                            System.out.println("==== ASSIGN  ==== :"+curr.iSourceLineNr+
-                                ": "+curr.tokenStr+" = "+val);
-                        }
-
-                    } else if (ltype == Token.STRING && rToken.subClassif == Token.BOOLEAN) {
-                        entryL.value = rToken.tokenStr;
-                        val = entryL.value;
-                        if (show) {
-                            System.out.println("==== ASSIGN  ==== :"+curr.iSourceLineNr+
-                                ": "+curr.tokenStr+" = "+val);
-                        }
-                    } else if (ltype == Token.BOOLEAN && rToken.subClassif == Token.STRING) {
-                        if (rToken.tokenStr.equals("T") || rToken.tokenStr.equals("F")) {
-                            entryL.value = rToken.tokenStr;
-                            val = entryL.value;
-                            if (show) {
-                                System.out.println("==== ASSIGN  ==== :"+curr.iSourceLineNr+
-                                    ": "+curr.tokenStr+" = "+val);
-                            }
-                        } else {
-                             error("Incompatible types. Cannot assign "+
-                                Token.strSubClassifM[rToken.subClassif]+
-                                " to "+Token.strSubClassifM[ltype]+
-                                " when STRING is a not a 'T' or 'F'");
-                        }
-                    } else {
-                    	error("Incompatible types. Cannot assign "+
-                            Token.strSubClassifM[rToken.subClassif]+
-                            " to "+Token.strSubClassifM[ltype]);
+                    if (expr) {
+                        System.out.println("+++++ EXPRN +++++ :"+curr.iSourceLineNr
+                            + ": " + curr.tokenStr + " = "+value);
                     }
                 } else {
-                    entryL.value = rToken.tokenStr;
-                    val = entryL.value;
-                    if (show) {
-                        System.out.println("==== ASSIGN  ==== :"+curr.iSourceLineNr
-                                    		+ ": " + curr.tokenStr + " = "+val);
-                    }
-                }
-            } else {  // next token not a ';', expression: right side is NOT an identifier; ie   Int a = 3 + 4;
-                ResultValue resExpr = expr(false);
-                int assignType = resExpr.type; // get right type
-                if (ltype != assignType) {
-                    if ((ltype == Token.INTEGER && assignType == Token.FLOAT)
-                        || (ltype == Token.FLOAT && assignType == Token.INTEGER)) {
-
-                        if (ltype == Token.INTEGER) {
-                            value = resExpr.value;
-                            int index = value.indexOf(".");
-                            value = value.substring(0, index);
-                        } else if (ltype == Token.FLOAT) {  // left side is Float
-                            value = resExpr.value;
-                            value += ".00";
-                        }
-                    } else if (ltype == Token.STRING) {
-                        value = resExpr.value;
-                        if (expr) {
-                            System.out.println("+++++ EXPRN +++++ :"+curr.iSourceLineNr
-                                + ": " + curr.tokenStr + " = "+value);
-                        }
-                    } else if (ltype == Token.BOOLEAN && assignType == Token.STRING) {
-                        value = resExpr.value;
-                        if (value.equals("T") || value.equals("F")) {
-                            ;
-                        } else {
-                            error("Incompatible types. Cannot assign "+
-                                Token.strSubClassifM[rToken.subClassif]+
-                                " to "+Token.strSubClassifM[ltype]+
-                                " when STRING is a not a 'T' or 'F'");
-                        }
-                        if (expr) {
-                            System.out.println("+++++ EXPRN +++++ :"+curr.iSourceLineNr
-                                + ": " + curr.tokenStr + " = "+value);
-                        }
-                    } else {
-                        error("Incompatible types. Cannot assign "+
-                            Token.strSubClassifM[assignType]+
-                            " to "+Token.strSubClassifM[ltype]);
-                    }
-                } else {  // same types
-                    value = resExpr.value;
-                }
-                entryL.value = value;
-                String val = entryL.value;
-                if (expr) {
-                    System.out.println("+++++ EXPRN +++++ :"+curr.iSourceLineNr
-                                    		+ ": " + curr.tokenStr + " = "+val);
+                    error("Incompatible types. Cannot assign "+
+                        Token.strSubClassifM[assignType]+
+                        " to "+Token.strSubClassifM[ltype]);
                 }
             }
+        } else {  // they are the same type
+            value = resExpr.value;
+        }
+        entryL.value = value;
+        String val2 = entryL.value;
+        if (show) {;}
+
+        if (expr) {
+            System.out.println("+++++ EXPRN +++++ :"+curr.iSourceLineNr
+                                + ": " + curr.tokenStr + " = "+val2);
         }
     }
 
@@ -778,7 +576,6 @@ public class Parser {
     	}
     }
 
-
     public void whileStmt() throws Exception  {
     	Scanner old = scan.saveState();
     	Token beginningWhile;
@@ -792,9 +589,6 @@ public class Parser {
         			+ scan.currentToken.tokenStr + "'", beginningWhile);
         }
         scan.getNext(); // consume separator
-
-
-
 
         if (resCond.value.equals("T")) {
             while (resCond.value.equals("T")) {
@@ -865,461 +659,117 @@ public class Parser {
         }
     }
 
+    public void forStmt() throws Exception { //  current token is 'for'
+        scan.getNext(); // on counter variable or a temp variable
+        int startIndex = 0;
+        int endIndex = 0;
+        if (this.scan.nextToken.tokenStr.equals("=")) { // currToken is couter variable
+            Scanner oldScan = null;
+            int incr = -1000;
+            Token incVar = scan.currentToken;
+            STIdentifier counterVar = (STIdentifier) st.getSymbol(incVar.tokenStr);
+            if (counterVar == null)
+                error(counterVar.symbol+" is not in symbol table");
+            scan.getNext(); // currToken is  '='
+            scan.getNext();  // currToken is value after '='
+            ResultValue resVal = expr(false);
+            st.getSymbol(incVar.tokenStr).value = resVal.value; // initialized counter var
+            startIndex = Integer.parseInt(resVal.value); // current token is 'to'
+            scan.getNext(); // on start of endIndex
+            ResultValue res = expr(false);
+            endIndex = Integer.parseInt(res.value);
+            System.out.println("start index = "+startIndex);
+            System.out.println("end index = "+endIndex);
+            if (scan.currentToken.tokenStr.equals(":")) {
+                incr = 1;
+                oldScan = this.scan.saveState();
+            } else if (scan.currentToken.tokenStr.equals("by")) {
+                scan.getNext(); // got incr var , will not be 1
+                ResultValue ival = expr(false);
+                try {
+                    incr = Integer.parseInt(ival.value);
+                    System.out.println("incr = "+incr);
+                } catch (Exception e) {
+                    error("Increment value must be an integer");
+                }
+                oldScan = this.scan.saveState();
+            } else {
+                error("Either ':' for foor loop is missing or other invalid syntax");
+            }
+            int iIncVar = Integer.parseInt(st.getSymbol(incVar.tokenStr).value);
+            if (startIndex >= endIndex) {
+                while (!scan.currentToken.tokenStr.equals("endfor"))
+                    scan.getNext();
+            } else {
+                for (int i = startIndex; i < endIndex - incr; i+=incr) {
+                    statements(true);
+                    this.scan = oldScan.saveState();
+                    iIncVar += incr;
+                    st.getSymbol(incVar.tokenStr).value = String.valueOf(iIncVar);
+                }
+            }
 
-
-    public void forStmt() throws Exception {
-    	// save the scanner state to revert back to original when done
-    	Scanner savedScanner = this.scan.saveState();
-    	Token startToken = scan.currentToken.saveToken();
-    	String temp = scan.currentToken.tokenStr + " " + scan.nextToken.tokenStr + " " + scan.getNext();
-    	int controlVar;
-    	int i;
-    	// default incr variable is 1 if there is none provided
-    	int incr = 1;
-    	// restore the state so we can use getNext()
-    	this.scan = savedScanner;
-    	scan.getNext();
-
-		// begin first argument analysis
-		// check if its an operand
-		if (scan.currentToken.subClassif == 1) {
-			// make sure its not in the symbol table
-			STIdentifier startIdent = (STIdentifier) st.getSymbol(scan.currentToken.tokenStr);
-			if (!scan.nextToken.tokenStr.equals("=") &&
-					!scan.nextToken.tokenStr.equals("in") &&
-					!scan.nextToken.tokenStr.equals("from")) {
-				error("\"" + scan.nextToken.tokenStr + "\"" + " is not a valid for loop token");
-			}
-			if (scan.nextToken.tokenStr.equals("in") || scan.nextToken.tokenStr.equals("from")) {
-				// should be a foreach loop
-				/*if (startIdent != null) {
-					error("\"" + scan.currentToken.tokenStr + "\"" + " has already been declared");
-				}*/
-				Token itemTok = scan.currentToken;
-				String szItem = itemTok.tokenStr;
-				scan.getNext();
-				scan.getNext();
-				// setIdent will be the set of indices that we will iterate over and assign item to each time
-				STIdentifier setIdent = (STIdentifier) st.getSymbol(scan.currentToken.tokenStr);
-				Token setTok = scan.currentToken;
-				char array[] = null;
-				i = 0;
-				int type = 0;
-				STIdentifier delimIdent = null;
-				Token delimTok = null;
-				String delim = "";
-				boolean byFlag = false;
-				if (scan.nextToken.tokenStr.equals("by")) {
-					// should be a foreach loop with a split string delimiter
-					scan.getNext();
-					scan.getNext();
-					// get the string delimiter to split the string on
-					delimIdent = (STIdentifier) st.getSymbol(scan.currentToken.tokenStr);
-					delimTok = scan.currentToken;
-					delim = "";
-					if (delimIdent == null) {
-						// if its null, then it must be a string literal, otherwise error
-						if (delimTok.subClassif != 5) {
-							error("\"" + delimTok.tokenStr + "\"" +
-						        " must be a declared string identifier or string literal");
-						}
-						// if its a string literal, assign the value to delim
-						delim = delimTok.tokenStr;
-					}
-					else {
-						// it is in the symbol table, make sure it has a value and is a string
-						if (delimIdent.value == null) {
-							error("\"" + delimTok + "\"" + " is not initialized");
-						}
-						if (delimIdent.type != 5) {
-							error("\"" + delimTok + "\"" + " must be a string identifier");
-						}
-						// if its a string identifier, assign the value from the symbol table entry
-						// to delim
-						delim = delimIdent.value;
-					}
-				}
-				// loop must have colon ":" terminating string
-				if (!scan.nextToken.tokenStr.equals(":")) {
-					error("No terminating colon " + ":" + " for for loop");
-				}
-
-				if (setIdent == null) {
-					// if its an identifier and the symbol table entry is null, its undeclared
-					if (setTok.subClassif == 1) {
-						error("\"" + setTok.tokenStr + "\"" + " is an undeclared identifier");
-					}
-					// if its not an identifier and not a string literal, then its an invalid set
-					else if (setTok.subClassif != 5) {
-						error("\"" + setTok.tokenStr + "\"" + " must be an array or string");
-					}
-					// if we are at this line then it must be a string literal
-					// so convert the string literal to a char array
-					String szArray[] = null;
-					int length = 0;
-					if (delimTok != null) {
-						// if the delimiter is a string literal, then split on the token
-						if (setIdent == null) {
-							szArray = setTok.tokenStr.split(delim);
-						}
-						// if the delimiter is an identifier for a string, then split on the ST value
-						else {
-							szArray = setIdent.value.split(delim);
-						}
-						length = szArray.length;
-					}
-					// if there is no delimiter, then its a simple foreach loop
-					if (szArray == null) {
-						array = setTok.tokenStr.toCharArray();
-						length = array.length;
-					}
-					scan.getNext();
-					scan.getNext();
-					if (startIdent == null) {
-						type = setIdent.array.type;
-					}
-					else {
-						type = startIdent.type;
-					}
-					while (i < length) {
-						//szItem = setIdent.array.val.get(i);
-						savedScanner = this.scan.saveState();
-						STIdentifier itemEntry = new STIdentifier(szItem, 1, 5);
-						itemEntry.type = type;
-						if (szArray == null) {
-							itemEntry.value = String.valueOf(array[i]);
-						}
-						else {
-							itemEntry.value = String.valueOf(szArray[i]);
-						}
-						st.putSymbol(szItem, itemEntry);
-						statements(true);
-						itemEntry = null;
-						i++;
-						// only reset the buffer to top of loop if we are running the loop again
-						if (i < length) {
-							this.scan = savedScanner;
-							st.table.remove(szItem);
-						}
-					}
-				}
-				else {
-					// if it is a declared scalar identifier, the scalar must be a string
-					if (setIdent.structure == 100) {
-						if (setIdent.type != 5) {
-							error("The identifier " + "\"" + setIdent.symbol + "\"" + " must be an array or string");
-						}
-						// if we are at this line, then it is a string identifier
-						// so convert the string value to a char array
-						String szArray[] = null;
-						int length = 0;
-						if (delimTok != null) {
-							// if the set string is a string literal, then split on the token
-							if (setIdent == null) {
-								szArray = setTok.tokenStr.split(delim);
-							}
-							// if the delimiter is an identifier for a string, then split on the ST value
-							else {
-								szArray = setIdent.value.split(delim);
-							}
-							length = szArray.length;
-						}
-						// if there is no delimiter, then its a simple foreach loop
-						if (szArray == null) {
-							array = setTok.tokenStr.toCharArray();
-							length = array.length;
-						}
-						scan.getNext();
-						scan.getNext();
-						if (startIdent == null) {
-							type = setIdent.array.type;
-						}
-						else {
-							type = startIdent.type;
-						}
-						while (i < length) {
-							//szItem = setIdent.array.val.get(i);
-							savedScanner = this.scan.saveState();
-							STIdentifier itemEntry = new STIdentifier(szItem, 1, 5);
-							if (szArray == null) {
-								itemEntry.value = String.valueOf(array[i]);
-							}
-							else {
-								itemEntry.value = String.valueOf(szArray[i]);
-							}
-							st.putSymbol(szItem, itemEntry);
-							statements(true);
-							itemEntry = null;
-							i++;
-							// only reset the buffer to top of loop if we are running the loop again
-							if (i < length) {
-								this.scan = savedScanner;
-								st.table.remove(szItem);
-							}
-						}
-					}
-					else {
-						// if were here then it is a valid array identifier
-						scan.getNext();
-						scan.getNext();
-						if (startIdent == null) {
-							type = setIdent.array.type;
-						}
-						else {
-							type = startIdent.type;
-						}
-						while (i < setIdent.array.val.size()) {
-							//szItem = setIdent.array.val.get(i);
-							if (setIdent.array.val.get(i) != null) {
-								savedScanner = this.scan.saveState();
-								STIdentifier itemEntry = new STIdentifier(szItem, 1, 5);
-								itemEntry.type = type;
-								itemEntry.value = setIdent.array.val.get(i);
-								st.putSymbol(szItem, itemEntry);
-								statements(true);
-								itemEntry = null;
-							}
-							i++;
-							// only reset the buffer to top of loop if we are running the loop again
-							if (i < setIdent.array.val.size()) {
-								this.scan = savedScanner;
-								if (setIdent.array.val.get(i) != null) {
-									st.table.remove(szItem);
-								}
-							}
-						}
-					}
-				}
-
-			}
-			else {
-				// should be a counting for loop
-				/*if (startIdent == null) {
-					error("Variable " + "\"" + scan.currentToken.tokenStr + "\"" + " has not been declared");
-				}*/
-				// begin second argument analysis
-				ResultValue resVal = null;
-				if (!scan.nextToken.tokenStr.equals("to")) {
-					// if its not the word "to" it must be an operator
-					if (scan.nextToken.primClassif == 2) {
-						// only call expr(...) if its not an equal sign
-						if (!scan.nextToken.tokenStr.equals("=")) {
-							resVal = expr(false);
-						}
-						if (scan.nextToken.tokenStr.equals("=")) {
-							if (startIdent == null) {
-								int prim = scan.currentToken.primClassif;
-								int sub = scan.currentToken.subClassif;
-								startIdent = new STIdentifier(scan.currentToken.tokenStr, prim, sub);
-								startIdent.type = 2;
-								st.table.put(scan.currentToken.tokenStr, startIdent);
-								//st.putSymbol(scan.currentToken.tokenStr, startIdent);
-							}
-							assign(scan.currentToken);
-						}
-					}
-					// now get the limit
-					if (!scan.currentToken.tokenStr.equals("to")) {
-						error("Missing " + "\"" + "to" + "\"" + " keyword in for loop");
-					}
-					scan.getNext();
-					// begin getting the limit in the for loop
-					int end = 0;
-					boolean funcFlag = false;
-					boolean byFlag = false;
-					STIdentifier limitIdent = null;
-					if (scan.currentToken.tokenStr.equals("LENGTH") ||
-							scan.currentToken.tokenStr.equals("ELEM") ||
-							scan.currentToken.tokenStr.equals("MAXELEM")) {
-						resVal = expr(false);
-						funcFlag = false;
-						end = Integer.parseInt(resVal.value);
-					}
-					else {
-						limitIdent = (STIdentifier) st.getSymbol(scan.currentToken.tokenStr);
-					}
-					int start = Integer.parseInt(startIdent.value);
-					if (limitIdent == null) {
-						if (!scan.currentToken.tokenStr.equals(":")) {
-							if (scan.currentToken.tokenStr.equals("by")) {
-								scan.getNext();
-							}
-							// if its an identifier and not in the symbol table, then error
-							if (scan.currentToken.subClassif == 1) {
-								error("\"" + scan.currentToken.tokenStr + "\"" + " is an undeclared identifier");
-							}
-							// if the limit is not a integer or float constant, then error
-							else if (scan.currentToken.subClassif != 2 && scan.currentToken.subClassif != 3) {
-								error("\"" + scan.currentToken.tokenStr + "\"" + " is not a valid ending limit");
-							}
-							// if its a valid integer or float constant, assign the ending value to it
-							else {
-								if (funcFlag == false && end == 0) {
-									end = Integer.parseInt(scan.currentToken.tokenStr);
-								}
-							}
-						}
-					}
-					else {
-						// we found the identifier in the symbol table, make sure it has a value
-						if (limitIdent.value == null) {
-							// if the limitIdent is a scalar, ie. not an array, then error
-							if (limitIdent.structure == 100) {
-								error("The identifier " + "\"" + limitIdent.symbol + "\"" + " has no value");
-							}
-						}
-						// if the look ahead is an operator or the limit is an array, then call expr()
-						// and assign the value to end
-						if (scan.nextToken.primClassif == 2 || limitIdent.structure == -100) {
-							resVal = expr(false);
-							end = Integer.parseInt(resVal.value);
-						}
-						else {
-							// if the look ahead is not an operator, then it must be a colon, error if its neither
-							if (!scan.currentToken.tokenStr.equals(":") && !scan.nextToken.tokenStr.equals(":")) {
-								error("\"" + scan.nextToken.tokenStr + "\"" + " must be a colon " + "\"" + ":" + "\"" + " or an operator");
-							}
-							// if the look ahead is a colon, then we have reached the end of the for loop condition
-							// so assign the symbol table entry to incr
-							end = Integer.parseInt(limitIdent.value);
-						}					}
-					// end getting the limit in the for loop,
-
-					// check if there is an incr variable
-					if (scan.currentToken.tokenStr.equals("by") || scan.nextToken.tokenStr.equals("by") ||
-							scan.nextToken.tokenStr.equals(":")) {
-						if (!scan.nextToken.tokenStr.equals(":")) {
-							scan.getNext();
-						}
-						if (scan.currentToken.tokenStr.equals("by")) {
-							byFlag = true;
-							scan.getNext();
-						}
-						// begin getting the incr in the for loop
-						funcFlag = false;
-						STIdentifier incrIdent = null;
-						if (scan.currentToken.tokenStr.equals("LENGTH") ||
-								scan.currentToken.tokenStr.equals("ELEM") ||
-								scan.currentToken.tokenStr.equals("MAXELEM")) {
-							resVal = expr(false);
-							funcFlag = true;
-							incr = Integer.parseInt(resVal.value);
-						}
-						else {
-							incrIdent = (STIdentifier) st.getSymbol(scan.currentToken.tokenStr);
-						}
-						// check if the incr is an identifier
-						if (incrIdent == null) {
-							// if its an identifier and not in the symbol table, then error
-							if (scan.currentToken.subClassif == 1) {
-								error("\"" + scan.currentToken.tokenStr + "\"" + " is an undeclared identifier");
-							}
-							// if the incr is not a integer or float constant, then error
-							else if (scan.currentToken.subClassif != 2 && scan.currentToken.subClassif != 3) {
-								error("\"" + scan.currentToken.tokenStr + "\"" + " is not a valid ending limit");
-							}
-							// if its a valid integer or float constant, assign the ending value to it
-							else {
-								if (funcFlag == false) {
-									if (byFlag == true) {
-										incr = Integer.parseInt(scan.currentToken.tokenStr);
-									}
-								}
-							}
-						}
-						else {
-							// we found the identifier in the symbol table, make sure it has a value
-							if (incrIdent.value == null) {
-								// if the incrIdent is a scalar, ie. not an array, then error
-								if (incrIdent.structure == 100) {
-									error("The identifier " + "\"" + incrIdent.symbol + "\"" + " has no value");
-								}
-
-							}
-							// if the look ahead is an operator or the incr is an array then call expr() and
-							// assign the value to incr
-							if (scan.nextToken.primClassif == 2 || incrIdent.structure == -100) {
-								resVal = expr(false);
-								incr = Integer.parseInt(resVal.value);
-							}
-							else {
-								// if the look ahead is not an operator, then it must be a colon, error if its neither
-								if (!scan.currentToken.tokenStr.equals(":") && !scan.nextToken.tokenStr.equals(":")) {
-									error("\"" + scan.nextToken.tokenStr + "\"" + " must be a colon " + "\"" + ":" + "\"" + " or an operator");
-								}
-								// if the look ahead is a colon, then we have reached the end of the for loop condition
-								// so assign the symbol table entry to incr
-								incr = Integer.parseInt(incrIdent.value);
-							}
-
-						}
-					}
-						// start is the initial value for i. ie. "for i = 0 ..."
-						controlVar = start;
-						int difference = 0;
-						//for (i = start; i < end; i++) {
-						if (scan.nextToken.tokenStr.equals(":")) {
-							scan.getNext();
-						}
-						while (controlVar < end) {
-							savedScanner = this.scan.saveState();
-							statements(true);
-
-							// was the control variable incremented by the programmer?
-							if (Integer.parseInt(startIdent.value) != controlVar) {
-								// if true then update the control variable according to the symbol table entry
-								difference = Integer.parseInt(startIdent.value) - controlVar;
-								controlVar += difference;
-							}
-
-							// increment control variable by the incr
-							controlVar += incr;
-
-							// update the control variable symbol table entry
-							startIdent.value = String.valueOf(controlVar);
-
-							// only reset the buffer to top of loop if we are running the loop again
-							if (controlVar < end) {
-								this.scan = savedScanner;
-							}
-						}
-						// end for loop execution
-					}
-					else {
-						// there must be either a colon ":" or the "by" keyword, so throw error
-						if (!scan.nextToken.tokenStr.equals("by")) {
-							error("Missing " + "\"" + ":" + "\"" + " or " + "\"" + "by" + "\"" + " keyword in for loop");
-						}
-					}
-				// if its not the keyword "to" or an operator then error
-		    	/*else {
-		    		error("\"" + scan.nextToken.tokenStr + "\"" + " is not a valid token");
-		    	}*/
-			}
-		}
-		// if the first argument is not an operand then error
-		else {
-			error("First argument is not a valid operand: " + "\"" + scan.currentToken.tokenStr + "\"");
-		}
-		// end first argument analysis
-		// now we skip to the endfor if we are not already there
-		while (!scan.currentToken.tokenStr.equals("endfor") &&
-				!scan.currentToken.tokenStr.equals("for") &&
-				scan.currentToken.primClassif != scan.currentToken.EOF) {
-			scan.getNext();
-		}
-		// if the current token is a "for" or EOF, then error, we did not find a matching endfor
-		if (scan.currentToken.tokenStr.equals("for")) {
-			error("No terminating " + "\"" + "endfor" + "\"" + " for for loop");
-		}
-		else if(scan.currentToken.primClassif == scan.currentToken.EOF) {
-			error("No terminating " + "\"" + "endfor" + "\"" + " for for loop", startToken);
-		}
-		// make sure there is a terminating semicolon after the endfor
-		if (!scan.nextToken.tokenStr.equals(";")) {
-			error("No terminating " + "\"" + ";" + "\"" + " after endfor");
-		}
-	}
+        } else if (this.scan.nextToken.tokenStr.equals("in")) {  // foreach logic;  currentToken is 'i' in foreach loop
+            Token itok = scan.currentToken;
+            st.putSymbol(itok.tokenStr, new STIdentifier(itok.tokenStr, itok.primClassif, itok.subClassif)); // put 'i' in symbol table
+            Scanner oldScan = null;
+            ArrayList<String> strList = new ArrayList<String>();
+            boolean isArray = false;
+            scan.getNext();
+            if (!scan.currentToken.tokenStr.equals("in"))
+                error("Invalid foreach syntax. Expected 'in'");
+            scan.getNext();  // current token is the array or string to iterate over
+            STIdentifier list = (STIdentifier)st.getSymbol(scan.currentToken.tokenStr); // get array or string from ST
+            if (list == null) {
+                error(scan.currentToken.tokenStr+" is not in symbol table");
+            } else if (list.structure == STIdentifier.SCALAR) { // is item a SCALAR ? is it a STRING?
+                if (list.type != STEntry.STRING)
+                    error("Only STRING scalars are iterable. '"+scan.currentToken.tokenStr+"' is not iterable");
+                for (int i = 0; i < list.value.length(); i++) {  // create arrayList of String to use
+                    strList.add(list.value.substring(i,i+1));
+                }
+            } else if (list.structure == STIdentifier.ARRAY) {
+                isArray = true;
+            }
+            scan.getNext();  // current token is ':'
+            oldScan = this.scan.saveState();  // save current location of scanner to oldScan
+            if (!isArray) {
+                if (strList.size() == 0) {
+                    while (!scan.currentToken.tokenStr.equals("endfor"))
+                        scan.getNext();
+                } else {
+                    for (int i = 0; i < strList.size(); i++) {
+                        st.getSymbol(itok.tokenStr).value = strList.get(i);
+                        statements(true);
+                        if (i == strList.size() - 1) {
+                            while (!scan.currentToken.tokenStr.equals("endfor"))
+                                scan.getNext();
+                        } else {
+                            this.scan = oldScan.saveState();
+                        }
+                    }
+                }
+            } else if (isArray) {
+                if (list.array.val.size() == 0) {
+                    while (!scan.currentToken.tokenStr.equals("endfor"))
+                        scan.getNext();
+                } else {
+                    for (int i = 0; i < list.array.val.size(); i++) {
+                        st.getSymbol(itok.tokenStr).value = list.array.val.get(i);
+                        statements(true);
+                        if (i == list.array.val.size() - 1) {
+                            while (!scan.currentToken.tokenStr.equals("endfor"))
+                                scan.getNext();
+                        } else {
+                            this.scan = oldScan.saveState();
+                        }
+                    }
+                }
+            }
+        } else {
+            error("Invalid syntax for loop syntax");
+        }
+    }
 
     // assumes that this is called when currentToken = to the first operand
     // stops at the next token after the expression
@@ -1634,7 +1084,7 @@ public class Parser {
 		    				tokOp2 = (Token) stk.pop(); // grab the right operand
 		    			} catch (EmptyStackException a) {
 		    				error("Missing expression operand "
-		    						+ "for operator: '" + currToken.tokenStr + "'", currToken);
+		    						+ "fzor operator: '" + currToken.tokenStr + "'", currToken);
 		    			}
 		    			try {
 		    				tokOp1 = (Token) stk.pop(); // grab the left operand
