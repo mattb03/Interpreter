@@ -3,6 +3,20 @@
 //debug Expr on;
 
 
+Int array[10] = 1, 2, 3, 4, 5;
+//array = 1000;
+
+
+
+
+//print(ELEM(array));
+for i in array:
+    print(i);
+endfor;
+print(array);
+debug Exit on;
+
+
 
 String del = ",";
 

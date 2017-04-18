@@ -42,7 +42,6 @@ public class StorageManager {
 
     public void add(int index, ResultValue resVal, String token) throws Exception {
         String item = resVal.value;
-        //System.out.println("this type: "+this.type+"\nrevVal type: "+resVal.type);
         if (this.type != resVal.type) {
             Numeric num = new Numeric(this.parser, resVal, token, "Index "+String.valueOf(index));
             if (this.type == Token.INTEGER) {

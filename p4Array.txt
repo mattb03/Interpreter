@@ -1,5 +1,6 @@
 // arrays, element assignment, for loops
 // do simple variables still work?
+//debug Token on;
 print("p4Array.txt");
 Int iSimp = 50;
 print ("iSimp=", iSimp);
@@ -62,7 +63,13 @@ for i=0 to ELEM(iDM)-1:
     bChange = F;
     for j=0 to ELEM(iDM)-i-1 by 1:
         if iDM[j+1] < iDM[j]:
+
+           print("iTemp = ", iTemp);
+           print("iDM[j+1] = ", iDM[j+1]);
            iTemp = iDM[j+1];
+
+           print("iTemp = ", iTemp);   // iTemp should be 30
+
            iDM[j+1] = iDM[j];
            iDM[j] = iTemp;
            bChange = T;
@@ -72,7 +79,7 @@ for i=0 to ELEM(iDM)-1:
         print("\tready to leave, i=", i);
         // break;
     endif;
-endfor; 
+endfor;
 print("sorted array");
 for i=0 to ELEM(iDM):
     print("\t", iDM[i]);

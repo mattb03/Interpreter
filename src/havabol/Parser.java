@@ -247,7 +247,9 @@ public class Parser {
                         if (!scan.currentToken.tokenStr.equals("="))
                             error("Invalid array statement. Expected '='");
                         scan.getNext(); // got token
-                        ResultValue resVal = expr(false);
+                        ResultValue resVal = expr(true);
+                        //System.out.println("result is "+ resVal.value);
+                        //st.printTable();
                         entry.array.set(Integer.parseInt(ind.value), resVal, "");
                     }
                 } else {
@@ -667,9 +669,10 @@ public class Parser {
             Scanner oldScan = null;
             int incr = -1000;
             Token incVar = scan.currentToken;
-            STIdentifier counterVar = (STIdentifier) st.getSymbol(incVar.tokenStr);
-            if (counterVar == null)
-                error(counterVar.symbol+" is not in symbol table");
+            //STIdentifier counterVar = (STIdentifier) st.getSymbol(incVar.tokenStr);
+            //if (counterVar == null)
+                //error(counterVar.symbol+" is not in symbol table");
+            st.putSymbol(incVar.tokenStr, new STIdentifier(incVar.tokenStr, incVar.primClassif, incVar.subClassif));
             scan.getNext(); // currToken is  '='
             scan.getNext();  // currToken is value after '='
             ResultValue resVal = expr(false);
@@ -678,8 +681,8 @@ public class Parser {
             scan.getNext(); // on start of endIndex
             ResultValue res = expr(false);
             endIndex = Integer.parseInt(res.value);
-            System.out.println("start index = "+startIndex);
-            System.out.println("end index = "+endIndex);
+            //System.out.println("start index = "+startIndex);
+            //System.out.println("end index = "+endIndex);
             if (scan.currentToken.tokenStr.equals(":")) {
                 incr = 1;
                 oldScan = this.scan.saveState();
@@ -754,10 +757,12 @@ public class Parser {
                     while (!scan.currentToken.tokenStr.equals("endfor"))
                         scan.getNext();
                 } else {
-                    for (int i = 0; i < list.array.val.size(); i++) {
-                        st.getSymbol(itok.tokenStr).value = list.array.val.get(i);
+                    ResultValue rval  = Utility.ELEM(this, list.symbol);
+                    int asize = Integer.parseInt(rval.value);
+                    for (int i = 0; i < asize; i++) {
+                        st.getSymbol(itok.tokenStr).value = list.array.get(i).value;
                         statements(true);
-                        if (i == list.array.val.size() - 1) {
+                        if (i == list.array.size - 1) {
                             while (!scan.currentToken.tokenStr.equals("endfor"))
                                 scan.getNext();
                         } else {
