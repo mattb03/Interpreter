@@ -674,6 +674,7 @@ public class Parser {
             //if (counterVar == null)
                 //error(counterVar.symbol+" is not in symbol table");
             st.putSymbol(incVar.tokenStr, new STIdentifier(incVar.tokenStr, incVar.primClassif, incVar.subClassif));
+            st.getSymbol(incVar.tokenStr).type = STIdentifier.INTEGER;
             scan.getNext(); // currToken is  '='
             scan.getNext();  // currToken is value after '='
             ResultValue resVal = expr(false);
@@ -710,6 +711,7 @@ public class Parser {
                     this.scan = oldScan.saveState();
                     iIncVar += incr;
                     st.getSymbol(incVar.tokenStr).value = String.valueOf(iIncVar);
+                    st.getSymbol(incVar.tokenStr).type = STIdentifier.INTEGER;
                 }
             }
 
@@ -724,6 +726,7 @@ public class Parser {
                 error("Invalid foreach syntax. Expected 'in'");
             scan.getNext();  // current token is the array or string to iterate over
             STIdentifier list = (STIdentifier)st.getSymbol(scan.currentToken.tokenStr); // get array or string from ST
+            st.getSymbol(itok.tokenStr).type = list.type;
             if (list == null) {
                 error(scan.currentToken.tokenStr+" is not in symbol table");
             } else if (list.structure == STIdentifier.SCALAR) { // is item a SCALAR ? is it a STRING?
@@ -743,6 +746,7 @@ public class Parser {
                         scan.getNext();
                 } else {
                     for (int i = 0; i < strList.size(); i++) {
+                        st.getSymbol(itok.tokenStr).type = list.type;
                         st.getSymbol(itok.tokenStr).value = strList.get(i);
                         statements(true);
                         if (i == strList.size() - 1) {
@@ -761,6 +765,7 @@ public class Parser {
                     ResultValue rval  = Utility.ELEM(this, list.symbol);
                     int asize = Integer.parseInt(rval.value);
                     for (int i = 0; i < asize; i++) {
+                        st.getSymbol(itok.tokenStr).type = list.type;
                         st.getSymbol(itok.tokenStr).value = list.array.get(i).value;
                         statements(true);
                         if (i == asize - 1) {
