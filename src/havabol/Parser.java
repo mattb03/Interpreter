@@ -353,7 +353,7 @@ public class Parser {
         }
     }
 
-    public void assign(Token curSymbol) throws Exception {  // current token is 'a'   Int a = val
+    public void assign(Token curSymbol) throws Exception {  // current token is 'a'   a = val
         Boolean show = debugger.assign;
         Boolean expr = debugger.expr;
         String value = "";
@@ -405,8 +405,9 @@ public class Parser {
         } else {  // they are the same type
             value = resExpr.value;
         }
-        entryL.value = value;
-        String val2 = entryL.value;
+        //entryL.value = value;
+        String val2 = value;
+        st.getSymbol(curr.tokenStr).value = value;
         if (show) {;}
 
         if (expr) {
@@ -762,7 +763,7 @@ public class Parser {
                     for (int i = 0; i < asize; i++) {
                         st.getSymbol(itok.tokenStr).value = list.array.get(i).value;
                         statements(true);
-                        if (i == list.array.size - 1) {
+                        if (i == asize - 1) {
                             while (!scan.currentToken.tokenStr.equals("endfor"))
                                 scan.getNext();
                         } else {

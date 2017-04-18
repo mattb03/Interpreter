@@ -6,7 +6,8 @@
 Int array[10] = 1, 2, 3, 4, 5;
 //array = 1000;
 
-
+Int number = array[0];
+print("number = ", number);
 
 
 //print(ELEM(array));
