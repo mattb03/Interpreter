@@ -3,17 +3,34 @@
 //debug Expr on;
 
 
-Int array[10] = 1, 2, 3, 4, 5;
-//array = 1000;
 
-Int number = array[0];
+
+
+//Int array[10] = 1, 2, 3, 4, 5;
+String array = "Christopher";
+for i=0 to 11:
+    print(array[i]);
+endfor;
+print("3rd val is : ", array[3]);
+
+
+
+
+
+
+
+
+Int number = array[1]; // throw an error
 print("number = ", number);
 
 
-//print(ELEM(array));
-for i in array:
-    print(i);
+//print("ELEM of array: ", ELEM(array));
+Int j = 0;
+for item in array:
+    print(item, " : ", j);
+    j = j + 1;
 endfor;
+
 print(array);
 debug Exit on;
 
