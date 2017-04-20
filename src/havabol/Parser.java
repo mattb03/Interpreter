@@ -1234,6 +1234,8 @@ public class Parser {
 
     				switch (currToken.tokenStr) {
 	    				case "LENGTH":
+	    					if (tokOp2.isArray)
+	    						error("'" + tokOp2.tokenStr + "' type ARRAY is not a valid type for function LENGTH", tokOp2);
 	    					resTemp = Utility.LENGTH(this, resOp2.value);
 	    					break;
 	    				case "SPACES":
