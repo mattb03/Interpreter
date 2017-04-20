@@ -78,19 +78,19 @@ public class SymbolTable
             table.put(symbol, entry);
         }
     }
-    
-    public void setDataType (STIdentifier ident, int type)
+
+    /*public void setDataType (STIdentifier ident, int type)
     {
     	String symbol = ident.symbol;
-    	
+
     	ident.setDataType(type);
-    }
-    
-    public void putValue (STIdentifier ident, String value)
+    }*/
+
+    /*public void putValue (STIdentifier ident, String value)
     {
     	//table.get(symbol).value = "TX";
     	ident.putValue(ident, value);
-    }
+    }*/
 
 	private void initGlobal ()
     {

@@ -2,20 +2,23 @@
 JAVA = java
 JFLAGS = -classpath bin
 
-do:
-	./compile.sh
+all: makebin
+	javac src/havabol/* -d bin
+
+makebin:
+	mkdir -p bin
 
 test:
 	$(JAVA) $(JFLAGS) havabol.HavaBol test.txt
 
 test2:
-	$(JAVA) $(JFLAGS) havabol.HavaBol test.txt.bak
+	$(JAVA) $(JFLAGS) havabol.HavaBol p2Input.txt
 
 test3:
 	$(JAVA) $(JFLAGS) havabol.HavaBol p3Input.txt
 
-run:
-	$(JAVA) $(JFLAGS) havabol.HavaBol p2Input.txt
+simp: 
+	$(JAVA) $(JFLAGS) havabol.HavaBol p3SimpExpr.txt
 
 out1:
 	$(JAVA) $(JFLAGS) havabol.HavaBol error1.txt
@@ -25,6 +28,10 @@ out2:
 
 out3:
 	$(JAVA) $(JFLAGS) havabol.HavaBol error3.txt
+
+hav:
+	$(JAVA) $(JFLAGS) havabol.HavaBol prog.hav
+
 
 clean:
 	rm -r bin/*

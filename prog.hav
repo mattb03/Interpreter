@@ -1,0 +1,47 @@
+//debug Token on ;
+//debug Assign on;
+//debug Expr on;
+
+//  need to implement array.  scanner parses: 'Int' 'array' '[' ']' '=' '{' ...
+//Int array[] = {1,2,3};
+
+Int fbits = 8;
+Int pbits = 10;
+Int offset = 12;
+
+print( 3.0 / 2);
+
+print(3 / 2.0);
+
+
+String flag = "virt";
+String flag2 = "phys";
+
+print("========== My memory program ==========");
+print("Page size is ", 2^offset);
+if flag == "virt":
+    print("Virtual address space is ", 2^(pbits + offset));
+
+if flag2 == "phys":
+    print("Physical address space is ", 2^(fbits + offset));
+
+
+// The code below does not hang.
+
+if 0 == 1:
+    if 2 == 2:
+        if 3 == 3:
+            print("HERE");
+        endif;
+    endif;
+else:
+    print("other branch!");
+
+
+Int a = 10;
+Int b = 5;
+
+if a > b:
+    b = 1000;
+
+print("a = ", a,"\nb = ", b);

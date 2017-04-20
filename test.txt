@@ -1,54 +1,135 @@
-
 //debug Token on;
-debug Assign on;
-debug Expr on;
+//debug Assign on;
+//debug Expr on;
+//setup
+/////////////////// CORRECT MISSING SEMICOLON AT END OF STATEMENT BUG!!!!!!!!!!!!!!!!!!!!!!!
+Int i = 10;
+Int i2 = 100;
+Float f = 3.14;
+Float f2 = 9.99;
+String s = "123456";
+String s2 = "\t\tNATE\n\n";
+Bool b = T;
+Bool b2 = F;
 
-Int a = 5;
+Int concat = (2 * 3) # (3^2);
+print("concat val -> : ", concat);
 
-print("-a = ", -a);
-
-Float b = 2.0;
-Int c = a + 10;
-print("ans = ", a + b);
-debug Token off;
-
-print("a = ",a, "\a");  // this should print out 'a = 5' because of automatic cast to Int
-print("b = ", b);
-print("c = ", c);
-print("\n\n\n\n");
-while a > 3:
-	print ("loop deee loooop a = ", a);
-	a = a - 1;	
-	c = c + 1;
-	while b <= 5:
-		print ("b is ", b);
-		b = b + 1;
-	endwhile;
-endwhile;
-print ("a is ", a);
-print("b = ", b);
-print("c = ", c);
+// identifier cases : normal good!  decalre to identifier, identifier to identifier, identifier to lit, declare to lit
 
 
-if a == b:
-    print("a = ", a, "\nb = ", b, "\n");
-    a = 3;
-    if a == 3:
-    	print ("now a is ", a);
-    else if b == 2.0:
-    	print ("nested else if b is ", b);
-    endif;
-else if c == 17:
-	print ("c is ", c);
-	if b <= c:
-		print (b, " is <= ", c);
-	else if a == 3:
-		print ("this shouldnt run");
-		print ("please dont run");
-	else:
-		print ("once again please dont run");
-	endif;
-else:
-    print(a, " not equal to ", b);
-endif;
+//Bool b = "T";
+//print("b = ", b);
 
+
+
+// identifier cases : NOT normal
+    // INT DECLARE : GOOD
+    // INT IDENT -> IDENT : GOOD
+    // INT IDENT -> LITERAL : GOOD
+    // FLOAT DECLARE: GOOD
+    // FLOAT IDENT -> IDENT:  GOOD
+    // FLOAT IDENT -> LITERAL: GOOD
+    // STRING DECLARE : GOOD
+    // STRING IDENT -> IDENT : GOOD
+    // STRING IDENT -> LITERAL : GOOD
+    // BOOL DECLARE: GOOD
+    // BOOL IDENT -> IDENT : GOOD
+    // BOOL IDENT -> LITERAL : GOOD
+
+
+
+//  EXPRESSIONS : NORMAL
+// Note:  need to handle expression non normal cases:  i.e. String s = T == F; or String s = b == b2;  where both b and b2 are bools
+String s2 = "3.24";
+print(s2);
+
+String a = "";
+print(a);
+
+Int val = (3 * 3)  # (4/2)^2; // ans 94? : YES
+print(val);
+
+
+String s2 = "Chris" # "\tBuckner";
+print(s2);
+
+Int z = 2.14 + 3; //  GOOD
+Int zz = f + 12.2;
+print(zz);
+
+
+//These cases need to be handled properly
+// LITERAL EXPR
+    // int -> float : GOOD
+    // int -> STRING : GOOD
+    // int -> BOOL : GOOD
+    // float -> int : GOOD
+    // float -> STRING : GOOD
+    // float -> BOOL : GOOD
+    // string -> int : GOOD
+    // string -> float : GOOD
+    // string -> bool : GOOD
+    // bool -> int : GOOD
+    // bool -> float : GOOD
+    // bool -> string : GOOD
+
+
+
+
+// IDENT EXPR
+    // int -> float : GOOD
+    // int -> STRING : GOOD
+    // int -> BOOL :  GOOD
+    // float -> int :  GOOD
+    // float -> STRING :  GOOD
+    // float -> BOOL :  GOOD
+    // string -> int : GOOD
+    // string -> float :  GOOD
+    // string -> bool :  GOOD
+    // bool -> int : GOOD
+    // bool -> float : GOOD
+    // bool -> string :  GOOD
+
+String value = "T";
+
+Bool bbb = value # "";
+print("bbb is ",bbb);
+
+debug Exit on;
+
+
+
+
+
+
+
+
+
+
+// handle these
+// string declare from number (error)
+String aeeu111 = 123;
+// string declare from number identifier (error)
+Int i = 123;
+aeeu111 = i;
+// Boolean declare from number (error)
+//Bool b = 123;
+// Boolean declare from number identifier (error)
+//b = i;
+// Boolean assign from value that is not a boolean type (error)
+//b = t; // lower case t or f
+//b = "oops"; // oops cannot be parsed to boolean
+// Boolean assign from string value that is a boolean type (not an error)
+b = "T"; // or "F"
+
+// try to make T or F keywords and not allow users to use those as identifiers
+//Bool T = T; // identifier T is a keyword and cannot be an identifier
+// fixing this should make fixing these errors easier
+//Int print;
+//Float while;
+// as well as future keywords that we will use
+
+
+
+// test.txt will be for testing error cases

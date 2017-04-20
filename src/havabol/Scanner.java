@@ -23,10 +23,14 @@ public class Scanner {
     private final static String escChars = "\"\'\\nat";
     private final static String letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
     private final static String numbers = "0123456789";
-    public static final String MALFORMED_NUM = "MALFORMED_NUM";
-    public static final String NON_TERMINATED_STRING = "NON_TERMINATED_STRING";
-    public static final String INVALID_OPERATOR = "INVALID_OPERATOR";
-    public static final String INVALID_ESC = "ILLEGAL_ESCAPE_CHARACTER";
+    public static final String MALFORMED_NUM = "Malformed number";
+    public static final String NON_TERMINATED_STRING = "String not terminated";
+    public static final String INVALID_OPERATOR = "Invalid operator";
+    public static final String INVALID_ESC = "Invalid escape character";
+
+    public Scanner() {
+    	// this constructor is for saving the current state of the main scanner.
+    }
 
     public Scanner(String SourceFileNm, Debug debugger) throws IOException, Exception
     {
@@ -35,18 +39,6 @@ public class Scanner {
         // create our buffer to iterate thru
         this.buffer = new String(Files.readAllBytes(Paths.get(SourceFileNm)));
         int i = this.buffer.length() - 1;
-        boolean stopFlag = false;
-        // this loop is to gather the number of blank lines at eof
-        // to print later
-        while (stopFlag == false)
-        {
-        	if (this.buffer.charAt(i) == '\n') {
-        		this.blankLines++;
-        	}
-        	else
-        		stopFlag = true;
-        	i--;
-        }
         // create our String array of lines
         this.lines = this.buffer.split("\n");
         this.exit = false;
@@ -71,18 +63,18 @@ public class Scanner {
     */
     public void process(String value) throws Exception
     {
-        //System.out.println(this.nextToken.tokenStr);
-
        // check for unary minus
         if (this.currentToken != null) {
             String curVal = this.currentToken.tokenStr;
-            if ( ( (operators.indexOf(curVal.charAt(0)) != -1) || curVal.equals("if") ||
-                curVal.equals("while") || curVal.equals(",") || curVal.equals("(")) && value.equals("-") ) {
-                this.nextToken.primClassif = Token.OPERATOR;
-                this.nextToken.subClassif = Token.VOID;
-                this.nextToken.tokenStr = "u-";
-                return;
-            }
+            try {
+                if ( ( (operators.indexOf(curVal.charAt(0)) != -1) || curVal.equals("if") ||
+                    curVal.equals("while") || curVal.equals(",") || curVal.equals("(")) && value.equals("-") ) {
+                    this.nextToken.primClassif = Token.OPERATOR;
+                    this.nextToken.subClassif = Token.VOID;
+                    this.nextToken.tokenStr = "u-";
+                    return;
+                }
+            } catch (Exception e) { ; }
         }
         // first val of token a quote? then its a string
         if (value.charAt(0) == '"' || value.charAt(0) == '\'')
@@ -119,8 +111,13 @@ public class Scanner {
         {
             this.delEval(value);
         }
-        else
-        {
+        else if (value.startsWith(".")) {
+        	System.err.print("********** ERROR **********\nLine " + nextToken.iSourceLineNr
+        			+ ": " + lines[nextToken.iSourceLineNr - 1]
+        			+ "\nFLOAT token: '" + value + "' requires a preceding 0\n"
+        			+ "File: " + sourceFileNm);
+        	throw new Exception();
+        } else {
             // if it got this far it must be an identifier or and keyword operator
             this.idEval(value);
         }
@@ -222,10 +219,9 @@ public class Scanner {
     */
     public void strEval(String value) throws Exception
     {
-
+        value = value.substring(1, value.length() - 1);  // remove outer quotes
         char array[] = value.toCharArray();
-        array[0] = 0x0;
-        array[array.length-1] = 0x0;
+        //array[array.length-1] = 0x0;
         for (int i=0; i < array.length; i++)
         {
             if (array[i] == '\\' && escChars.indexOf(array[i+1]) == -1)
@@ -316,9 +312,11 @@ public class Scanner {
             col = this.col;
 
         }
-        System.out.println("********** ERROR **********");
-        System.out.printf("%s  %s  at line %d, column %d\n", errVal, value, this.line, col);
-        throw new Exception();
+        System.err.print("********** ERROR **********\nLine " + nextToken.iSourceLineNr
+    			+ ": " + lines[nextToken.iSourceLineNr - 1]
+    			+ "\n" + errVal + ": "+ value + "\n"
+    			+ "File: " + sourceFileNm);
+    	throw new Exception();
     }
 
     public String getNext() throws Exception
@@ -335,17 +333,6 @@ public class Scanner {
         // if there are only line feeds left in our buffer, weve hit the end of file
         if (this.buffer.matches("[\\s]+") || this.buffer.isEmpty())
         {
-        	int lineNum = this.lines.length + 1;
-        	// this loop is to print the blank lines at eof if any
-    		for (i = 0; i <= this.blankLines; i++) {
-	        	//System.out.print(lineNum + " \n");       DEBUG PRINTLN
-	    		lineNum++;
-	    	}
-    		// print the last line only if its a comment
-    		if (this.line-1 <= lines.length && this.lines[this.line-1].matches("^\\s*/\\s*/.*$"))
-    		{
-    			System.out.printf("d %s\n", this.line, this.lines[this.line - 1]);
-    		}
             // set EOF param's in currentToken, set exit state to true, return " ", so we can come back one more time
             this.nextToken = new Token();
             this.nextToken.primClassif = Token.EOF;
@@ -364,10 +351,6 @@ public class Scanner {
             }
             else if (c == '\n' && !this.aComment)
             {
-            	if (this.line != this.lastLine && this.line <= this.lines.length)
-            	{
-            		//System.out.printf("%d %s\n", this.line, this.lines[this.line - 1]);       DEBUG PRINTLN
-            	}
                 this.lastLine = this.line;
             	this.line++;
 
@@ -377,15 +360,10 @@ public class Scanner {
             {
             	this.aComment = false;
                 finCom = true;
-            	if (this.line != this.lastLine && this.line <= this.lines.length)
-            	{
-            		//System.out.printf("%d %s\n", this.line, this.lines[this.line - 1]);     DEBUG PRINTLN
-            	}
-
             	this.lastLine = this.line;
                 this.line++;
             }
-            else if (c == ' ' || c == '\t')
+            else if (c == ' ' || c == '\t' || c == '\r')
             {
                 this.col++;
             }
@@ -403,18 +381,6 @@ public class Scanner {
         // if we have a completed comment are there is just one char left in buffer set EOF
         if (finCom && this.buffer.length() < 2)
         {
-        	int lineNum = this.lines.length + 1;
-
-        	// this loop is to print blank lines at eof if any
-    		for (i = 0; i <= this.blankLines; i++) {
-	        	//System.out.print(lineNum + " \n");
-	    		lineNum++;
-	    	}
-    		// print the last line only if its a comment
-    		if (this.line-1 <= lines.length && this.lines[this.line-1].matches("^\\s*/\\s*/.*$"))
-    		{
-    			System.out.printf("%d %s\n", this.line, this.lines[this.line - 1]);
-    		}
             this.nextToken = new Token();
             this.nextToken.primClassif = Token.EOF;
             this.nextToken.subClassif = Token.VOID;
@@ -424,88 +390,75 @@ public class Scanner {
         // start running thru rest of buffer
         for (i = 0; i < this.buffer.length(); i++)
         {
-            // take care of carraige returns
+            // take care of carriage returns
             char c = this.buffer.charAt(i);
             if (c == '\r') {
                 this.buffer = this.buffer.substring(1);
-                return "";
+                i -= 1; // reset for loop back a character
+            } else {
+	            retVal += c;
+	
+	            // if char is a delimiter
+	            if (delimiters.indexOf(c) != -1)
+	            {
+	                // if first char in our run thru the remaining buffer
+	                if (i == 0)
+	                {
+	                    if (this.buffer.charAt(0) == '/' && this.buffer.charAt(1) == '/')
+	                    {
+	                        this.aComment = true;
+	                        continue;
+	                    }
+	                    // if this first char is a quote
+	                    if (retVal.charAt(0) == '"' || retVal.charAt(0) == '\'') // if a quote, add to retVal
+	                    {
+	                        continue;
+	                    }
+	                    // chop off one char from beginning of buffer
+	                    this.buffer = this.buffer.substring(1);
+	                    if (this.aComment)
+	                        this.buffer = this.buffer.substring(1);
+	                }
+	                // if not the first char in our run thru buffer (aka first char in our token)
+	                else
+	                {
+	                    // if the first char is our return val(token) was a quote
+	                    if (retVal.charAt(0) == '"' || retVal.charAt(0) == '\'')
+	                    {
+	                        if (c == retVal.charAt(0))
+	                        {
+	                            // and if the char before it is NOT a backslash (escaping)
+	                            if (retVal.charAt(i -1) != '\\' || (retVal.charAt(i-2) == '\\' && retVal.charAt(i-1) == '\\'))
+	                            {
+	                                // make this our return val (token)
+	                                retVal = retVal.substring(0, retVal.length());
+	                                // chop this piece off front of our buffer
+	                                this.buffer = this.buffer.substring(retVal.length());
+	                                break;
+	                            }
+	                        }
+	                        // not first char in our buffer(aka our token), first char starts with a quote
+	                        // and char is a line feed
+	                        else if (c == '\n')
+	                        {
+	                            // set col num to this token's length
+	                            this.col += retVal.length();
+	                            this.handleErrors(retVal, NON_TERMINATED_STRING);
+	                        }
+	                        continue;
+	                    }
+	                    // not on first char in our current buffer, but we didnt hit any above conditions, we will
+	                    // blindly add this to our return val
+	                    retVal = retVal.substring(0, retVal.length() - 1);
+	                    // chop our built up return val off the front of the buffer
+	                    this.buffer = this.buffer.substring(retVal.length());
+	                }
+	                if (!this.aComment)
+	                    break;
+	            }
             }
-            retVal += c;
+        }
 
-            // if char is a delimiter
-            if (delimiters.indexOf(c) != -1)
-            {
-                // if first char in our run thru the remaining buffer
-                if (i == 0)
-                {
-                    if (this.buffer.charAt(0) == '/' && this.buffer.charAt(1) == '/')
-                    {
-                        this.aComment = true;
-                        continue;
-                    }
-                    // if this first char is a quote
-                    if (retVal.charAt(0) == '"' || retVal.charAt(0) == '\'') // if a quote, add to retVal
-                    {
-                        continue;
-                    }
-                    // chop off one char from beginning of buffer
-                    this.buffer = this.buffer.substring(1);
-                    if (this.aComment)
-                        this.buffer = this.buffer.substring(1);
-                }
-                // if not the first char in our run thru buffer (aka first char in our token)
-                else
-                {
-                    // if the first char is our return val(token) was a quote
-                    if (retVal.charAt(0) == '"' || retVal.charAt(0) == '\'')
-                    {
-                        if (c == retVal.charAt(0))
-                        {
-                            // and if the char before it is NOT a backslash (escaping)
-                            if (retVal.charAt(i -1) != '\\' || (retVal.charAt(i-2) == '\\' && retVal.charAt(i-1) == '\\'))
-                            {
-                                // make this our return val (token)
-                                retVal = retVal.substring(0, retVal.length());
-                                // chop this piece off front of our buffer
-                                this.buffer = this.buffer.substring(retVal.length());
-                                break;
-                            }
-                        }
-                        // not first char in our buffer(aka our token), first char starts with a quote
-                        // and char is a line feed
-                        else if (c == '\n')
-                        {
-                            // set col num to this token's length
-                            this.col += retVal.length();
-                            this.handleErrors(retVal, NON_TERMINATED_STRING);
-                        }
-                        continue;
-                    }
-                    // not on first char in our current buffer, but we didnt hit any above conditions, we will
-                    // blindly add this to our return val
-                    retVal = retVal.substring(0, retVal.length() - 1);
-                    // chop our built up return val off the front of the buffer
-                    this.buffer = this.buffer.substring(retVal.length());
-                }
-                if (!this.aComment)
-                    break;
-            }
-        }
-        // our current line num is NOT equal to our last line num
-        if (this.line != this.lastLine)
-        {
-            // print out the current line num and the line itself using String array of lines
-            try
-            {
-                //System.out.printf("%d %s\n", this.line, this.lines[this.line - 1]);   THIS IS A DEBUG STATEMENT!!
-            }
-            catch (ArrayIndexOutOfBoundsException e)
-            {
-                ;
-            }
-            // set the lastLine num equal to the current line num
-            this.lastLine = this.line;
-        }
         if (!this.aComment)
             this.setToken(retVal);
 
@@ -522,9 +475,27 @@ public class Scanner {
         this.nextToken.iSourceLineNr = this.line;
         this.nextToken.iColPos = this.col;
         if (this.currentToken != null && debugger.token) {
-            System.out.print("***** TOKEN ***** : ");
+            System.out.print("***** TOKEN ***** :" + currentToken.iSourceLineNr + ": ");
             this.currentToken.printToken();
         }
         this.process(value);
+    }
+
+    public Scanner saveState() {
+    	Scanner scan = new Scanner();
+    	scan.sourceFileNm = this.sourceFileNm;
+    	scan.buffer = this.buffer;
+    	scan.currentToken = this.currentToken;
+    	scan.nextToken = this.nextToken.saveToken();
+    	scan.debugger = this.debugger;
+    	scan.col = this.col;
+    	scan.line = this.line;
+    	scan.exit = this.exit;
+    	scan.opCombine = this.opCombine;
+    	scan.aComment = this.aComment;
+    	scan.lines = this.lines;
+    	scan.lastLine = this.lastLine;
+    	scan.blankLines = this.blankLines;
+    	return scan;
     }
 }
