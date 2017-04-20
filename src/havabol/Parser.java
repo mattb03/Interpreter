@@ -1239,6 +1239,8 @@ public class Parser {
 	    					resTemp = Utility.LENGTH(this, resOp2.value);
 	    					break;
 	    				case "SPACES":
+	    					if (tokOp2.isArray)
+	    						error("'" + tokOp2.tokenStr + "' type ARRAY is not a valid type for function SPACES", tokOp2);
 	    					resTemp = Utility.SPACES(this, resOp2.value);
 	    					break;
 	    				case "ELEM":
