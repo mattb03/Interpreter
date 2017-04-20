@@ -3,15 +3,17 @@
 //debug Expr on;
 
 
-
+Int migarr[10];
+print(migarr);
 
 print("===== Counting for STRING =====");
 String name = "Christopher";
 Int n = LENGTH(name);
 print("the length of ",name, " is: ", n);
-for i=0 to n:
+for i=0 to 100:
     print(name[i]);
 endfor;
+print("i = ", i);
 print("The 2nd val of ",name, " is : ", name[1]);
 
 print("===== For each STRING =====");
@@ -19,12 +21,8 @@ print("===== For each STRING =====");
 for char in name:
     print(char);
 endfor;
-
+print("++++++++++++++++++++++++++++++++++++++++++++++++");
 Int nums[10] = 1, 2, 3, 4, 5, 6, 7;
-print("nums len : ", LENGTH(nums)); // the length is wrong. 
-for i=0 to LENGTH(nums):
-    print("nums[i] : ", nums[i]);
-endfor;
 
 for item in nums:
     print(item);

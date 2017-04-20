@@ -45,7 +45,7 @@ public class STIdentifier extends STEntry
         try {
             res = String.valueOf(charArray[index]);
         } catch (Exception e) {
-            parser.error("Out of bounds");
+            parser.errorNoTerm("Out of bounds");
         }
         return res;
     }
