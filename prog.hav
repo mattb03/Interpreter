@@ -3,20 +3,32 @@
 //debug Expr on;
 
 
+Int migarr[10];
+print(migarr);
 
-
-
-//Int array[10] = 1, 2, 3, 4, 5;
-String array = "Christopher";
-for i=0 to 11:
-    print(array[i]);
+print("===== Counting for STRING =====");
+String name = "Christopher";
+Int n = LENGTH(name);
+print("the length of ",name, " is: ", n);
+for i=0 to 100:
+    print(name[i]);
 endfor;
-print("3rd val is : ", array[3]);
+print("i = ", i);
+print("The 2nd val of ",name, " is : ", name[1]);
 
+print("===== For each STRING =====");
 
+for char in name:
+    print(char);
+endfor;
+print("++++++++++++++++++++++++++++++++++++++++++++++++");
+Int nums[10] = 1, 2, 3, 4, 5, 6, 7;
 
-
-
+for item in nums:
+    print(item);
+endfor;
+print(nums);
+debug Exit on;
 
 
 

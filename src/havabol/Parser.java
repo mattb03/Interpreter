@@ -651,122 +651,222 @@ public class Parser {
         }
     }
 
-    public void forStmt() throws Exception { //  current token is 'for'
-        scan.getNext(); // on counter variable or a temp variable
-        int startIndex = 0;
-        int endIndex = 0;
-        if (this.scan.nextToken.tokenStr.equals("=")) { // currToken is couter variable
-            Scanner oldScan = null;
-            int incr = -1000;
-            Token incVar = scan.currentToken;
-            //STIdentifier counterVar = (STIdentifier) st.getSymbol(incVar.tokenStr);
-            //if (counterVar == null)
-                //error(counterVar.symbol+" is not in symbol table");
-            st.putSymbol(incVar.tokenStr, new STIdentifier(incVar.tokenStr, incVar.primClassif, incVar.subClassif));
-            st.getSymbol(incVar.tokenStr).type = STIdentifier.INTEGER;
-            scan.getNext(); // currToken is  '='
-            scan.getNext();  // currToken is value after '='
-            ResultValue resVal = expr(false);
-            st.getSymbol(incVar.tokenStr).value = resVal.value; // initialized counter var
-            startIndex = Integer.parseInt(resVal.value); // current token is 'to'
-            scan.getNext(); // on start of endIndex
-            ResultValue res = expr(false);
-            endIndex = Integer.parseInt(res.value);
-            //System.out.println("start index = "+startIndex);
-            //System.out.println("end index = "+endIndex);
-            if (scan.currentToken.tokenStr.equals(":")) {
-                incr = 1;
-                oldScan = this.scan.saveState();
-            } else if (scan.currentToken.tokenStr.equals("by")) {
-                scan.getNext(); // got incr var , will not be 1
-                ResultValue ival = expr(false);
-                try {
-                    incr = Integer.parseInt(ival.value);
-                    System.out.println("incr = "+incr);
-                } catch (Exception e) {
-                    error("Increment value must be an integer");
-                }
-                oldScan = this.scan.saveState();
-            } else {
-                error("Either ':' for foor loop is missing or other invalid syntax");
-            }
-            int iIncVar = Integer.parseInt(st.getSymbol(incVar.tokenStr).value);
-            if (startIndex >= endIndex) {
-                while (!scan.currentToken.tokenStr.equals("endfor"))
-                    scan.getNext();
-            } else {
-                for (int i = startIndex; i < endIndex - incr; i+=incr) {
-                    statements(true);
-                    this.scan = oldScan.saveState();
-                    iIncVar += incr;
-                    st.getSymbol(incVar.tokenStr).value = String.valueOf(iIncVar);
-                    st.getSymbol(incVar.tokenStr).type = STIdentifier.INTEGER;
-                }
-            }
+    public void forStmt() throws Exception {
+        // save the scanner state to revert back to original when done
+        Scanner savedScanner = this.scan.saveState();
+        Token startToken = scan.currentToken.saveToken();
+        String temp = scan.currentToken.tokenStr + " " + scan.nextToken.tokenStr + " " + scan.getNext();
+        int controlVar = 0;
+        STIdentifier controlIdent = null;
+        STIdentifier setIdent = null;
+    	ArrayList<String> setList = new ArrayList<String>();
+    	String delim = "";
+        int i, start = 0, end = 0;
+        ResultValue resVal = new ResultValue("");
+        // default incr variable is 1 if there is none provided
+        int incr = 1;
+        // restore the state so we can use getNext()
+        this.scan = savedScanner;
+        Token beginningFor = scan.currentToken;
+        scan.getNext();
+        controlIdent = (STIdentifier) st.getSymbol(scan.currentToken.tokenStr);
+        if (controlIdent == null) {
+        	controlIdent = new STIdentifier(scan.currentToken.tokenStr, 1, 1);
+        	controlIdent.value = String.valueOf(0);
+        	st.putSymbol(controlIdent.symbol, controlIdent);
+        	st.getSymbol(controlIdent.symbol).value = String.valueOf(0);
+        	st.getSymbol(controlIdent.symbol).type = 2;
+        }
+        STIdentifier startIdent = null;
+        if (scan.nextToken.tokenStr.equals("=")) {
+        	if (scan.currentToken.subClassif != 1) {
+        		error(scan.currentToken.tokenStr + " must be an identifier");
+	        }
+	        savedScanner = this.scan.saveState();
 
-        } else if (this.scan.nextToken.tokenStr.equals("in")) {  // foreach logic;  currentToken is 'i' in foreach loop
-            Token itok = scan.currentToken;
-            st.putSymbol(itok.tokenStr, new STIdentifier(itok.tokenStr, itok.primClassif, itok.subClassif)); // put 'i' in symbol table
-            Scanner oldScan = null;
-            ArrayList<String> strList = new ArrayList<String>();
-            boolean isArray = false;
-            scan.getNext();
-            if (!scan.currentToken.tokenStr.equals("in"))
-                error("Invalid foreach syntax. Expected 'in'");
-            scan.getNext();  // current token is the array or string to iterate over
-            STIdentifier list = (STIdentifier)st.getSymbol(scan.currentToken.tokenStr); // get array or string from ST
-            if (list == null) {
-                error(scan.currentToken.tokenStr+" is not in symbol table");
-            } else if (list.structure == STIdentifier.SCALAR) { // is item a SCALAR ? is it a STRING?
-                if (list.type != STEntry.STRING)
-                    error("Only STRING scalars are iterable. '"+scan.currentToken.tokenStr+"' is not iterable");
-                for (int i = 0; i < list.value.length(); i++) {  // create arrayList of String to use
-                    strList.add(list.value.substring(i,i+1));
-                }
-            } else if (list.structure == STIdentifier.ARRAY) {
-                isArray = true;
-            }
-            scan.getNext();  // current token is ':'
-            oldScan = this.scan.saveState();  // save current location of scanner to oldScan
-            if (!isArray) {
-                if (strList.size() == 0) {
-                    while (!scan.currentToken.tokenStr.equals("endfor"))
-                        scan.getNext();
-                } else {
-                    for (int i = 0; i < strList.size(); i++) {
-                        st.getSymbol(itok.tokenStr).type = list.type;
-                        st.getSymbol(itok.tokenStr).value = strList.get(i);
-                        statements(true);
-                        if (i == strList.size() - 1) {
-                            while (!scan.currentToken.tokenStr.equals("endfor"))
-                                scan.getNext();
-                        } else {
-                            this.scan = oldScan.saveState();
-                        }
-                    }
-                }
-            } else if (isArray) {
-                if (list.array.val.size() == 0) {
-                    while (!scan.currentToken.tokenStr.equals("endfor"))
-                        scan.getNext();
-                } else {
-                    ResultValue rval  = Utility.ELEM(this, list.symbol);
-                    int asize = Integer.parseInt(rval.value);
-                    for (int i = 0; i < asize; i++) {
-                        st.getSymbol(itok.tokenStr).type = list.array.type;
-                        st.getSymbol(itok.tokenStr).value = list.array.get(i).value;
-                        statements(true);
-                        if (i == asize - 1) {
-                            while (!scan.currentToken.tokenStr.equals("endfor"))
-                                scan.getNext();
-                        } else {
-                            this.scan = oldScan.saveState();
-                        }
-                    }
-                }
-            }
-        } else {
-            error("Invalid syntax for loop syntax");
+	        assign(scan.currentToken);
+	        controlVar = Integer.parseInt(controlIdent.value);
+	        if (!scan.currentToken.tokenStr.equals("to")) {
+	        	error(scan.currentToken.tokenStr + " is not a valid for loop token");
+	        }
+	        scan.getNext();
+	        // on ending value
+	        if (scan.currentToken.subClassif == 1) {
+	        	if (scan.nextToken.primClassif == 2) {
+	        		resVal = expr(false);
+	        		end = Integer.parseInt(resVal.value);
+	        	}
+	        	else {
+	        		try {
+	        			end = Integer.parseInt(st.getSymbol(scan.currentToken.tokenStr).value);
+	        		} catch (Exception e) {
+	        			error("\"" + scan.currentToken.tokenStr + "\"" + " must be an integer");
+	        		}
+	        	}
+	        }
+	        else if (scan.currentToken.subClassif == 2) {
+	        	end = Integer.parseInt(scan.currentToken.tokenStr);
+	        }
+	        else if (scan.currentToken.tokenStr.equals("ELEM") ||
+	        		scan.currentToken.tokenStr.equals("MAXELEM") ||
+	        		scan.currentToken.tokenStr.equals("LENGTH")) {
+	        	resVal = expr(true);
+	        	end = Integer.parseInt(resVal.value);
+	        }
+	        else {
+	        	error(scan.currentToken.tokenStr + " is not a valid ending value");
+	        }
+	        if (!scan.currentToken.tokenStr.equals(":") && !scan.currentToken.tokenStr.equals("by")) {
+	        	scan.getNext();
+	        }
+	        // on ":" or "by"
+	        if (scan.currentToken.tokenStr.equals("by")) {
+	        	scan.getNext();
+	        if (scan.currentToken.subClassif == 1) {
+	        	if (scan.nextToken.primClassif == 2) {
+	        		resVal = expr(false);
+	        		incr = Integer.parseInt(resVal.value);
+	        	}
+	        	else {
+	        		try {
+	        			incr = Integer.parseInt(st.getSymbol(scan.currentToken.tokenStr).value);
+	        		} catch (Exception e) {
+	        			error("\"" + scan.currentToken.tokenStr + "\"" + " must be an integer");
+
+	        		}
+	        	}
+	        }
+	        else if (scan.currentToken.subClassif == 2) {
+	        	incr = Integer.parseInt(scan.currentToken.tokenStr);
+	        }
+	        else if (scan.currentToken.tokenStr.equals("ELEM") ||
+	        		scan.currentToken.tokenStr.equals("MAXELEM") ||
+	        		scan.currentToken.tokenStr.equals("LENGTH")) {
+	        	resVal = expr(true);
+	        	incr = Integer.parseInt(resVal.value);
+	        }
+	        else {
+	        	error(scan.currentToken.tokenStr + " is not a valid increment");
+	        }
+	        if (!scan.currentToken.tokenStr.equals(":")) {
+	        	scan.getNext();
+	        }
+	       }
+	       if (!scan.currentToken.tokenStr.equals(":")) {
+	           error("Missing terminating colon : in for loop");
+	       }
+	       while (controlVar < end) {
+	    	   savedScanner = this.scan.saveState();
+	           statements(true);
+	           controlVar += incr;
+	           st.getSymbol(controlIdent.symbol).value = String.valueOf(controlVar);
+	           if (controlVar < end) {
+	        	   this.scan = savedScanner;
+	           }
+	        }
+	       if (!scan.currentToken.tokenStr.equals("endfor") && !scan.nextToken.tokenStr.equals(";")) {
+	    	   error("Missing terminating " + "\"" + "endfor" + "\"" + " or " + "\"" + ";" + "\"" + " after for loop", beginningFor);
+	       }
+        }
+        else if (scan.nextToken.tokenStr.equals("in") || scan.nextToken.tokenStr.equals("from")) {
+        	if (scan.currentToken.subClassif != 1) {
+        		error(scan.currentToken.tokenStr + " must be an identifier");
+        	}
+        	String setStr = "";
+        	controlIdent = (STIdentifier) st.getSymbol(scan.currentToken.tokenStr);
+        	if (controlIdent == null) {
+        		controlIdent = new STIdentifier(scan.currentToken.tokenStr, 1, 1);
+        		st.putSymbol(controlIdent.symbol, controlIdent);
+        		st.getSymbol(controlIdent.symbol).value = String.valueOf(0);
+        	}
+        	scan.getNext();
+        	scan.getNext();
+        	// on array/set string
+        	if (scan.currentToken.subClassif == 1) {
+        		resVal = expr(false);
+        		if (resVal.structure.get(0).matches("ARRAY")) {
+        			// TODO: left off here
+        			resVal.value = resVal.value.substring(1, resVal.value.length()-1);
+        			setStr = resVal.value;
+        			String[] items = resVal.value.split(",");
+        			for (i = 0; i < items.length; i++) {
+        				items[i] = items[i].trim();
+        				setList.add(items[i]);
+        			}
+        		}
+        	}
+        	if (resVal.value.equals("") || !resVal.structure.get(0).matches("ARRAY")) {
+        		// if its a string literal or string identifier 
+        		// convert the value to the setList
+        		char [] chArray;
+        		st.getSymbol(controlIdent.symbol).type = 5;
+        		if (resVal.value.equals("")) {
+        			// if resVal.value is empty then its a string literal
+        			chArray = scan.currentToken.tokenStr.toCharArray();
+        			setStr = scan.currentToken.tokenStr;
+        			scan.getNext();
+        		}
+        		else {
+        			chArray = resVal.value.toCharArray();
+        			setStr = resVal.value;
+        		}
+        		for (i = 0; i < chArray.length; i++) {
+        			setList.add(String.valueOf(chArray[i]));
+        		}
+        		
+        	}
+        	// now we have the value of the array/set string stored in resVal
+        	// should be on ":" or "by"
+        	/*if (!scan.currentToken.tokenStr.equals(":") && !scan.currentToken.tokenStr.equals("by")) {
+        		error("Missing " + "\"" + ":" + "\"" + " or " + "\"" + "by" + "\"" + " keyword in for loop");
+        	}*/
+        	if (scan.currentToken.tokenStr.equals("by")) {
+        		scan.getNext();
+        		if (scan.currentToken.subClassif == 5) {
+        			delim = scan.currentToken.tokenStr;
+        			scan.getNext();
+        		}
+        		else if (scan.currentToken.subClassif == 1) {
+        			resVal = expr(false);
+        			delim = resVal.value;
+        		}
+        		else {
+        			error("\"" + scan.currentToken.tokenStr + "\"" + " must be a string");
+        		}
+        		String[] items = setStr.split(delim);
+        		setList.clear();
+        		for (i = 0; i < items.length; i++) {
+        			setList.add(items[i]);
+        		}
+        	}
+        	// should be on ":"
+        	if (!scan.currentToken.tokenStr.equals(":")) {
+        		error("Missing terminating " + "\"" + ":" + "\"" + " in for loop");
+        	}
+        	for (i = 0; i < setList.size(); i++) {
+        		savedScanner = this.scan.saveState();
+        		st.getSymbol(controlIdent.symbol).value = setList.get(i);
+        		statements(true);
+        		if (i+1 < setList.size()) {
+        			this.scan = savedScanner;
+        		}
+        	}
+        	if (!scan.currentToken.tokenStr.equals("endfor") && !scan.nextToken.tokenStr.equals(";")) {
+ 	    	   error("Missing terminating " + "\"" + "endfor" + "\"" + " or " + "\"" + ";" + "\"" + " after for loop", beginningFor);
+        	}
+        }
+        else {
+        	error(scan.nextToken.tokenStr + " is not a valid for loop token");
+        }
+        while (!scan.currentToken.tokenStr.equals("endfor") && !scan.currentToken.tokenStr.equals("for")) {
+        	scan.getNext();
+        }
+        if (scan.currentToken.tokenStr.equals("for")) {
+        	error("Missing endfor at the end of for loop");
+        }
+        scan.getNext();
+        if (!scan.currentToken.tokenStr.equals(";")) {
+        	error("Missing terminating semicolon ; after endfor"); 
         }
     }
 
@@ -1234,9 +1334,13 @@ public class Parser {
 
     				switch (currToken.tokenStr) {
 	    				case "LENGTH":
+	    					if (tokOp2.isArray)
+	    						error("'" + tokOp2.tokenStr + "' type ARRAY is not a valid type for function LENGTH", tokOp2);
 	    					resTemp = Utility.LENGTH(this, resOp2.value);
 	    					break;
 	    				case "SPACES":
+	    					if (tokOp2.isArray)
+	    						error("'" + tokOp2.tokenStr + "' type ARRAY is not a valid type for function SPACES", tokOp2);
 	    					resTemp = Utility.SPACES(this, resOp2.value);
 	    					break;
 	    				case "ELEM":
