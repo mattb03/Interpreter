@@ -9,6 +9,8 @@ public class Token
     public int subClassif = 0;
     public int iSourceLineNr = 0;
     public int iColPos = 0;
+    public boolean isArray = false;
+    public boolean isElemRef = false;
 
     @Override
 	public String toString() {
@@ -174,14 +176,19 @@ public class Token
     }
 
     public void setPrecedence() {
-    	if (primClassif != Token.OPERAND) {
+    	if (isArray) {
+    		normPreced = 16;
+    		stkPreced = 0;
+    	} else if (primClassif == Token.FUNCTION) {
+    		normPreced = 16;
+    		stkPreced = 0;
+    	} else if (primClassif != Token.OPERAND) {
     		String conditionals = "<><=>===!=";
 	    	if (primClassif == SEPARATOR) {
 	    		normPreced = 15;
 	    		stkPreced = 2;
 	    	} else if (tokenStr.equals("u-")) {
 	    		normPreced = stkPreced = 12;
-	    		// TODO: unary minus symbol in scanner "u-"
 	    	} else if (tokenStr.equals("^")) {
 	    		normPreced = 11;
 	    		stkPreced = 10;
@@ -205,10 +212,10 @@ public class Token
 	    	}
     	}
     }
-    
+
     public Token saveToken() {
     	Token newToken = new Token("");
-    	
+
     	newToken.tokenStr = this.tokenStr;
     	newToken.primClassif = this.primClassif;
         newToken.subClassif = this.subClassif;

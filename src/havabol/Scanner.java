@@ -68,7 +68,7 @@ public class Scanner {
             String curVal = this.currentToken.tokenStr;
             try {
                 if ( ( (operators.indexOf(curVal.charAt(0)) != -1) || curVal.equals("if") ||
-                    curVal.equals("while") || curVal.equals(",") || curVal.equals("(")) && value.equals("-") ) {
+                    curVal.equals("while") || curVal.equals(",") || curVal.equals("(") || curVal.equals("[")) && value.equals("-") ) {
                     this.nextToken.primClassif = Token.OPERATOR;
                     this.nextToken.subClassif = Token.VOID;
                     this.nextToken.tokenStr = "u-";
@@ -196,7 +196,9 @@ public class Scanner {
             this.nextToken.primClassif = Token.CONTROL;
             this.nextToken.subClassif = Token.DECLARE;
         }
-        else if (value.equals("print"))
+        // recognize builtin functions
+        else if (value.equals("print") || value.equals("LENGTH") || value.equals("SPACES")
+        		|| value.equals("ELEM") || value.equals("MAXELEM"))
         {
         	this.nextToken.primClassif = Token.FUNCTION;
         	this.nextToken.subClassif = Token.BUILTIN;
@@ -394,68 +396,67 @@ public class Scanner {
             char c = this.buffer.charAt(i);
             if (c == '\r') {
                 this.buffer = this.buffer.substring(1);
-                i -= 1; // reset for loop back a character
+                i -= 1;   // reset for loop back a character
             } else {
-	            retVal += c;
-	
-	            // if char is a delimiter
-	            if (delimiters.indexOf(c) != -1)
-	            {
-	                // if first char in our run thru the remaining buffer
-	                if (i == 0)
-	                {
-	                    if (this.buffer.charAt(0) == '/' && this.buffer.charAt(1) == '/')
-	                    {
-	                        this.aComment = true;
-	                        continue;
-	                    }
-	                    // if this first char is a quote
-	                    if (retVal.charAt(0) == '"' || retVal.charAt(0) == '\'') // if a quote, add to retVal
-	                    {
-	                        continue;
-	                    }
-	                    // chop off one char from beginning of buffer
-	                    this.buffer = this.buffer.substring(1);
-	                    if (this.aComment)
-	                        this.buffer = this.buffer.substring(1);
-	                }
-	                // if not the first char in our run thru buffer (aka first char in our token)
-	                else
-	                {
-	                    // if the first char is our return val(token) was a quote
-	                    if (retVal.charAt(0) == '"' || retVal.charAt(0) == '\'')
-	                    {
-	                        if (c == retVal.charAt(0))
-	                        {
-	                            // and if the char before it is NOT a backslash (escaping)
-	                            if (retVal.charAt(i -1) != '\\' || (retVal.charAt(i-2) == '\\' && retVal.charAt(i-1) == '\\'))
-	                            {
-	                                // make this our return val (token)
-	                                retVal = retVal.substring(0, retVal.length());
-	                                // chop this piece off front of our buffer
-	                                this.buffer = this.buffer.substring(retVal.length());
-	                                break;
-	                            }
-	                        }
-	                        // not first char in our buffer(aka our token), first char starts with a quote
-	                        // and char is a line feed
-	                        else if (c == '\n')
-	                        {
-	                            // set col num to this token's length
-	                            this.col += retVal.length();
-	                            this.handleErrors(retVal, NON_TERMINATED_STRING);
-	                        }
-	                        continue;
-	                    }
-	                    // not on first char in our current buffer, but we didnt hit any above conditions, we will
-	                    // blindly add this to our return val
-	                    retVal = retVal.substring(0, retVal.length() - 1);
-	                    // chop our built up return val off the front of the buffer
-	                    this.buffer = this.buffer.substring(retVal.length());
-	                }
-	                if (!this.aComment)
-	                    break;
-	            }
+                retVal += c;
+                // if char is a delimiter
+                if (delimiters.indexOf(c) != -1)
+                {
+                    // if first char in our run thru the remaining buffer
+                    if (i == 0)
+                    {
+                        if (this.buffer.charAt(0) == '/' && this.buffer.charAt(1) == '/')
+                        {
+                            this.aComment = true;
+                            continue;
+                        }
+                        // if this first char is a quote
+                        if (retVal.charAt(0) == '"' || retVal.charAt(0) == '\'') // if a quote, add to retVal
+                        {
+                            continue;
+                        }
+                        // chop off one char from beginning of buffer
+                        this.buffer = this.buffer.substring(1);
+                        if (this.aComment)
+                            this.buffer = this.buffer.substring(1);
+                    }
+                    // if not the first char in our run thru buffer (aka first char in our token)
+                    else
+                    {
+                        // if the first char is our return val(token) was a quote
+                        if (retVal.charAt(0) == '"' || retVal.charAt(0) == '\'')
+                        {
+                            if (c == retVal.charAt(0))
+                            {
+                                // and if the char before it is NOT a backslash (escaping)
+                                if (retVal.charAt(i -1) != '\\' || (retVal.charAt(i-2) == '\\' && retVal.charAt(i-1) == '\\'))
+                                {
+                                    // make this our return val (token)
+                                    retVal = retVal.substring(0, retVal.length());
+                                    // chop this piece off front of our buffer
+                                    this.buffer = this.buffer.substring(retVal.length());
+                                    break;
+                                }
+                            }
+                            // not first char in our buffer(aka our token), first char starts with a quote
+                            // and char is a line feed
+                            else if (c == '\n')
+                            {
+                                // set col num to this token's length
+                                this.col += retVal.length();
+                                this.handleErrors(retVal, NON_TERMINATED_STRING);
+                            }
+                            continue;
+                        }
+                        // not on first char in our current buffer, but we didnt hit any above conditions, we will
+                        // blindly add this to our return val
+                        retVal = retVal.substring(0, retVal.length() - 1);
+                        // chop our built up return val off the front of the buffer
+                        this.buffer = this.buffer.substring(retVal.length());
+                    }
+                    if (!this.aComment)
+                        break;
+                }
             }
         }
 

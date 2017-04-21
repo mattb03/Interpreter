@@ -8,8 +8,11 @@ public class Numeric {
 	public int type;			// INTEGER, FLOAT
 
 	public Numeric(Parser parser, ResultValue res, String op, String opPos) throws ParserException {
+		if (res.value == null) {
+			parser.error(opPos+" of '"+op+"' has not been initialized.", parser.startOfExprToken);
+		}
 		if (res.value.equals("NO VALUE")) {
-			parser.error("Symbol has not been initialized.");
+			parser.error(opPos+" of '"+op+"' has not been initialized.", parser.startOfExprToken);
 		}
 		try {
 			integerValue = Integer.parseInt(res.value);
@@ -23,7 +26,7 @@ public class Numeric {
 				strValue = Double.toString(doubleValue);
 				type = Token.FLOAT;
 			} catch (Exception f) {
-				parser.error(opPos + " of " + op + " operand isn't a valid numeric type", parser.startOfExprToken);
+				parser.error(opPos + " of " + op + " operator isn't a valid numeric type", parser.startOfExprToken);
 			}
 		}
 	}

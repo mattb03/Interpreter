@@ -1,10 +1,152 @@
-//for cv = sv to limit by incr:
-//	doWork();
-//endfor;
-
 Int i;
-String szStr = "Can\'t wait";
+Int dos = 2;
+for i = 0 to 3:
+	print ("first i=", i);
+	for j = 0 to 3 by dos:
+		print ("inner j=", j);
+	endfor;
+endfor;	
 
-for i = 0 to 5:
-	print (szStr);
+Int array[5] = 1, 2, 3;
+Int limit = 5;
+
+for j = ELEM(array) to limit by 2:
+	print ("elem j =", j);
+	for i in array:
+		print ("i=", i);
+	endfor;
+endfor;
+
+String uno = "1";
+
+String szStr = "size, string, done";
+String number = "20";
+
+for j = 0 to number by 2:
+	print(j);
+endfor;
+
+for j = ELEM(array) to MAXELEM(array) by LENGTH(uno):
+	print ("inside funky calls j=", j);
+	for item in szStr:
+		print (item);
+	endfor;
+endfor;
+print ("oh yes");
+String delim = ",";
+for item in "oh yes":
+	print (item);
+	for token from szStr by delim:
+		print (token);
+	endfor;
+endfor;
+
+for token from "oh, yes" by ",":
+	print (token);
+	for i = LENGTH(uno) to MAXELEM(array):
+		print ("i=", i);
+	endfor;
+	print ("bottom of parent loop");
+endfor;
+
+for i = 0 to MAXELEM(array):
+	print ("another i=", i);
+endfor;
+
+for ch in szStr:
+	print (ch);
+	ch = "ahahahaha";
+	print (ch);
+	print ("old i is ", i);
+endfor;
+
+print (token);
+print (item);
+print (i);
+print (j);
+
+String s = "l";
+for ch from "fin,a,lly" by s:
+	print (ch);
+endfor;
+
+for ch from szStr by ",":
+	print (ch);
+	for ch from "oh! yes!" by "!":
+		print (ch);
+	endfor;
+endfor;
+
+String list[5] = "this", "better", "work";
+
+String exclamation = "!";
+
+for i in array:
+	print (i);
+	for i in list:
+		print (i);
+		for tok in "really! pushing! it!" by exclamation:
+			print (tok);
+		endfor;
+	endfor;
+endfor;
+
+for i = 0 to 5 by 2:
+	print (i);
+endfor;
+
+for i = 0 to limit by 2:
+	print (i);
+endfor;
+Int begin = 0;
+
+for i = begin to 5 by 2:
+	print (i);
+	for i = 1 to 3:
+		print (i);
+	endfor;
+endfor;
+
+
+for i = LENGTH(uno) to ELEM(array):
+	print ("inside builtin func loop i=", i);
+endfor;
+
+for i = LENGTH(uno) to MAXELEM(array):
+	print ("inside last builtin func loop i=", i);
+endfor;
+
+for i = 10/2^2 to 20 by 3:
+	print (i);
+endfor;
+
+for i = 10/3^2 to 20 by ELEM(array):
+	print ("i=", i);
+	for i = 3 ^ 2 - 2 to 10 by 3:
+		print (i);
+	endfor;
+endfor;
+
+
+for j = 5 * 2 / 2 ^ 1 to j * 5 by j * 1:
+	print ("last outer j=", j);
+	for j = 2 ^ 2 * 2 to j * 2 by j / 1:
+		print ("last inner j=", j);
+	endfor;
+endfor;
+
+print ("last test");
+
+for j = 5 * 2 / 2 ^ 1 to j * 5 + 3 ^ 2 by j ^ 2 / 3 * 1:
+	print ("last outer j=", j);
+	for j = 2 ^ 2 * 2 to j * 2 - 1 + 2 ^ 2 by j + j ^ 2 / 1:
+		print ("last inner j=", j);
+	endfor;
+endfor;
+
+for j = 5 * 2 / 2 ^ 2 to j * 5 + 3 ^ 2 by j ^ 2 / 3 * 1:
+	print ("last outer j=", j);
+	for item in "size, string, oh, YES!" by ",":
+		print (item);
+	endfor;
 endfor;

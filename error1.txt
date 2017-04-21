@@ -3,7 +3,7 @@ Float pie;
 String yStr;
 
 
-x = x + 1;
+x = 1 + x;
 pie = 3.1.4;
 
 print ("x=", x);

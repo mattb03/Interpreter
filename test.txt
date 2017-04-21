@@ -3,6 +3,18 @@
 //debug Expr on;
 //setup
 /////////////////// CORRECT MISSING SEMICOLON AT END OF STATEMENT BUG!!!!!!!!!!!!!!!!!!!!!!!
+
+// new array test
+Int array[] = 1, 2, 3;
+print("array before: ", array);
+array[0] = 9999;
+print("array after: ", array);
+
+debug Exit on;
+// end of new array test
+
+
+
 Int i = 10;
 Int i2 = 100;
 Float f = 3.14;
