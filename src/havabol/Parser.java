@@ -760,13 +760,14 @@ public class Parser {
 	           statements(true);
 	           controlVar += incr;
 	           st.getSymbol(controlIdent.symbol).value = String.valueOf(controlVar);
+		       if (!scan.currentToken.tokenStr.equals("endfor") && !scan.nextToken.tokenStr.equals(";")) {
+		    	   error("Missing terminating " + "\"" + "endfor" + "\"" + " or " + "\"" + ";" + "\"" + " after for loop", beginningFor);
+		       }
+		       
 	           if (controlVar < end) {
 	        	   this.scan = savedScanner;
 	           }
 	        }
-	       if (!scan.currentToken.tokenStr.equals("endfor") && !scan.nextToken.tokenStr.equals(";")) {
-	    	   error("Missing terminating " + "\"" + "endfor" + "\"" + " or " + "\"" + ";" + "\"" + " after for loop", beginningFor);
-	       }
         }
         else if (scan.nextToken.tokenStr.equals("in") || scan.nextToken.tokenStr.equals("from")) {
         	if (scan.currentToken.subClassif != 1) {
@@ -817,9 +818,6 @@ public class Parser {
         	}
         	// now we have the value of the array/set string stored in resVal
         	// should be on ":" or "by"
-        	/*if (!scan.currentToken.tokenStr.equals(":") && !scan.currentToken.tokenStr.equals("by")) {
-        		error("Missing " + "\"" + ":" + "\"" + " or " + "\"" + "by" + "\"" + " keyword in for loop");
-        	}*/
         	if (scan.currentToken.tokenStr.equals("by")) {
         		scan.getNext();
         		if (scan.currentToken.subClassif == 5) {
@@ -847,27 +845,21 @@ public class Parser {
         		savedScanner = this.scan.saveState();
         		st.getSymbol(controlIdent.symbol).value = setList.get(i);
         		statements(true);
+ 		       if (!scan.currentToken.tokenStr.equals("endfor") && !scan.nextToken.tokenStr.equals(";")) {
+		    	   error("Missing terminating " + "\"" + "endfor" + "\"" + " or " + "\"" + ";" + "\"" + " after for loop", beginningFor);
+		       }
         		if (i+1 < setList.size()) {
         			this.scan = savedScanner;
         		}
-        	}
-        	if (!scan.currentToken.tokenStr.equals("endfor") && !scan.nextToken.tokenStr.equals(";")) {
- 	    	   error("Missing terminating " + "\"" + "endfor" + "\"" + " or " + "\"" + ";" + "\"" + " after for loop", beginningFor);
         	}
         }
         else {
         	error(scan.nextToken.tokenStr + " is not a valid for loop token");
         }
-        while (!scan.currentToken.tokenStr.equals("endfor") && !scan.currentToken.tokenStr.equals("for")) {
-        	scan.getNext();
-        }
         if (scan.currentToken.tokenStr.equals("for")) {
         	error("Missing endfor at the end of for loop");
         }
         scan.getNext();
-        if (!scan.currentToken.tokenStr.equals(";")) {
-        	error("Missing terminating semicolon ; after endfor"); 
-        }
     }
 
     // assumes that this is called when currentToken = to the first operand
