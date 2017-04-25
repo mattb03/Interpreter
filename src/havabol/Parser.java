@@ -675,6 +675,8 @@ public class Parser {
     	ArrayList<String> setList = new ArrayList<String>();
     	String delim = "";
         int i, start = 0, end = 0;
+        STIdentifier endIdent;
+        STIdentifier incrIdent;
         ResultValue resVal = new ResultValue("");
         // default incr variable is 1 if there is none provided
         int incr = 1;
@@ -705,7 +707,8 @@ public class Parser {
 	        scan.getNext();
 	        // on ending value
 	        if (scan.currentToken.subClassif == 1) {
-	        	if (scan.nextToken.primClassif == 2) {
+	        	endIdent = (STIdentifier) st.getSymbol(scan.currentToken.tokenStr);
+	        	if (scan.nextToken.primClassif == 2 || endIdent.structure == STIdentifier.ARRAY) {
 	        		resVal = expr(false);
 	        		end = Integer.parseInt(resVal.value);
 	        	}
@@ -736,7 +739,8 @@ public class Parser {
 	        if (scan.currentToken.tokenStr.equals("by")) {
 	        	scan.getNext();
 	        if (scan.currentToken.subClassif == 1) {
-	        	if (scan.nextToken.primClassif == 2) {
+	        	incrIdent = (STIdentifier) st.getSymbol(scan.currentToken.tokenStr);
+	        	if (scan.nextToken.primClassif == 2 || incrIdent.structure == STIdentifier.ARRAY) {
 	        		resVal = expr(false);
 	        		incr = Integer.parseInt(resVal.value);
 	        	}

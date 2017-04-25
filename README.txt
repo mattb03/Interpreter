@@ -1,9 +1,6 @@
-******IMPORTANT NOTE*************
-    # Before you get started you must create an empty "bin" directory as it doesnt exist
-    # to do this on command line:   $ mkdir bin
-***********************************
 
-In order to create the .class files in the /bin directory
+
+In order to create the .class files in the /bin directory and the /bin directory itself:
 
     $ make 
 
@@ -13,11 +10,8 @@ In order to clean .class files in the /bin directory
 In order to run the different cases:
 
     $ make run
-    $ make out1 
-    $ make out2 
-    $ make out3 
-    $ make test
-    $ make test2   (*this is Clarks test input*)
+    $ make hav  (this runs prog.hav)
+    $ make test_all ( will runs every single test file we have)
 
 To test different input:
-    modify test.txt and then run "make test"
+    modify prog.hav and then run "make hav"

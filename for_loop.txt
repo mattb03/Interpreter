@@ -151,3 +151,19 @@ for j = 5 * 2 / 2 ^ 2 to j * 5 + 3 ^ 2 by j ^ 2 / 3 * 1:
 		print (item);
 	endfor;
 endfor;
+
+Int array2[10] = 3, 4, 5;
+// array = 1, 2, 3;
+for i = array[0] to array2[2] by array[1]:
+	print ("oh no i=", i);
+	for j = array[0] to array2[2]:
+		print ("j=", j);
+	endfor;
+endfor;
+
+for i = array[0] to array2[2]:
+	print ("oh no i=", i);
+	for j = array[0] to array2[2] by array[1]:
+		print ("j=", j);
+	endfor;
+endfor;
