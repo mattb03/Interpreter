@@ -1,0 +1,5 @@
+String str = "i, love, havabol";
+
+for token from str by ",":
+	print (token);
+endfor
