@@ -63,14 +63,20 @@ public class StorageManager {
         int offset;
         String item = resVal.value;
         if (this.type != resVal.type) {
-            Numeric num = new Numeric(this.parser, resVal, token, "Index "+String.valueOf(index));
-            if (this.type == Token.INTEGER) {
-                item = String.valueOf(num.integerValue);
-            } else if (this.type == Token.FLOAT) {
-                item = String.valueOf(num.doubleValue);
-                item += "0";
-            } else if (this.type == Token.STRING) {
-                item = num.strValue;
+            if (resVal.type == Token.BOOLEAN) {
+                if (this.type != Token.STRING) {
+                    this.parser.error("Type Bool can ONLY be casted to type STRING");
+                }
+            } else {
+                Numeric num = new Numeric(this.parser, resVal, token, "Index "+String.valueOf(index));
+                if (this.type == Token.INTEGER) {
+                    item = String.valueOf(num.integerValue);
+                } else if (this.type == Token.FLOAT) {
+                    item = String.valueOf(num.doubleValue);
+                    item += "0";
+                } else if (this.type == Token.STRING) {
+                    item = num.strValue;
+                }
             }
         }
         try {
@@ -108,28 +114,89 @@ public class StorageManager {
         return retVal;
     }
 
-    public void copy(StorageManager passedArray) {
+    public void copy(StorageManager passedArray, String arrayName) throws Exception {
+        arrayName = "'"+arrayName+"'";
         int passedSize = passedArray.size;
-        int offset = 0;
         int n = 0;
         if (passedSize > this.size)
             n = this.size;
         else
             n = passedSize;
         if (this.isBounded == false) { // array is not bounded
-            offset = passedSize - size;
-            for (int i=0; i < offset; i++)
-                this.val.add(this.defaultVal);
+            for (int i=0; i < n; i++) {
+                String val = passedArray.val.get(i);
+                if (this.type != passedArray.type) {
+                    if (passedArray.val.get(i) == null) {
+                        this.val.add(i, val);
+                        continue;
+                    }
+                    ResultValue resVal = new ResultValue(val);
+                    Numeric num = new Numeric(this.parser, resVal, arrayName, "");
+                    if (this.type == Token.INTEGER) {
+                        resVal.value = String.valueOf(num.integerValue);
+                    } else if (this.type == Token.FLOAT) {
+                        resVal.value = String.valueOf(num.doubleValue);
+                        resVal.value += "0";
+                    } else if (this.type == Token.STRING) {
+                        resVal.value = num.strValue;
+                    }
+                    val = resVal.value;
+                    this.val.add(i, val);
+                } else { // they are same type
+                    this.val.add(i, val);
+                }
+            }
+        } else { // bounded arrays
+            for (int i = 0; i < n; i++) {
+                String val = passedArray.val.get(i);
+                if (this.type != passedArray.type) {
+
+                    if (passedArray.val.get(i) == null) {
+                        this.val.add(i, val);
+                        continue;
+                    }
+
+                    ResultValue resVal = new ResultValue(val);
+                    Numeric num = new Numeric(this.parser, resVal, arrayName, "");
+                    if (this.type == Token.INTEGER) {
+                        resVal.value = String.valueOf(num.integerValue);
+                    } else if (this.type == Token.FLOAT) {
+                        resVal.value = String.valueOf(num.doubleValue);
+                        resVal.value += "0";
+                    } else if (this.type == Token.STRING) {
+                        resVal.value = num.strValue;
+                    }
+                    val = resVal.value;
+                    this.val.add(i, val);
+
+                } else {  //types are the same
+                    this.val.add(i, val);
+                }
+            }
         }
-        for (int i = 0; i < n; i++)
-            this.val.add(i, passedArray.val.get(i));
     }
 
-    public void defaultArray(String defaultVal) throws Exception {
-        this.defaultVal = defaultVal;
+    public void defaultArray(ResultValue resVal, String token) throws Exception {
+        if (this.type != resVal.type) {
+            if (resVal.type == Token.BOOLEAN) {
+                if (this.type != Token.STRING) {
+                    this.parser.error("Type Bool can ONLY be casted to type STRING");
+                } else {
+                    Numeric num = new Numeric(this.parser, resVal, token, "The default value");
+                    if (this.type == Token.INTEGER) {
+                        resVal.value = String.valueOf(num.integerValue);
+                    } else if (this.type == Token.FLOAT) {
+                        resVal.value = String.valueOf(num.doubleValue);
+                        resVal.value += "0";
+                    } else if (this.type == Token.STRING) {
+                        resVal.value = num.strValue;
+                    }
+                }
+            }
+        }
+        this.defaultVal = resVal.value;
         for (int i = 0; i < this.val.size(); i++)
             this.val.set(i, this.defaultVal);
-
     }
 
 }

@@ -1,6 +1,42 @@
 //debug Token on ;
 //debug Assign on;
 //debug Expr on;
+String stuff[10] = T, 1, 2.2;
+
+
+String names[unbound]; //"blah", "Blah", "asdfadf", "a;lsdkjal;kdjf";
+names = "Matt";
+print(names);
+
+Int array[10] = 1, 2, 3;
+array[6] = 1000;
+Int array2[10] = 10, 20, 30, 40; 
+array = 3.14;
+array2 = array;
+print("array2 : ",array2);
+
+Int nums[10] = 1,2,3;
+Float more_nums[10] = 1.1, 2.2;
+nums = more_nums;
+print(nums);
+//Int x = "Chris";
+
+
+Int a[unbound] = 3,3,3;
+Float b[unbound] = 3.14, 2.23, 5.55;
+a = b;
+print("unbounded array a --> ", a);
+
+
+
+Int numb[unbound] = 1,2,3,4;
+Float numb2[unbound] = 2.3, 3.44, 2.01;
+print("numb -> ", numb);
+print("numb2 -> ", numb2);
+numb = numb2;
+print("numb = numb2");
+print("numb -> ", numb);
+print("numb2 -> ", numb2);
 
 String first = "Chris";
 String last = "Buckner";
