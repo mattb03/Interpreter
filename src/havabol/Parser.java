@@ -159,7 +159,7 @@ public class Parser {
                         } else if (scan.nextToken.tokenStr.equals("=")) {
                             assign(scan.currentToken);
                             if (scan.currentToken.tokenStr.equals(","))
-                                error("Malformed array declaration"+scan.nextToken);
+                                error("Malformed array declaration"+scan.nextToken.tokenStr);
                             else if (!scan.currentToken.tokenStr.equals(";")) {
                                 errorNoTerm("Assign statement not terminated. Expected ';'");
                             }
@@ -303,8 +303,12 @@ public class Parser {
             } else {
                 if (rEntry.structure == STIdentifier.ARRAY &&
                     !scan.nextToken.tokenStr.equals("[")) {
-                        lEntry.array.copy(rEntry.array);
-                        return;
+                        if (lEntry.array.type == rEntry.array.type) {
+                            lEntry.array.copy(rEntry.array);
+                            return;
+                        } else {
+                            error("When performing array to array copying, arrays must be of same type");
+                        }
                 }
             }
         }

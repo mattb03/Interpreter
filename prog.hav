@@ -3,8 +3,20 @@
 //debug Expr on;
 
 
+Int nums[10] = 1,2,3,4,5;
+Int more_nums[] = 0,1,2,3,4,5,6,7,8,9;
+nums = more_nums;
+print(nums);
+String names[10] = "Chris", "Matt", "Miguel";
+nums = names;
+print(nums);
 
 
+
+debug Exit on;
+
+String elems[10] = "cat", 10, 3.14;
+print(elems);
 Int nums[unbound] = 1,2,3,4;
 nums[10] = 1000;
 print(nums);
