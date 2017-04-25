@@ -186,7 +186,6 @@ public class Parser {
                                         tokk.tokenStr, tokk.primClassif, tokk.subClassif, -1, type);
                                     st.putArray(tokk.tokenStr, array);
                                     scan.getNext(); // get the ']'
-                                    System.out.println("next token is "+scan.nextToken.tokenStr);
                                 } else { //
                                     ResultValue result = expr(true);
                                     int size = Integer.parseInt(result.value);  // check if its value is an int or not
@@ -294,6 +293,8 @@ public class Parser {
 	}
 
     public void copyOrDefaultArray(STIdentifier lEntry) throws Exception {
+        String token = scan.currentToken.tokenStr;
+        token = "'"+token+"'";
         scan.getNext(); // got "="
         scan.getNext(); // got first val after
         if (scan.currentToken.subClassif == Token.IDENTIFIER) {
@@ -303,12 +304,8 @@ public class Parser {
             } else {
                 if (rEntry.structure == STIdentifier.ARRAY &&
                     !scan.nextToken.tokenStr.equals("[")) {
-                        if (lEntry.array.type == rEntry.array.type) {
-                            lEntry.array.copy(rEntry.array);
-                            return;
-                        } else {
-                            error("When performing array to array copying, arrays must be of same type");
-                        }
+                        lEntry.array.copy(rEntry.array, rEntry.symbol);
+                        return;
                 }
             }
         }
@@ -322,7 +319,8 @@ public class Parser {
         else {
         	resVal = expr(false);
         }
-        lEntry.array.defaultArray(resVal.value);
+
+        lEntry.array.defaultArray(resVal, token);
     }
 
     public void declareArray(Token curSymbol) throws Exception { //, int index, boolean single) {
@@ -375,6 +373,13 @@ public class Parser {
                 } else if (ltype == Token.FLOAT) {  // left side is Float
                     value = resExpr.value;
                     value += ".00";
+                }
+            } else if (ltype == Token.INTEGER && assignType == Token.STRING) {
+                try {
+                    Integer.parseInt(resExpr.value);
+                    value = resExpr.value;
+                } catch (Exception e) {
+                    error("STRING '"+resExpr.value+"' cannot be cast to an INTEGER");
                 }
             } else if (ltype == Token.STRING) {
                 value = resExpr.value;
