@@ -665,8 +665,8 @@ public class Parser {
         Token startToken = scan.currentToken.saveToken();
         String temp = scan.currentToken.tokenStr + " " + scan.nextToken.tokenStr + " " + scan.getNext();
         int controlVar = 0;
-        STIdentifier controlIdent = null;
-        STIdentifier setIdent = null;
+        STIdentifier controlIdent;
+        STIdentifier setIdent;
     	ArrayList<String> setList = new ArrayList<String>();
     	String delim = "";
         int i, start = 0, end = 0;
@@ -693,8 +693,13 @@ public class Parser {
         		error(scan.currentToken.tokenStr + " must be an identifier");
 	        }
 	        savedScanner = this.scan.saveState();
-
-	        assign(scan.currentToken);
+	        scan.getNext();
+	        scan.getNext();
+	        resVal = expr(false);
+	        if (resVal.value == null) {
+	        	error("\"" + controlIdent.symbol + "\"" + " has not been initialized");
+	        }
+	        st.getSymbol(controlIdent.symbol).value = String.valueOf(resVal.value);
 	        controlVar = Integer.parseInt(controlIdent.value);
 	        if (!scan.currentToken.tokenStr.equals("to")) {
 	        	error(scan.currentToken.tokenStr + " is not a valid for loop token");
@@ -703,6 +708,9 @@ public class Parser {
 	        // on ending value
 	        if (scan.currentToken.subClassif == 1) {
 	        	endIdent = (STIdentifier) st.getSymbol(scan.currentToken.tokenStr);
+	        	if (endIdent == null) {
+	        		error("\"" + scan.currentToken.tokenStr + "\"" + " is undeclared");
+	        	}
 	        	if (scan.nextToken.primClassif == 2 || endIdent.structure == STIdentifier.ARRAY) {
 	        		resVal = expr(false);
 	        		end = Integer.parseInt(resVal.value);
@@ -711,6 +719,10 @@ public class Parser {
 	        		try {
 	        			end = Integer.parseInt(st.getSymbol(scan.currentToken.tokenStr).value);
 	        		} catch (Exception e) {
+	        			if (scan.currentToken.subClassif == 1) {
+		        			error("\"" + scan.currentToken.tokenStr + "\"" + 
+		        					" is uninitialized");
+	        			}
 	        			error("\"" + scan.currentToken.tokenStr + "\"" + " must be an integer");
 	        		}
 	        	}
@@ -735,6 +747,9 @@ public class Parser {
 	        	scan.getNext();
 	        if (scan.currentToken.subClassif == 1) {
 	        	incrIdent = (STIdentifier) st.getSymbol(scan.currentToken.tokenStr);
+	        	if (incrIdent == null) {
+	        		error("\"" + scan.currentToken.tokenStr + "\"" + " is undeclared");
+	        	}
 	        	if (scan.nextToken.primClassif == 2 || incrIdent.structure == STIdentifier.ARRAY) {
 	        		resVal = expr(false);
 	        		incr = Integer.parseInt(resVal.value);
@@ -743,8 +758,11 @@ public class Parser {
 	        		try {
 	        			incr = Integer.parseInt(st.getSymbol(scan.currentToken.tokenStr).value);
 	        		} catch (Exception e) {
+	        			if (scan.currentToken.subClassif == 1) {
+		        			error("\"" + scan.currentToken.tokenStr + "\"" + 
+		        					" is uninitialized");
+	        			}
 	        			error("\"" + scan.currentToken.tokenStr + "\"" + " must be an integer");
-
 	        		}
 	        	}
 	        }
@@ -765,15 +783,20 @@ public class Parser {
 	        }
 	       }
 	       if (!scan.currentToken.tokenStr.equals(":")) {
-	           error("Missing terminating colon : in for loop");
+	    	   errorNoTerm("Missing terminating " + "\"" + ":" + "\"" + " in for loop");
 	       }
 	       while (controlVar < end) {
 	    	   savedScanner = this.scan.saveState();
 	           statements(true);
 	           controlVar += incr;
 	           st.getSymbol(controlIdent.symbol).value = String.valueOf(controlVar);
-		       if (!scan.currentToken.tokenStr.equals("endfor") && !scan.nextToken.tokenStr.equals(";")) {
-		    	   error("Missing terminating " + "\"" + "endfor" + "\"" + " or " + "\"" + ";" + "\"" + " after for loop", beginningFor);
+		       if (!scan.currentToken.tokenStr.equals("endfor") || !scan.nextToken.tokenStr.equals(";")) {
+		    	   if (!scan.currentToken.tokenStr.equals("endfor")) {
+		    		   error("Missing terminating " + "\"" + "endfor" + "\"" + " after for loop", beginningFor);
+		    	   }
+		    	   else {
+		    		   error("Missing terminating " + "\"" + ";" + " after " + "\"" + "endfor" + "\"", beginningFor);
+		    	   }
 		       }
 
 	           if (controlVar < end) {
@@ -851,15 +874,20 @@ public class Parser {
         	}
         	// should be on ":"
         	if (!scan.currentToken.tokenStr.equals(":")) {
-        		error("Missing terminating " + "\"" + ":" + "\"" + " in for loop");
+        		errorNoTerm("Missing terminating " + "\"" + ":" + "\"" + " in for loop");
         	}
         	for (i = 0; i < setList.size(); i++) {
         		savedScanner = this.scan.saveState();
         		st.getSymbol(controlIdent.symbol).value = setList.get(i);
         		statements(true);
- 		       if (!scan.currentToken.tokenStr.equals("endfor") && !scan.nextToken.tokenStr.equals(";")) {
-		    	   error("Missing terminating " + "\"" + "endfor" + "\"" + " or " + "\"" + ";" + "\"" + " after for loop", beginningFor);
-		       }
+ 		        if (!scan.currentToken.tokenStr.equals("endfor") || !scan.nextToken.tokenStr.equals(";")) {
+		    	   if (!scan.currentToken.tokenStr.equals("endfor")) {
+		    		   error("Missing terminating " + "\"" + "endfor" + "\"" + " after for loop", beginningFor);
+		    	   }
+		    	   else {
+		    		   error("Missing terminating " + "\"" + ";" + " after " + "\"" + "endfor" + "\"", beginningFor);
+		    	   }
+		        }
         		if (i+1 < setList.size()) {
         			this.scan = savedScanner;
         		}
