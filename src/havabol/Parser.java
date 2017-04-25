@@ -185,9 +185,13 @@ public class Parser {
                                     STIdentifier array = new STIdentifier(this,
                                         tokk.tokenStr, tokk.primClassif, tokk.subClassif, -1, type);
                                     st.putArray(tokk.tokenStr, array);
+                                    scan.getNext(); // get the ']'
+                                    System.out.println("next token is "+scan.nextToken.tokenStr);
                                 } else { //
                                     ResultValue result = expr(true);
                                     int size = Integer.parseInt(result.value);  // check if its value is an int or not
+                                    if (size == 0)
+                                        error("Cannot declare an array of size 0. Must be of size 1 or greater");
                                     STIdentifier array = new STIdentifier(this,
                                         tokk.tokenStr, tokk.primClassif, tokk.subClassif, size, type);
                                     st.putArray(tokk.tokenStr, array);
@@ -763,7 +767,7 @@ public class Parser {
 		       if (!scan.currentToken.tokenStr.equals("endfor") && !scan.nextToken.tokenStr.equals(";")) {
 		    	   error("Missing terminating " + "\"" + "endfor" + "\"" + " or " + "\"" + ";" + "\"" + " after for loop", beginningFor);
 		       }
-		       
+
 	           if (controlVar < end) {
 	        	   this.scan = savedScanner;
 	           }
@@ -797,7 +801,7 @@ public class Parser {
         		}
         	}
         	if (resVal.value.equals("") || !resVal.structure.get(0).matches("ARRAY")) {
-        		// if its a string literal or string identifier 
+        		// if its a string literal or string identifier
         		// convert the value to the setList
         		char [] chArray;
         		st.getSymbol(controlIdent.symbol).type = 5;
@@ -814,7 +818,7 @@ public class Parser {
         		for (i = 0; i < chArray.length; i++) {
         			setList.add(String.valueOf(chArray[i]));
         		}
-        		
+
         	}
         	// now we have the value of the array/set string stored in resVal
         	// should be on ":" or "by"

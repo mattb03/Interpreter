@@ -19,6 +19,7 @@ public class StorageManager {
         this.parser = parser;
         if (size == -1) {
             this.isBounded = false;
+            this.val.add(null);
             this.size = this.val.size();
         } else if (size == -100)  { //  size will need to be set!!!!
             this.isBounded = true;

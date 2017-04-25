@@ -3,16 +3,49 @@
 //debug Expr on;
 
 
+
+
+Int nums[unbound] = 1,2,3,4;
+nums[10] = 1000;
+print(nums);
+
+Int array[0];  // this will error out. provided error messaging
+
+
+
+
+
+
+
+
+
+debug Exit on;
+
+
+ dos = 2;
+
+for j=0 to 3 by dos:
+    print("j = ",j);
+endfor;
+String number = "20";
+for i=0 to number by 2:
+    print(i);
+endfor;
+
+debug Exit on;
+
 Int migarr[10];
 print(migarr);
 
 print("===== Counting for STRING =====");
 String name = "Christopher";
+print("the 3rd item in name is : ",name[2]);
 Int n = LENGTH(name);
 print("the length of ",name, " is: ", n);
-for i=0 to 100:
+for i=0 to n:
     print(name[i]);
 endfor;
+
 print("i = ", i);
 print("The 2nd val of ",name, " is : ", name[1]);
 
@@ -21,12 +54,14 @@ print("===== For each STRING =====");
 for char in name:
     print(char);
 endfor;
+
 print("++++++++++++++++++++++++++++++++++++++++++++++++");
 Int nums[10] = 1, 2, 3, 4, 5, 6, 7;
 
 for item in nums:
     print(item);
 endfor;
+
 print(nums);
 debug Exit on;
 
