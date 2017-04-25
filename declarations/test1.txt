@@ -1,0 +1,47 @@
+//Simple Declaration and assignment
+
+Int n = 100;
+Float n2;
+n2 = 3.14;
+n = n + n2;
+print("n should be '103'. n is : ", n);
+
+
+
+// casting for type Int
+Int num = 5;
+Int num2 = "5.55";
+Int num3 = "5";
+// make an error case trying to cast a STRING to an INT (when String is a Float)  ie  Int num = "3.14"  will error out!!!!
+Int arr[unbound] = num, num2, num3;
+print("arr's values should all be '5'\narr --> ", arr);
+
+
+// casting for type Float
+
+Float f = 10;
+print("f should be '10.00'. f is : ", f);
+
+
+// Casting for type Bool
+
+Bool b = T;
+Bool b2 = "T";
+Bool barray[] = b, b2;
+print("barray's values should both be T. barray --> ", barray);
+
+// casting for type String
+
+String s = "Hello\tworld\a\n";
+String s2 = 10;
+String s3 = 3.14;
+String s4 = F;
+
+for i=0
+
+
+print("no errors!  Everything can be cast to a STRING");
+// when a value is not initialized
+Int f;
+print("f is now null?  f is ",f);
+

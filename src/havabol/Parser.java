@@ -379,7 +379,7 @@ public class Parser {
                     Integer.parseInt(resExpr.value);
                     value = resExpr.value;
                 } catch (Exception e) {
-                    error("STRING '"+resExpr.value+"' cannot be cast to an INTEGER");
+                    error("STRING '"+resExpr.value+"' cannot be cast to an INTEGER. *** Only a STRING without a decimal can be cast to an INTEGER");
                 }
             } else if (ltype == Token.STRING) {
                 value = resExpr.value;
@@ -411,7 +411,6 @@ public class Parser {
         }
         String val2 = value;
         st.getSymbol(curr.tokenStr).value = value;
-        if (show) {;}
         if (expr) {
             System.out.println("+++++ EXPRN +++++ :"+curr.iSourceLineNr
                                 + ": " + curr.tokenStr + " = "+val2);
