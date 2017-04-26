@@ -24,6 +24,10 @@ public class Numeric {
 				doubleValue = Double.parseDouble(res.value);
 				integerValue = (int) doubleValue;
 				strValue = Double.toString(doubleValue);
+				String last;
+				last = strValue.substring(strValue.length() - 2, strValue.length());
+				if (last.charAt(0) == '.')
+					strValue += "0";
 				type = Token.FLOAT;
 			} catch (Exception f) {
 				parser.error(opPos + " of " + op + " operator isn't a valid numeric type", parser.startOfExprToken);
