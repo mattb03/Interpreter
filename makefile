@@ -31,6 +31,8 @@ func:
 
 
 
+for: 
+	$(JAVA) $(JFLAGS) havabol.HavaBol ./errorTestCases/forLoopErrors/countingForLoopErrors/nestedCountingForLoops/* 
 
 
 simp:

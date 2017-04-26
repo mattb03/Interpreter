@@ -1,11 +1,10 @@
 package havabol;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.EmptyStackException;
 import java.util.Stack;
+
+import com.sun.xml.internal.fastinfoset.tools.FI_SAX_Or_XML_SAX_DOM_SAX_SAXEvent;
 
 
 public class Parser {
@@ -682,6 +681,7 @@ public class Parser {
         int incr = 1;
         // restore the state so we can use getNext()
         this.scan = savedScanner;
+        Numeric num;
         Token beginningFor = scan.currentToken;
         scan.getNext();
         controlIdent = (STIdentifier) st.getSymbol(scan.currentToken.tokenStr);
@@ -700,12 +700,24 @@ public class Parser {
 	        savedScanner = this.scan.saveState();
 	        scan.getNext();
 	        scan.getNext();
+	        
+	        if (scan.currentToken.subClassif != 1 && 
+	        		scan.currentToken.subClassif != 2) {
+	        	if (!scan.currentToken.tokenStr.equals("ELEM") &&
+	        			!scan.currentToken.tokenStr.equals("MAXELEM") &&
+	        			!scan.currentToken.tokenStr.equals("LENGTH")) {
+	        		error("\"" + scan.currentToken.tokenStr + "\"" +
+	        			" must be an integer");
+	        	}
+	        }
 	        resVal = expr(false);
 	        if (resVal.value == null) {
 	        	error("\"" + controlIdent.symbol + "\"" + " has not been initialized");
 	        }
 	        st.getSymbol(controlIdent.symbol).value = String.valueOf(resVal.value);
-	        controlVar = Integer.parseInt(controlIdent.value);
+	        num = new Numeric(this, resVal, "=", "RIGHT OPERAND");
+	        //controlVar = Integer.parseInt(controlIdent.value);
+	        controlVar = num.integerValue;
 	        if (!scan.currentToken.tokenStr.equals("to")) {
 	        	error(scan.currentToken.tokenStr + " is not a valid for loop token");
 	        }
@@ -716,21 +728,15 @@ public class Parser {
 	        	if (endIdent == null) {
 	        		error("\"" + scan.currentToken.tokenStr + "\"" + " is undeclared");
 	        	}
-	        	if (scan.nextToken.primClassif == 2 || endIdent.structure == STIdentifier.ARRAY) {
-	        		resVal = expr(false);
-	        		end = Integer.parseInt(resVal.value);
+	        	resVal = expr(false);
+	        	if (resVal.value == null) {
+	        		error("\"" + endIdent.symbol + "\"" + " is uninitialized");
 	        	}
-	        	else {
-	        		try {
-	        			end = Integer.parseInt(st.getSymbol(scan.currentToken.tokenStr).value);
-	        		} catch (Exception e) {
-	        			if (scan.currentToken.subClassif == 1) {
-		        			error("\"" + scan.currentToken.tokenStr + "\"" + 
-		        					" is uninitialized");
-	        			}
-	        			error("\"" + scan.currentToken.tokenStr + "\"" + " must be an integer");
-	        		}
+	        	if (resVal.value.charAt(0) == '[') {
+	        		error("\"" + resVal.value + "\"" + " array must be indexed");
 	        	}
+	        	num = new Numeric(this, resVal, "limit", "OPERAND");
+	        	end = num.integerValue;
 	        }
 	        else if (scan.currentToken.subClassif == 2) {
 	        	end = Integer.parseInt(scan.currentToken.tokenStr);
@@ -739,10 +745,11 @@ public class Parser {
 	        		scan.currentToken.tokenStr.equals("MAXELEM") ||
 	        		scan.currentToken.tokenStr.equals("LENGTH")) {
 	        	resVal = expr(true);
-	        	end = Integer.parseInt(resVal.value);
+		        num = new Numeric(this, resVal, "=", "RIGHT OPERAND");
+	        	end = num.integerValue;
 	        }
 	        else {
-	        	error(scan.currentToken.tokenStr + " is not a valid ending value");
+	        	error(scan.currentToken.tokenStr + " must be an integer");
 	        }
 	        if (!scan.currentToken.tokenStr.equals(":") && !scan.currentToken.tokenStr.equals("by")) {
 	        	scan.getNext();
@@ -755,21 +762,16 @@ public class Parser {
 	        	if (incrIdent == null) {
 	        		error("\"" + scan.currentToken.tokenStr + "\"" + " is undeclared");
 	        	}
-	        	if (scan.nextToken.primClassif == 2 || incrIdent.structure == STIdentifier.ARRAY) {
-	        		resVal = expr(false);
-	        		incr = Integer.parseInt(resVal.value);
+	        	resVal = expr(false);
+
+	        	if (resVal.value == null) {
+	        		error("\"" + incrIdent.symbol + "\"" + " is uninitialized");
 	        	}
-	        	else {
-	        		try {
-	        			incr = Integer.parseInt(st.getSymbol(scan.currentToken.tokenStr).value);
-	        		} catch (Exception e) {
-	        			if (scan.currentToken.subClassif == 1) {
-		        			error("\"" + scan.currentToken.tokenStr + "\"" + 
-		        					" is uninitialized");
-	        			}
-	        			error("\"" + scan.currentToken.tokenStr + "\"" + " must be an integer");
-	        		}
+	        	if (resVal.value.charAt(0) == '[') {
+	        		error("\"" + resVal.value + "\"" + " array must be indexed");
 	        	}
+	        	num = new Numeric(this, resVal, "increment", "OPERAND");
+	        	incr = num.integerValue;
 	        }
 	        else if (scan.currentToken.subClassif == 2) {
 	        	incr = Integer.parseInt(scan.currentToken.tokenStr);
@@ -781,14 +783,19 @@ public class Parser {
 	        	incr = Integer.parseInt(resVal.value);
 	        }
 	        else {
-	        	error(scan.currentToken.tokenStr + " is not a valid increment");
+	        	error(scan.currentToken.tokenStr + " must be an integer");
 	        }
 	        if (!scan.currentToken.tokenStr.equals(":")) {
 	        	scan.getNext();
 	        }
 	       }
 	       if (!scan.currentToken.tokenStr.equals(":")) {
-	    	   errorNoTerm("Missing terminating " + "\"" + ":" + "\"" + " in for loop");
+	    	   if (scan.currentToken.primClassif == 1) {
+	    		   error("Missing " + "\"" + "by" + "\"" + " keyword in for loop");
+	    	   }
+	    	   else {
+	    		   error("Missing terminating " + "\"" + ":" + "\"" + " in for loop", beginningFor);
+	    	   }
 	       }
 	       while (controlVar < end) {
 	    	   savedScanner = this.scan.saveState();
@@ -808,6 +815,41 @@ public class Parser {
 	        	   this.scan = savedScanner;
 	           }
 	        }
+	       
+	       if (!scan.currentToken.equals("endfor")) {
+	    	   Stack<Token> stk = new Stack<Token>();
+	    	   Token currentFor = beginningFor;
+	    	   while (true) {
+	 	    	   if (scan.currentToken.tokenStr.equals("for")) {
+	 	    		   currentFor = scan.currentToken;
+		    		   stk.push(scan.currentToken);
+		    	   }
+	 	    	   else if (scan.currentToken.tokenStr.equals("endfor")) {
+	 	    		   if (!stk.isEmpty()) {
+	 	    			   stk.pop();
+	 	    			   if (stk.isEmpty()) {
+	 	    				   currentFor = beginningFor;
+	 	    			   }
+	 	    			   else {
+	 	    				   currentFor = stk.peek();
+	 	    			   }
+	 	    		   }
+	 	    		   else {
+	 	    			   break;
+	 	    		   }
+	 	    	   }
+	 	    	   else if (scan.currentToken.primClassif == Token.EOF) {
+	 	    		   error("Missing " + "\"" + "endfor" + "\"" + " after for loop", currentFor);
+	 	    	   }
+	 	    	   else {
+	 	    		   scan.getNext();
+	 	    	   }
+	    	   }
+	       }
+	       scan.getNext();
+ 	       if (!scan.currentToken.tokenStr.equals(";")) {
+ 	    	   error("Missing " + "\"" + ";" + "\"" + " after endfor");
+ 	       }
         }
         else if (scan.nextToken.tokenStr.equals("in") || scan.nextToken.tokenStr.equals("from")) {
         	if (scan.currentToken.subClassif != 1) {
@@ -823,6 +865,20 @@ public class Parser {
         	scan.getNext();
         	scan.getNext();
         	// on array/set string
+        	setIdent = (STIdentifier) st.getSymbol(scan.currentToken.tokenStr);
+        	int arrayType = setIdent.array.type;
+        	if (arrayType != controlIdent.type) {
+        		if (controlIdent.type == 4) {
+        			if (arrayType != 5) {
+        				error("\"" + controlIdent.symbol + "\"" + " must be of type string or boolean");
+        			}
+        		}
+        		if (arrayType == 4) {
+        			if (controlIdent.type != 5) {
+        				error("\"" + scan.currentToken.tokenStr + "\"" + " must be of type string or boolean");
+        			}
+        		}
+        	}
         	if (scan.currentToken.subClassif == 1) {
         		resVal = expr(false);
         		if (resVal.structure.get(0).matches("ARRAY")) {
@@ -831,8 +887,10 @@ public class Parser {
         			setStr = resVal.value;
         			String[] items = resVal.value.split(",");
         			for (i = 0; i < items.length; i++) {
-        				items[i] = items[i].trim();
-        				setList.add(items[i]);
+        				if (!items[i].equals("null")) {
+        					items[i] = items[i].trim();
+        					setList.add(items[i]);
+        				}
         			}
         		}
         	}
@@ -883,7 +941,31 @@ public class Parser {
         	}
         	for (i = 0; i < setList.size(); i++) {
         		savedScanner = this.scan.saveState();
-        		st.getSymbol(controlIdent.symbol).value = setList.get(i);
+        		if (controlIdent.type != arrayType) {
+	        		if (controlIdent.type == 4) {
+	        			if (!setList.get(i).equals("T") && !setList.get(i).equals("F")) {
+	        				error("\"" + setList.get(i) + "\"" + " must be T or F");
+	        			}
+	        		}
+	        		else {
+	        			if (controlIdent.type == 5) {
+	        				st.getSymbol(controlIdent.symbol).value = setList.get(i);
+	        			}
+	        			else {
+		        			resVal = new ResultValue(String.valueOf(setList.get(i)));
+		        			num = new Numeric(this, resVal, "iterated variable", "index " + String.valueOf(i));
+		        			if (controlIdent.type == 2) {
+		        				st.getSymbol(controlIdent.symbol).value = String.valueOf(num.integerValue);
+		        			}
+		        			else if (controlIdent.type == 3) {
+		        				st.getSymbol(controlIdent.symbol).value = String.valueOf(num.doubleValue);
+		        			}
+	        			}
+	        		}
+        		}
+        		else {
+        			st.getSymbol(controlIdent.symbol).value = setList.get(i);
+        		}
         		statements(true);
  		        if (!scan.currentToken.tokenStr.equals("endfor") || !scan.nextToken.tokenStr.equals(";")) {
 		    	   if (!scan.currentToken.tokenStr.equals("endfor")) {
@@ -897,6 +979,40 @@ public class Parser {
         			this.scan = savedScanner;
         		}
         	}
+ 	       if (!scan.currentToken.equals("endfor")) {
+	    	   Stack<Token> stk = new Stack<Token>();
+	    	   Token currentFor = beginningFor;
+	    	   while (true) {
+	 	    	   if (scan.currentToken.tokenStr.equals("for")) {
+	 	    		   currentFor = scan.currentToken;
+		    		   stk.push(scan.currentToken);
+		    	   }
+	 	    	   else if (scan.currentToken.tokenStr.equals("endfor")) {
+	 	    		   if (!stk.isEmpty()) {
+	 	    			   stk.pop();
+	 	    			   if (stk.isEmpty()) {
+	 	    				   currentFor = beginningFor;
+	 	    			   }
+	 	    			   else {
+	 	    				   currentFor = stk.peek();
+	 	    			   }
+	 	    		   }
+	 	    		   else {
+	 	    			   break;
+	 	    		   }
+	 	    	   }
+	 	    	   else if (scan.currentToken.primClassif == Token.EOF) {
+	 	    		   error("Missing " + "\"" + "endfor" + "\"" + " after for loop", currentFor);
+	 	    	   }
+	 	    	   else {
+	 	    		   scan.getNext();
+	 	    	   }
+	    	   }
+	       }
+ 	       scan.getNext();
+ 	       if (!scan.currentToken.tokenStr.equals(";")) {
+ 	    	   error("Missing " + "\"" + ";" + "\"" + " after endfor");
+ 	       }
         }
         else {
         	error(scan.nextToken.tokenStr + " is not a valid for loop token");
@@ -979,6 +1095,19 @@ public class Parser {
 
     				break;
     			case Token.OPERATOR:
+    				if (tok.tokenStr.equals("in")) {
+    					while (! mainStack.isEmpty()) {
+    						popped = mainStack.pop();
+	    		    		if (popped.tokenStr.equals("("))
+	    		    			error("Missing ')' separator", popped);
+	    		    		if (popped.isElemRef)
+	    		    			error("Missing ']' separator", popped);
+	    		    		if (popped.primClassif == Token.FUNCTION)
+	    		    			error("Missing ')' separator", popped);
+	    		    		postAList.add(popped);
+    					}
+    			        return evaluateExpr(postAList);
+    				}
     				while (! mainStack.isEmpty()) {
     					// equal to or less than operators
     					if (tok.normPreced
