@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.EmptyStackException;
 import java.util.Stack;
 
-import com.sun.xml.internal.fastinfoset.tools.FI_SAX_Or_XML_SAX_DOM_SAX_SAXEvent;
 
 
 public class Parser {
@@ -240,8 +239,12 @@ public class Parser {
                         entry.setValue(ind, item.tokenStr);
 
                     } else if (entry.structure == STIdentifier.ARRAY) { // array logic
-                        if (scan.currentToken.subClassif != Token.IDENTIFIER && scan.currentToken.subClassif != Token.INTEGER)
-                            error("Malformed array declaration");
+                        ResultValue uInd = null;
+                        if (scan.currentToken.subClassif != Token.IDENTIFIER) {
+                            if (scan.currentToken.subClassif != Token.INTEGER && !scan.currentToken.tokenStr.equals("u-")) {
+                                error("Malformed array declaration");
+                            }
+                        }
                         ResultValue ind  = expr(true);  // pass in true to expr if using an array or inside a func; and expr get me the index if its an expression or not
                         scan.getNext(); // got '='
                         if (!scan.currentToken.tokenStr.equals("="))
@@ -362,58 +365,54 @@ public class Parser {
         ResultValue resExpr = expr(false);
         int assignType = resExpr.type;
         if (ltype != assignType) {
-            if ((ltype == Token.INTEGER && assignType == Token.FLOAT)
-                || (ltype == Token.FLOAT && assignType == Token.INTEGER)) {
-
-                if (ltype == Token.INTEGER) {
-                    value = resExpr.value;
-                    int index = value.indexOf(".");
-                    value = value.substring(0, index);
-                } else if (ltype == Token.FLOAT) {  // left side is Float
-                    value = resExpr.value;
-                    value += ".00";
-                }
-            } else if (ltype == Token.INTEGER && assignType == Token.STRING) {
-                try {
-                    Integer.parseInt(resExpr.value);
-                    value = resExpr.value;
-                } catch (Exception e) {
-                    error("STRING '"+resExpr.value+"' cannot be cast to an INTEGER");
-                }
-            } else if (ltype == Token.STRING) {
-                value = resExpr.value;
-                if (expr) {
-                    System.out.println("+++++ EXPRN +++++ :"+curr.iSourceLineNr
-                        + ": " + curr.tokenStr + " = "+value);
+            //ResultValue resVal = new ResultValue(val);
+            if (ltype == Token.BOOLEAN) {
+                if (assignType == Token.STRING) {
+                    if (resExpr.value.equals("T") || resExpr.value.equals("F")) {
+                        st.getSymbol(curr.tokenStr).value = resExpr.value;
+                        if (expr) {
+                            System.out.println("+++++ EXPRN +++++ :"+curr.iSourceLineNr
+                                            + ": " + curr.tokenStr + " = "+resExpr.value);
+                        }
                     }
-            } else if (ltype == Token.BOOLEAN && assignType == Token.STRING) {
-                value = resExpr.value;
-                if (value.equals("T") || value.equals("F")) {
-                    ;
                 } else {
                     error("Incompatible types. Cannot assign "+
                         Token.strSubClassifM[assignType]+
                         " to "+Token.strSubClassifM[ltype]+
                         " when STRING is a not a 'T' or 'F'");
                 }
+            } else {
+                if (ltype == Token.STRING && assignType == Token.BOOLEAN) {
+                    st.getSymbol(curr.tokenStr).value = resExpr.value;
+                    return;
+                }
+                Numeric num = new Numeric(this, resExpr, "", "");
+                if (ltype == Token.INTEGER) {
+                    resExpr.value = String.valueOf(num.integerValue);
+                } else if (ltype == Token.FLOAT) {
+                    resExpr.value = String.valueOf(num.doubleValue);
+                } else if (ltype == Token.STRING) {
+                    if (assignType == Token.BOOLEAN) {
+
+                    } else {
+                        resExpr.value = num.strValue;
+                    }
+                }
+                value = resExpr.value;
+                st.getSymbol(curr.tokenStr).value = value;
+                String val2 = value;
+
                 if (expr) {
                     System.out.println("+++++ EXPRN +++++ :"+curr.iSourceLineNr
-                        + ": " + curr.tokenStr + " = "+value);
+                                    + ": " + curr.tokenStr + " = "+val2);
                 }
-            } else {
-                error("Incompatible types. Cannot assign "+
-                    Token.strSubClassifM[assignType]+
-                    " to "+Token.strSubClassifM[ltype]);
             }
-        } else {  // they are the same type
-            value = resExpr.value;
-        }
-        String val2 = value;
-        st.getSymbol(curr.tokenStr).value = value;
-        if (show) {;}
-        if (expr) {
-            System.out.println("+++++ EXPRN +++++ :"+curr.iSourceLineNr
-                                + ": " + curr.tokenStr + " = "+val2);
+        } else {
+            st.getSymbol(curr.tokenStr).value = resExpr.value;
+            if (expr) {
+                System.out.println("+++++ EXPRN +++++ :"+curr.iSourceLineNr
+                                    + ": " + curr.tokenStr + " = "+resExpr.value);
+            }
         }
     }
 
