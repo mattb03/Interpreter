@@ -74,14 +74,73 @@ print("\nAll Bool values should be 'T'. bnums--> ",bnums);
 
 inums[0] = 10000000;
 fnums[0] = 3.1415;
-snums[-1] = "LAST";
+snums[-1] = "'LAST!!'";
 bnums[-1] = 10 == 100;
 
-print("vals --> ", inums);
-print("vals --> ", fnums);
-print("vals --> ", snums);
-print("vals --> ", bnums);
+print("inumss --> ", inums);
+print("fnums --> ", fnums);
+print("snums --> ", snums);
+print("bnums --> ", bnums);
 
 
+
+// array copying
+
+inums = fnums;
+print("after: 'inums = fnums;'   inums  --> ",inums);
+
+// create 'holes' in an array
+Int holes[unbound];
+holes[0] = 0;
+holes[9] = 100;
+print("There will be 'null' values in this array!  holes--> ", holes);
+
+// array defaulting
+
+Int default = 1024;
+Int nums[unbound] = 1, 2, 3, 4, 5;
+print("nums before being defaulted:\n\tnums--> ", nums);
+nums = default;
+print("nums after being defaulted:\n\tnums--> ", nums);
+
+
+print("\\\");
+
+
+//SYntax Errors
+
+//Int a ?
+
+//int a
+
+//Int a =
+//Int a = 100
+
+//String str = "Chris" # Buckner";
+//String str = Chris;
+
+//print("Hello World")
+//print("Hello yall);
+//print(what the heck?);
+
+//Int array[unbounded] = 1,2,3,4;
+
+//printf("This is not C bro");
+
+
+
+
+// casting errors
+
+//Int a = "Chris";
+//Int a = T;
+
+//Float f = T;
+//Float f = "cat";
+
+//Bool b = 100;
+//Bool b = 3.14;
+Bool b = "true";
+print("b is: ",b);
 
 

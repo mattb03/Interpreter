@@ -374,6 +374,8 @@ public class Parser {
                             System.out.println("+++++ EXPRN +++++ :"+curr.iSourceLineNr
                                             + ": " + curr.tokenStr + " = "+resExpr.value);
                         }
+                    } else {
+                        error("Found '"+resExpr.value+"'. STRING must be either 'T' or 'F'");
                     }
                 } else {
                     error("Incompatible types. Cannot assign "+
@@ -386,7 +388,7 @@ public class Parser {
                     st.getSymbol(curr.tokenStr).value = resExpr.value;
                     return;
                 }
-                Numeric num = new Numeric(this, resExpr, "", "");
+                Numeric num = new Numeric(this, resExpr, "=", "'"+resExpr.value+"'");
                 if (ltype == Token.INTEGER) {
                     resExpr.value = String.valueOf(num.integerValue);
                 } else if (ltype == Token.FLOAT) {
@@ -709,8 +711,8 @@ public class Parser {
 	        savedScanner = this.scan.saveState();
 	        scan.getNext();
 	        scan.getNext();
-	        
-	        if (scan.currentToken.subClassif != 1 && 
+
+	        if (scan.currentToken.subClassif != 1 &&
 	        		scan.currentToken.subClassif != 2) {
 	        	if (!scan.currentToken.tokenStr.equals("ELEM") &&
 	        			!scan.currentToken.tokenStr.equals("MAXELEM") &&
@@ -824,7 +826,7 @@ public class Parser {
 	        	   this.scan = savedScanner;
 	           }
 	        }
-	       
+
 	       if (!scan.currentToken.equals("endfor")) {
 	    	   Stack<Token> stk = new Stack<Token>();
 	    	   Token currentFor = beginningFor;
@@ -1389,7 +1391,7 @@ public class Parser {
 	    				case "not":
 	    					if (resOp2.type != Token.BOOLEAN && resOp2.type != Token.STRING)
 	    						error("Operand for 'not' is not of type BOOLEAN", tokOp2);
-	    					
+
 	    					resTemp = Utility.booleanConditionals(this, null, resOp2, "not");
 	    					break;
 	    				}
@@ -1427,7 +1429,7 @@ public class Parser {
 		    				error("1st Operand of " + currToken.tokenStr + " operator cannot be of type ARRAY", currToken);
 		    			if (tokOp2.isArray)
 		    				error("2nd Operand of " + currToken.tokenStr + " operator cannot be of type ARRAY", currToken);
-		    			
+
 		    			if (tokOp1.subClassif == Token.IDENTIFIER) {
 		    				STEntry stEnt1 = st.getSymbol(tokOp1.tokenStr);
 		    				if (stEnt1 == null) {
