@@ -1209,7 +1209,9 @@ public class Parser {
                                     postAList.add(popped);
                                 }
                                 return evaluateExpr(postAList);
-    					    }
+    					    } else if (!bFound){
+	                        	error("Missing left paren in expression", startOfExprToken);
+	                        }
     						break;
                         case "]":
 	                        bRefFound = false;
@@ -1237,6 +1239,8 @@ public class Parser {
 	                                postAList.add(popped);
 	                            }
 	                            return evaluateExpr(postAList);
+	                        } else if (!bRefFound){
+	                        	error("Missing left bracket in expression", startOfExprToken);
 	                        }
 	                        break;
     					default:
