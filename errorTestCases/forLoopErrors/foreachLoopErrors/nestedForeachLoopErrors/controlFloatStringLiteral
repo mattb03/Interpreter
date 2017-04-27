@@ -1,0 +1,7 @@
+Float flo;
+Int stuff[5] = 1, 2, 3;
+for i stuff:
+	for flo in "string":
+		print (flo);
+	endfor;
+endfor;

@@ -1,5 +1,7 @@
 Int array[5] = 1, 2, 3;
-
-for 5 in array:
-	print (5);
+Int stuff[5] = 1, 2, 3;
+for i stuff:
+	for 5 in array:
+		print (5);
+	endfor;
 endfor;

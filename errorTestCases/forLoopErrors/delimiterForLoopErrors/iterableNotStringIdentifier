@@ -1,0 +1,7 @@
+String str = "delimited, by, commas";
+
+Int iterable = 1;
+
+for iterable from str by ",":
+	print (iterable);
+endfor;

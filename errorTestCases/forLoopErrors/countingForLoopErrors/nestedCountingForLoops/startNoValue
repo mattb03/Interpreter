@@ -1,6 +1,5 @@
 Int start;
-for i = 0 to 5:
-	for i = start to 5:
-		print ("i=", i);
-	endfor; 
-endfor;
+
+for i = start to 5:
+	print ("i=", i);
+endfor; 

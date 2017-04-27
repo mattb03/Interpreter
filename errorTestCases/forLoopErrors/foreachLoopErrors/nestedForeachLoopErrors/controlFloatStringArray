@@ -1,7 +1,9 @@
 Float flo;
 
 String array[5] = "1.0", "2.0", "three";
-
-for flo in array:
-	print (flo);
+Int stuff[5] = 1, 2, 3;
+for i stuff:
+	for flo in array:
+		print (flo);
+	endfor;
 endfor;

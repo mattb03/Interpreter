@@ -1,7 +1,9 @@
 Int i;
 
 String array[5] = "1", "2", "three";
-
-for i in array:
-	print (i);
+Int stuff[5] = 1, 2, 3;
+for i stuff:
+	for i in array:
+		print (i);
+	endfor;
 endfor;

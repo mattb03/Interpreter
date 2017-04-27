@@ -1,0 +1,5 @@
+String str = "delimited, by, commas";
+
+for 5 from str by ",":
+	print (5);
+endfor;

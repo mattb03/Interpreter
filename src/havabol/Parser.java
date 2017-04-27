@@ -682,17 +682,18 @@ public class Parser {
         this.scan = savedScanner;
         Numeric num;
         Token beginningFor = scan.currentToken;
+        startOfExprToken = beginningFor;
         scan.getNext();
         controlIdent = (STIdentifier) st.getSymbol(scan.currentToken.tokenStr);
-        if (controlIdent == null) {
-        	controlIdent = new STIdentifier(scan.currentToken.tokenStr, 1, 1);
-        	controlIdent.value = String.valueOf(0);
-        	st.putSymbol(controlIdent.symbol, controlIdent);
-        	st.getSymbol(controlIdent.symbol).value = String.valueOf(0);
-        	st.getSymbol(controlIdent.symbol).type = 2;
-        }
         STIdentifier startIdent = null;
         if (scan.nextToken.tokenStr.equals("=")) {
+            if (controlIdent == null) {
+            	controlIdent = new STIdentifier(scan.currentToken.tokenStr, 1, 1);
+            	controlIdent.value = String.valueOf(0);
+            	st.putSymbol(controlIdent.symbol, controlIdent);
+            	st.getSymbol(controlIdent.symbol).value = String.valueOf(0);
+            	st.getSymbol(controlIdent.symbol).type = 2;
+            }
         	if (scan.currentToken.subClassif != 1) {
         		error(scan.currentToken.tokenStr + " must be an identifier");
 	        }
@@ -845,8 +846,7 @@ public class Parser {
 	 	    	   }
 	    	   }
 	       }
-	       scan.getNext();
- 	       if (!scan.currentToken.tokenStr.equals(";")) {
+ 	       if (!scan.nextToken.tokenStr.equals(";")) {
  	    	   error("Missing " + "\"" + ";" + "\"" + " after endfor");
  	       }
         }
@@ -860,28 +860,53 @@ public class Parser {
         		controlIdent = new STIdentifier(scan.currentToken.tokenStr, 1, 1);
         		st.putSymbol(controlIdent.symbol, controlIdent);
         		st.getSymbol(controlIdent.symbol).value = String.valueOf(0);
+        		if (scan.nextToken.tokenStr.equals("from")) {
+        			controlIdent.type = 5;
+        			st.getSymbol(controlIdent.symbol).type = 5;
+        		}
+        	}
+        	if (scan.nextToken.tokenStr.equals("from")) {
+        		if (controlIdent.type != 5) {
+        			error("\"" + scan.currentToken.tokenStr + "\"" + " must be a string identifier");
+        		}
         	}
         	scan.getNext();
+        	boolean fromFlag = false;
+        	if (scan.currentToken.tokenStr.equals("from")) {
+        		fromFlag = true;
+        	}
         	scan.getNext();
         	// on array/set string
         	setIdent = (STIdentifier) st.getSymbol(scan.currentToken.tokenStr);
-        	int arrayType = setIdent.array.type;
-        	if (arrayType != controlIdent.type) {
-        		if (controlIdent.type == 4) {
-        			if (arrayType != 5) {
-        				error("\"" + controlIdent.symbol + "\"" + " must be of type string or boolean");
-        			}
-        		}
-        		if (arrayType == 4) {
-        			if (controlIdent.type != 5) {
-        				error("\"" + scan.currentToken.tokenStr + "\"" + " must be of type string or boolean");
-        			}
-        		}
-        	}
+        	int setType = 0;
         	if (scan.currentToken.subClassif == 1) {
+        		if (setIdent == null) {
+        			error("\"" + scan.currentToken.tokenStr + "\"" + " is undeclared");
+        		}
+        		setType = setIdent.type;
         		resVal = expr(false);
+        		if (resVal.value == null) {
+        			error("\"" + setIdent.symbol + "\"" + " is uninitialized");
+        		}
+        		if (fromFlag == true) {
+        			if (setIdent.type != 5) {
+        				error("\"" + setIdent.symbol + "\"" + " must be a string");
+        			}
+        		}
         		if (resVal.structure.get(0).matches("ARRAY")) {
-        			// TODO: left off here
+                	setType = setIdent.array.type;
+                	if (setType != controlIdent.type) {
+                		if (controlIdent.type == 4) {
+                			if (setType != 5) {
+                				error("\"" + controlIdent.symbol + "\"" + " must be of type string or boolean");
+                			}
+                		}
+                		if (setType == 4) {
+                			if (controlIdent.type != 5) {
+                				error("\"" + scan.currentToken.tokenStr + "\"" + " must be of type string or boolean");
+                			}
+                		}
+                	}
         			resVal.value = resVal.value.substring(1, resVal.value.length()-1);
         			setStr = resVal.value;
         			String[] items = resVal.value.split(",");
@@ -894,10 +919,15 @@ public class Parser {
         		}
         	}
         	if (resVal.value.equals("") || !resVal.structure.get(0).matches("ARRAY")) {
+        		if (fromFlag == true) {
+        			if (scan.currentToken.subClassif != 5 && !scan.currentToken.tokenStr.equals("by")) {
+        				error("\"" + scan.currentToken.tokenStr + "\"" + " must be a string");
+        			}
+            		st.getSymbol(controlIdent.symbol).type = 5;
+        		}
         		// if its a string literal or string identifier
         		// convert the value to the setList
         		char [] chArray;
-        		st.getSymbol(controlIdent.symbol).type = 5;
         		if (resVal.value.equals("")) {
         			// if resVal.value is empty then its a string literal
         			chArray = scan.currentToken.tokenStr.toCharArray();
@@ -907,6 +937,7 @@ public class Parser {
         		else {
         			chArray = resVal.value.toCharArray();
         			setStr = resVal.value;
+        			setType = 5;
         		}
         		for (i = 0; i < chArray.length; i++) {
         			setList.add(String.valueOf(chArray[i]));
@@ -917,12 +948,26 @@ public class Parser {
         	// should be on ":" or "by"
         	if (scan.currentToken.tokenStr.equals("by")) {
         		scan.getNext();
+    			delim = scan.currentToken.tokenStr;
         		if (scan.currentToken.subClassif == 5) {
-        			delim = scan.currentToken.tokenStr;
         			scan.getNext();
         		}
         		else if (scan.currentToken.subClassif == 1) {
+        			if (fromFlag == true) {
+        				if (st.getSymbol(scan.currentToken.tokenStr) == null) {
+        					error("\"" + scan.currentToken.tokenStr + "\"" + " is undeclared");
+        				}
+        				if (st.getSymbol(scan.currentToken.tokenStr).type != 5) {
+        					error("\"" + scan.currentToken.tokenStr + "\"" + " must be a string");
+        				}
+        			}
         			resVal = expr(false);
+        			if (resVal.value == null) {
+        				error("\"" + delim + "\"" + " is uninitialized");
+        			}
+        			if (resVal.value == null) {
+
+        			}
         			delim = resVal.value;
         		}
         		else {
@@ -938,9 +983,14 @@ public class Parser {
         	if (!scan.currentToken.tokenStr.equals(":")) {
         		errorNoTerm("Missing terminating " + "\"" + ":" + "\"" + " in for loop");
         	}
+        	// if it was an undeclared identifier
+        	if (controlIdent.type == 7) {
+        		controlIdent.type = setType;
+        		st.getSymbol(controlIdent.symbol).type = setType;
+        	}
         	for (i = 0; i < setList.size(); i++) {
         		savedScanner = this.scan.saveState();
-        		if (controlIdent.type != arrayType) {
+        		if (controlIdent.type != setType) {
 	        		if (controlIdent.type == 4) {
 	        			if (!setList.get(i).equals("T") && !setList.get(i).equals("F")) {
 	        				error("\"" + setList.get(i) + "\"" + " must be T or F");
@@ -1008,8 +1058,7 @@ public class Parser {
 	 	    	   }
 	    	   }
 	       }
- 	       scan.getNext();
- 	       if (!scan.currentToken.tokenStr.equals(";")) {
+ 	       if (!scan.nextToken.tokenStr.equals(";")) {
  	    	   error("Missing " + "\"" + ";" + "\"" + " after endfor");
  	       }
         }
