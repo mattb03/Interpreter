@@ -1,0 +1,7 @@
+Int i = 54;
+Float o = 299;
+String s = "a cool string";
+Bool b = T;
+Int array[10] = 1, 1, 2, 3, 54, 2034234;
+
+print(i + e);

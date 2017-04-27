@@ -434,12 +434,13 @@ public class Parser {
     		statements(true);
     		// currentToken is an endif or an else
     		if (scan.currentToken.tokenStr.equals("else")) {
-    			statementToken = scan.currentToken; // save the starting else for error checking
+    			statementToken = scan.currentToken;
             	scan.getNext(); // consume else
             	if (! scan.currentToken.tokenStr.equals(":")) {
             		error("Invalid terminating token for else: '"
             				+ scan.currentToken.tokenStr +"'", statementToken);
             	}
+            	statementToken = beginningIf;
             	scan.getNext(); // consume separator
             	// run through the false statements
             	Stack<Token> stk = new Stack<Token>();
@@ -465,10 +466,14 @@ public class Parser {
             							+ scan.nextToken.tokenStr + "'");
             				}
             				stk.pop();
+            				if (! stk.isEmpty())
+            					statementToken = stk.peek();
+            				else
+            					statementToken = beginningIf;
             			}
             		}
             		if (scan.currentToken.primClassif == Token.EOF)
-        				error("Else statement not terminated by endif.", statementToken);
+        				error("If statement not terminated by endif.", statementToken);
 
             		scan.getNext();
             	} // endwhile
@@ -502,7 +507,7 @@ public class Parser {
     		}
     	// end of starting if true
 
-    	} else {
+    	} else if (resCond.value.equals("F")) {
     		// the starting if is false
         	// run through the false statements
         	Stack<Token> stk = new Stack<Token>();
@@ -576,6 +581,8 @@ public class Parser {
         					+ scan.currentToken.tokenStr + "'", statementToken);
         		}
     		}
+    	} else {
+    		error("Invalid conditional for if: '" + resCond.value + "'", beginningIf);
     	}
     }
 
@@ -631,7 +638,7 @@ public class Parser {
                     scan.getNext();
                 }
             }
-        } else {
+        } else if (resCond.value.equals("F")) {
             Stack<Token> stk = new Stack<Token>();
             while (true) {
                 if (scan.currentToken.tokenStr.equals("while")) {
@@ -659,6 +666,8 @@ public class Parser {
     				error("While statement not terminated by endwhile.", statementToken);
                 scan.getNext();
             }
+        } else {
+        	error("Invalid conditional for while: '" + resCond.value + "'", beginningWhile);
         }
     }
 
@@ -1037,7 +1046,7 @@ public class Parser {
 
     	// go through the expr and end if there isn't a token
     	// that can be in a expr
-    	while ((! tok.tokenStr.equals("print")) &&
+    	while ((! tok.tokenStr.equals("print") && ! tok.tokenStr.equals("=")) &&
     			(tok.primClassif == Token.OPERAND
     			|| tok.primClassif == Token.OPERATOR
     			|| tok.primClassif == Token.FUNCTION
@@ -1139,7 +1148,6 @@ public class Parser {
     							}
     						}
     						if (!bFound && funcCall) {   // no matching left paren but a func has been called ie print()
-    							// TODO: add function implementations here
                                 while (! mainStack.isEmpty()) {
                                     popped = mainStack.pop();
                                     if (popped.tokenStr.equals("("))
@@ -1216,7 +1224,6 @@ public class Parser {
         return evaluateExpr(postAList);
     }
 
-    // TODO: Edit error messages so they're more useful to end users.
     public ResultValue evaluateExpr(ArrayList<Token> list) throws ParserException, Exception {
     	Stack<Token> stk = new Stack<Token>(); // a stack that will be used to do the math
 
@@ -1241,7 +1248,6 @@ public class Parser {
     		currToken = list.get(i); // get the current Token from the ArrayList
     		switch (currToken.primClassif) {
 	    		case Token.OPERAND:
-	    			// TODO: add functionality to properly accept arrays and functions
 	    			if (currToken.isElemRef) {
 	    				STEntry stArray = st.getSymbol(currToken.tokenStr);
 	                    if (stArray == null) {
@@ -1250,7 +1256,7 @@ public class Parser {
 	    				try {
 		    				tokOp2 = (Token) stk.pop(); // grab the right operand (the only operand)
 		    			} catch (EmptyStackException a) {
-		    				error("Missing right expression operand for array element reference.", currToken);
+		    				error("Missing index expression operand for array '"+currToken.tokenStr+"'.", currToken);
 		    			}
 	    				if (tokOp2.subClassif == Token.IDENTIFIER) {
 	    					STEntry stEnt2 = st.getSymbol(tokOp2.tokenStr);
@@ -1266,7 +1272,7 @@ public class Parser {
 	    				if (currToken.isArray) {
 		    				resOp2.structure.add("ARRAY ELEM REF");
 
-		    				nOp2 = new Numeric(this, resOp2, currToken.tokenStr, "2nd Operand"); // must be a number
+		    				nOp2 = new Numeric(this, resOp2, currToken.tokenStr, "Index Operand"); // must be a number
 		    				if (nOp2.integerValue == -1) {
 		    					resTemp = ((STIdentifier) stArray).array.get(((STIdentifier) stArray).array.val.size() - 1);
 		    				} else {
@@ -1275,7 +1281,7 @@ public class Parser {
 	    				} else { // we have a string index reference
 	    					resOp2.structure.add("STRING ELEM REF");
 
-	    					nOp2 = new Numeric(this, resOp2, currToken.tokenStr, "2nd Operand"); // must be a number
+	    					nOp2 = new Numeric(this, resOp2, currToken.tokenStr, "Index Operand"); // must be a number
 	    					if (nOp2.integerValue == -1) {
 	    						resTemp.value = ((STIdentifier) stArray).getValue(((STIdentifier) stArray).value.length(), this);
 	    						resTemp.type = Token.STRING;
@@ -1286,13 +1292,14 @@ public class Parser {
 	    				}
 
 	    				extraToken1 = tokOp2.saveToken(); // get the most accurate values for the line and column # as possible
+	    				extraToken1.isArray = false;
                         extraToken1.tokenStr = resTemp.value;
                         extraToken1.primClassif = Token.OPERAND;
                         extraToken1.subClassif = resTemp.type;
 
                         stk.push(extraToken1);
 
-                        resMain.structure.add("ARRAY ELEM REF");
+                        resMain.structure.add(resOp2.structure.get(0));
 	    			} else {
 	    				stk.push(currToken); // add the operand onto the stack for future use
 	    			}
@@ -1323,17 +1330,19 @@ public class Parser {
 
 	    				switch (currToken.tokenStr) {
 	    				case "u-":
-	                        nOp2 = new Numeric(this, resOp2, currToken.tokenStr, "2nd Operand"); // must be a number
+	                        nOp2 = new Numeric(this, resOp2, currToken.tokenStr, "Operand"); // must be a number
 	                        resTemp = Utility.negative(this, nOp2);
 	    					break;
 	    				case "not":
-	    					if (resOp2.type != Token.BOOLEAN)
-	    						error("Right operand for 'not' is not of type BOOLEAN", tokOp2);
+	    					if (resOp2.type != Token.BOOLEAN || resOp2.type != Token.STRING)
+	    						error("Operand for 'not' is not of type BOOLEAN", tokOp2);
+	    					
 	    					resTemp = Utility.booleanConditionals(this, null, resOp2, "not");
 	    					break;
 	    				}
 
                         extraToken1 = tokOp2; // get the most accurate values for the line and column # as possible
+                        extraToken1.isArray = false;
                         extraToken1.tokenStr = resTemp.value;
                         extraToken1.primClassif = Token.OPERAND;
                         extraToken1.subClassif = resTemp.type;
@@ -1348,7 +1357,7 @@ public class Parser {
 		    				tokOp2 = (Token) stk.pop(); // grab the right operand
 		    			} catch (EmptyStackException a) {
 		    				error("Missing expression operand "
-		    						+ "fzor operator: '" + currToken.tokenStr + "'", currToken);
+		    						+ "for operator: '" + currToken.tokenStr + "'", currToken);
 		    			}
 		    			try {
 		    				tokOp1 = (Token) stk.pop(); // grab the left operand
@@ -1360,6 +1369,12 @@ public class Parser {
                         // set the ResultValue objects of the operands
 
 		    			// check if its a variable if so, we need its real value and dataType
+		    			// cannot operate on array tokens
+		    			if (tokOp1.isArray)
+		    				error("1st Operand of " + currToken.tokenStr + " operator cannot be of type ARRAY", currToken);
+		    			if (tokOp2.isArray)
+		    				error("2nd Operand of " + currToken.tokenStr + " operator cannot be of type ARRAY", currToken);
+		    			
 		    			if (tokOp1.subClassif == Token.IDENTIFIER) {
 		    				STEntry stEnt1 = st.getSymbol(tokOp1.tokenStr);
 		    				if (stEnt1 == null) {
@@ -1458,6 +1473,7 @@ public class Parser {
 
                         // add our new value to the stack
                         extraToken1 = tokOp1.saveToken(); // get the most accurate values for the line and column # as possible
+                        extraToken1.isArray = false;
                         extraToken1.tokenStr = resTemp.value;
                         extraToken1.primClassif = Token.OPERAND;
                         extraToken1.subClassif = resTemp.type;
@@ -1501,11 +1517,15 @@ public class Parser {
 	    				case "LENGTH":
 	    					if (tokOp2.isArray)
 	    						error("'" + tokOp2.tokenStr + "' type ARRAY is not a valid type for function LENGTH", tokOp2);
+	    					if (tokOp2.subClassif != Token.STRING)
+	    						error("Operand '" + tokOp2.tokenStr + "' is not a valid type for function LENGTH", tokOp2);
 	    					resTemp = Utility.LENGTH(this, resOp2.value);
 	    					break;
 	    				case "SPACES":
 	    					if (tokOp2.isArray)
 	    						error("'" + tokOp2.tokenStr + "' type ARRAY is not a valid type for function SPACES", tokOp2);
+	    					if (tokOp2.subClassif != Token.STRING)
+	    						error("Operand '" + tokOp2.tokenStr + "' is not a valid type for function SPACES", tokOp2);
 	    					resTemp = Utility.SPACES(this, resOp2.value);
 	    					break;
 	    				case "ELEM":
@@ -1574,14 +1594,18 @@ public class Parser {
             } else if (stk.peek().isArray && stk.size() == 2) {
             	// deal with array
             	Token poppedArray = stk.pop(); // get array
-            	extraToken2 = stk.pop(); // get array index
-            	STIdentifier stArray = ((STIdentifier) st.getSymbol(poppedArray.tokenStr));
-            	if (stArray == null) {
-            		error("'" + poppedArray.tokenStr + "' is not in the SymbolTable", poppedArray);
+            	if (poppedArray.isElemRef) {
+	            	extraToken2 = stk.pop(); // get array index
+	            	STIdentifier stArray = ((STIdentifier) st.getSymbol(poppedArray.tokenStr));
+	            	if (stArray == null) {
+	            		error("'" + poppedArray.tokenStr + "' is not in the SymbolTable", poppedArray);
+	            	}
+	            	resMain = stArray.array.get(Integer.parseInt(extraToken2.tokenStr));
+            	} else {
+            		error("Array '" + poppedArray.tokenStr + "' is missing an index reference", poppedArray);
             	}
-            	resMain = stArray.array.get(Integer.parseInt(extraToken2.tokenStr));
             } else {
-                error("Unbalanced Expression.", startOfExprToken); // this error should have been caught by all the other checks
+                error("Unbalanced Expression. Possibly Missing Operator", startOfExprToken); // this error should have been caught by all the other checks
             } // end of size check
         } else {
             error("'"+startOfExprToken.tokenStr+"' is an invalid expression."); // this error should have been caught by all the other checks
