@@ -2,7 +2,7 @@
 //debug Assign on;
 //debug Expr on;
 String stuff[10] = T, 1, 2.2;
-
+debug Exit on;
 
 String names[unbound]; //"blah", "Blah", "asdfadf", "a;lsdkjal;kdjf";
 names = "Matt";
@@ -45,12 +45,11 @@ print(name);
 
 Int nums[5] = 10,20,30;
 
-for i=0 to 5:
-    print("i = ", i, "; val = ", nums[i]);
-endfor;
+//for i=0 to 5:
+//    print("i = ", i, "; val = ", nums[i]);
+//endfor;
 
-debug Exit on;
-
+Int a = 100;
 
 Int more_nums[] = 0,1,2,3,4,5,6,7,8,9;
 nums = more_nums;

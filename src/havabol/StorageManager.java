@@ -188,7 +188,7 @@ public class StorageManager {
                         }
                     } else {
                         ResultValue resVal = new ResultValue(val);
-                        Numeric num = new Numeric(this.parser, resVal, arrayName, "");
+                        Numeric num = new Numeric(this.parser, resVal, arrayName, "Index "+i);
                         if (this.type == Token.INTEGER) {
                             resVal.value = String.valueOf(num.integerValue);
                         } else if (this.type == Token.FLOAT) {
