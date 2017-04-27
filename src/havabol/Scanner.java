@@ -77,6 +77,7 @@ public class Scanner {
             } catch (Exception e) { ; }
         }
         // first val of token a quote? then its a string
+
         if (value.charAt(0) == '"' || value.charAt(0) == '\'')
         {
             this.strEval(value);
@@ -226,8 +227,12 @@ public class Scanner {
         //array[array.length-1] = 0x0;
         for (int i=0; i < array.length; i++)
         {
-            if (array[i] == '\\' && escChars.indexOf(array[i+1]) == -1)
-            {
+            try {
+                if (array[i] == '\\' && escChars.indexOf(array[i+1]) == -1)
+                {
+                    this.handleErrors(value, INVALID_ESC);
+                }
+            } catch (Exception e) {
                 this.handleErrors(value, INVALID_ESC);
             }
             if (array[i] =='\\' && array[i+1] == 't')

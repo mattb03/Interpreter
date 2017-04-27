@@ -1,0 +1,190 @@
+errorTestCases/forLoopErrors/nestedCountingForLoops/
+********** ERROR **********
+Line 1: for i = 0 to limit:
+"limit" is undeclared
+File: errorTestCases/forLoopErrors/nestedCountingForLoops/limitUndeclared
+	at havabol.Parser.error(Parser.java:1668)
+	at havabol.Parser.forStmt(Parser.java:740)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/forLoopErrors/nestedCountingForLoops/
+********** ERROR **********
+Line 3: for i = 0 to limit:
+"limit" is uninitialized
+File: errorTestCases/forLoopErrors/nestedCountingForLoops/limitNoValue
+	at havabol.Parser.error(Parser.java:1668)
+	at havabol.Parser.forStmt(Parser.java:744)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+********** ERROR **********
+Line 3: for i = 0 to array[2] by array[1]
+Missing terminating ":" in for loop
+File: errorTestCases/forLoopErrors/nestedCountingForLoops/missingColonWithBy
+	at havabol.Parser.error(Parser.java:1678)
+	at havabol.Parser.forStmt(Parser.java:808)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+********** ERROR **********
+Line 1: for i 0 to 5:
+0 is not a valid for loop token
+File: errorTestCases/forLoopErrors/nestedCountingForLoops/missingEqualSign
+	at havabol.Parser.error(Parser.java:1668)
+	at havabol.Parser.forStmt(Parser.java:1077)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/forLoopErrors/nestedCountingForLoops/
+errorTestCases/forLoopErrors/nestedCountingForLoops/
+errorTestCases/forLoopErrors/nestedCountingForLoops/
+********** ERROR **********
+Line 3: for i = 0 to 5 by incr:
+OPERAND of increment operator isn't a valid numeric type
+File: errorTestCases/forLoopErrors/nestedCountingForLoops/incrIdentifierNotInteger
+	at havabol.Parser.error(Parser.java:1678)
+	at havabol.Numeric.<init>(Numeric.java:33)
+	at havabol.Parser.forStmt(Parser.java:784)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/forLoopErrors/nestedCountingForLoops/
+********** ERROR **********
+Line 3: for i = notInt to 5:
+RIGHT OPERAND of = operator isn't a valid numeric type
+File: errorTestCases/forLoopErrors/nestedCountingForLoops/startIdentifierNotInteger
+	at havabol.Parser.error(Parser.java:1678)
+	at havabol.Numeric.<init>(Numeric.java:33)
+	at havabol.Parser.forStmt(Parser.java:729)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/forLoopErrors/nestedCountingForLoops/
+********** ERROR **********
+Line 3: for i = 0 to 5 by incr:
+"incr" is uninitialized
+File: errorTestCases/forLoopErrors/nestedCountingForLoops/incrNoValue
+	at havabol.Parser.error(Parser.java:1668)
+	at havabol.Parser.forStmt(Parser.java:779)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+********** ERROR **********
+Line 1: for i = 0 to 5 2:
+Missing "by" keyword in for loop
+File: errorTestCases/forLoopErrors/nestedCountingForLoops/missingByKeyword
+	at havabol.Parser.error(Parser.java:1668)
+	at havabol.Parser.forStmt(Parser.java:805)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/forLoopErrors/nestedCountingForLoops/
+errorTestCases/forLoopErrors/nestedCountingForLoops/
+********** ERROR **********
+Line 1: for i = 0 to 5 by incr:
+"incr" is undeclared
+File: errorTestCases/forLoopErrors/nestedCountingForLoops/incrUndeclared
+	at havabol.Parser.error(Parser.java:1668)
+	at havabol.Parser.forStmt(Parser.java:774)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/forLoopErrors/nestedCountingForLoops/
+********** ERROR **********
+Line 1: for i = 5 10:
+Unbalanced Expression. Possibly Missing Operator
+File: errorTestCases/forLoopErrors/nestedCountingForLoops/missingToKeyword
+	at havabol.Parser.error(Parser.java:1678)
+	at havabol.Parser.evaluateExpr(Parser.java:1659)
+	at havabol.Parser.expr(Parser.java:1279)
+	at havabol.Parser.forStmt(Parser.java:724)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/forLoopErrors/nestedCountingForLoops/
+********** ERROR **********
+Line 1: for i = 0 to 5 by "wrong":
+wrong must be an integer
+File: errorTestCases/forLoopErrors/nestedCountingForLoops/incrInvalid
+	at havabol.Parser.error(Parser.java:1668)
+	at havabol.Parser.forStmt(Parser.java:797)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+********** ERROR **********
+Line 1: for i = 0 to "wrong":
+wrong must be an integer
+File: errorTestCases/forLoopErrors/nestedCountingForLoops/limitInvalid
+	at havabol.Parser.error(Parser.java:1668)
+	at havabol.Parser.forStmt(Parser.java:763)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+********** ERROR **********
+Line 2: for i = 0 to limit:
+OPERAND of limit operator isn't a valid numeric type
+File: errorTestCases/forLoopErrors/nestedCountingForLoops/limitIdentifierNotInteger
+	at havabol.Parser.error(Parser.java:1678)
+	at havabol.Numeric.<init>(Numeric.java:33)
+	at havabol.Parser.forStmt(Parser.java:749)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/forLoopErrors/nestedCountingForLoops/
+errorTestCases/forLoopErrors/nestedCountingForLoops/
+errorTestCases/forLoopErrors/nestedCountingForLoops/
+********** ERROR **********
+Line 1: for i = start to 5:
+Symbol 'start' is not in Symbol Table.
+File: errorTestCases/forLoopErrors/nestedCountingForLoops/startUndeclared
+	at havabol.Parser.error(Parser.java:1678)
+	at havabol.Parser.evaluateExpr(Parser.java:1623)
+	at havabol.Parser.expr(Parser.java:1121)
+	at havabol.Parser.forStmt(Parser.java:724)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/forLoopErrors/nestedCountingForLoops/
+********** ERROR **********
+Line 3: for i = start to 5:
+"i" has not been initialized
+File: errorTestCases/forLoopErrors/nestedCountingForLoops/startNoValue
+	at havabol.Parser.error(Parser.java:1668)
+	at havabol.Parser.forStmt(Parser.java:726)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/forLoopErrors/nestedCountingForLoops/
+i=0
+********** ERROR **********
+Line 2: for i = 0 to 5 by 2:
+Missing terminating "; after "endfor"
+File: errorTestCases/forLoopErrors/nestedCountingForLoops/missingEndforSemicolon
+	at havabol.Parser.error(Parser.java:1678)
+	at havabol.Parser.forStmt(Parser.java:821)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/forLoopErrors/nestedCountingForLoops/
+i=0
+********** ERROR **********
+Line 2: for i = 0 to 5:
+Missing terminating "endfor" after for loop
+File: errorTestCases/forLoopErrors/nestedCountingForLoops/missingEndfor
+	at havabol.Parser.error(Parser.java:1678)
+	at havabol.Parser.forStmt(Parser.java:818)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/forLoopErrors/nestedCountingForLoops/
+********** ERROR **********
+Line 3: for i = 0 to array[2]
+Missing terminating ":" in for loop
+File: errorTestCases/forLoopErrors/nestedCountingForLoops/missingColonWithoutBy
+	at havabol.Parser.error(Parser.java:1678)
+	at havabol.Parser.forStmt(Parser.java:808)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+********** ERROR **********
+Line 1: for 5 = 0 to 10:
+5 must be an identifier
+File: errorTestCases/forLoopErrors/nestedCountingForLoops/startNotIdentifier
+	at havabol.Parser.error(Parser.java:1668)
+	at havabol.Parser.forStmt(Parser.java:709)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/forLoopErrors/nestedCountingForLoops/
+********** ERROR **********
+Line 1: for i = "wrong" to 5:
+"wrong" must be an integer
+File: errorTestCases/forLoopErrors/nestedCountingForLoops/startInvalid
+	at havabol.Parser.error(Parser.java:1668)
+	at havabol.Parser.forStmt(Parser.java:720)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/forLoopErrors/nestedCountingForLoops/
+errorTestCases/forLoopErrors/nestedCountingForLoops/

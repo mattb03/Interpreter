@@ -1,0 +1,7 @@
+Int array[5] = 1, 2, 3;
+Int stuff[5] = 1, 2, 3;
+for i stuff:
+	for item in array:
+		print ("item=", item);
+	endfor
+endfor;

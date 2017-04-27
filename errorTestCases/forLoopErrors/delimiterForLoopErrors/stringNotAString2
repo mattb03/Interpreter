@@ -1,0 +1,5 @@
+String delim = ",";
+
+for ch from 5 by delim:
+	print (ch);
+endfor;

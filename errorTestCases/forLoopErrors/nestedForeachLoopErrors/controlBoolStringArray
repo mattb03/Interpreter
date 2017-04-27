@@ -1,0 +1,9 @@
+Bool flag = T;
+
+String array[5] = "T", "string", "F";
+Int stuff[5] = 1, 2, 3;
+for i stuff:
+	for flag in array:
+		print (flag);
+	endfor;
+endfor;

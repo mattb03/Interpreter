@@ -1,3 +1,4 @@
+
 Int i;
 Int dos = 2;
 for i = 0 to 3:
@@ -83,9 +84,9 @@ String exclamation = "!";
 
 for i in array:
 	print (i);
-	for i in list:
-		print (i);
-		for tok in "really! pushing! it!" by exclamation:
+	for str in list:
+		print (str);
+		for tok in "delimited, by, exclamation" by exclamation:
 			print (tok);
 		endfor;
 	endfor;
@@ -148,5 +149,21 @@ for j = 5 * 2 / 2 ^ 2 to j * 5 + 3 ^ 2 by j ^ 2 / 3 * 1:
 	print ("last outer j=", j);
 	for item in "size, string, oh, YES!" by ",":
 		print (item);
+	endfor;
+endfor;
+
+Int array2[10] = 3, 4, 5;
+// array = 1, 2, 3;
+for i = array[0] to array2[2] by array[1]:
+	print ("oh no i=", i);
+	for j = array[0] to array2[2]:
+		print ("j=", j);
+	endfor;
+endfor;
+
+for i = array[0] to array2[2]:
+	print ("oh no i=", i);
+	for j = array[0] to array2[2] by array[1]:
+		print ("j=", j);
 	endfor;
 endfor;

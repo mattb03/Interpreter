@@ -1,0 +1,7 @@
+Bool flag = T;
+
+String array[5] = "T", "string", "F";
+
+for flag in array:
+	print (flag);
+endfor;

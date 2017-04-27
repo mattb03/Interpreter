@@ -10,6 +10,9 @@ test_all: test test2 test3 arr string expr func simp out1 out2 out3 hav
 makebin:
 	mkdir -p bin
 
+dec:
+	$(JAVA) $(JFLAGS) havabol.HavaBol declarations/test1.txt
+
 test:
 	$(JAVA) $(JFLAGS) havabol.HavaBol test.txt
 
@@ -28,7 +31,6 @@ expr:
 	$(JAVA) $(JFLAGS) havabol.HavaBol p4Expr.txt
 func:
 	$(JAVA) $(JFLAGS) havabol.HavaBol p4Func.txt
-
 
 
 

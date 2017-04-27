@@ -1,0 +1,5 @@
+Int i;
+
+for i in "string":
+	print (i);
+endfor;

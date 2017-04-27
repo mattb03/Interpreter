@@ -1,0 +1,15 @@
+if T:
+	print("true");
+	if T:
+		print("inner if is true");
+	else:
+		print("inner if is false");
+	endif;
+ese:
+	print("false");
+	if T:
+		print("inner if is true");
+	else:
+		print("inner if is false");
+	endif;
+endif;

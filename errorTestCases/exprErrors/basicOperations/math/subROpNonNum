@@ -1,0 +1,7 @@
+Int i = 54;
+Float o = 299;
+String s = "a cool string";
+Bool b = T;
+
+// basic operations
+print(i - s);

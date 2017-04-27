@@ -99,6 +99,17 @@ public class Utility {
 	}
 
 	public static ResultValue lessThan(Parser parser, ResultValue resOp1, ResultValue resOp2, boolean equals) throws ParserException {
+		if (resOp1.type == Token.BOOLEAN) {
+			if (equals)
+				parser.error("1st Operand of <= operator cannot be type BOOLEAN", parser.startOfExprToken);
+			parser.error("1st Operand of < operator cannot be type BOOLEAN", parser.startOfExprToken);
+		}
+		else if (resOp2.type == Token.BOOLEAN) {
+			if (equals)
+				parser.error("2nd Operand of <= operator cannot be type BOOLEAN", parser.startOfExprToken);
+			parser.error("2nd Operand of < operator cannot be type BOOLEAN", parser.startOfExprToken);
+		}
+		
 		ResultValue res = new ResultValue("");
 		res.type = Token.BOOLEAN;
 		if (resOp1.type == Token.INTEGER || resOp1.type == Token.FLOAT) {
@@ -139,6 +150,17 @@ public class Utility {
 	}
 
 	public static ResultValue greaterThan(Parser parser, ResultValue resOp1, ResultValue resOp2, boolean equals) throws ParserException {
+		if (resOp1.type == Token.BOOLEAN) {
+			if (equals)
+				parser.error("1st Operand of >= operator cannot be type BOOLEAN", parser.startOfExprToken);
+			parser.error("1st Operand of > operator cannot be type BOOLEAN", parser.startOfExprToken);
+		}
+		else if (resOp2.type == Token.BOOLEAN) {
+			if (equals)
+				parser.error("2nd Operand of >= operator cannot be type BOOLEAN", parser.startOfExprToken);
+			parser.error("2nd Operand of > operator cannot be type BOOLEAN", parser.startOfExprToken);
+		}
+		
 		ResultValue res = new ResultValue("");
 		res.type = Token.BOOLEAN;
 		if (resOp1.type == Token.INTEGER || resOp1.type == Token.FLOAT) {
@@ -178,6 +200,17 @@ public class Utility {
 	}
 
 	public static ResultValue equals(Parser parser, ResultValue resOp1, ResultValue resOp2, boolean not) throws ParserException {
+		if (resOp1.type == Token.BOOLEAN) {
+			if (not)
+				parser.error("1st Operand of != operator cannot be type BOOLEAN", parser.startOfExprToken);
+			parser.error("1st Operand of == operator cannot be type BOOLEAN", parser.startOfExprToken);
+		}
+		else if (resOp2.type == Token.BOOLEAN) {
+			if (not)
+				parser.error("2nd Operand of != operator cannot be type BOOLEAN", parser.startOfExprToken);
+			parser.error("2nd Operand of == operator cannot be type BOOLEAN", parser.startOfExprToken);
+		}
+		
 		ResultValue res = new ResultValue("");
 		res.type = Token.BOOLEAN;
 		if (resOp1.type == Token.INTEGER || resOp1.type == Token.FLOAT) {
@@ -266,9 +299,9 @@ public class Utility {
 				return res;
 			} else {
 				if (type1 != Token.BOOLEAN)
-					parser.error("1st Operand of '" + op + "' isn't a valid boolean variable.");
+					parser.error("1st Operand of '" + op + "' isn't of type BOOLEAN.");
 				else
-					parser.error("2nd Operand of '" + op + "' isn't a valid boolean variable.");
+					parser.error("2nd Operand of '" + op + "' isn't of type BOOLEAN.");
 	
 				return null; // unreachable code
 			}

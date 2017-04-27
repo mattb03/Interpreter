@@ -1,0 +1,154 @@
+errorTestCases/forLoopErrors/nestedDelimiterForLoopErrors/
+********** ERROR **********
+Line 2: 	for ch from str by ",":
+"str" is undeclared
+File: errorTestCases/forLoopErrors/nestedDelimiterForLoopErrors/stringUndeclared
+	at havabol.Parser.error(Parser.java:1668)
+	at havabol.Parser.forStmt(Parser.java:895)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.Parser.forStmt(Parser.java:1029)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/forLoopErrors/nestedDelimiterForLoopErrors/
+********** ERROR **********
+Line 5: 	for ch from str by delim:
+"delim" is uninitialized
+File: errorTestCases/forLoopErrors/nestedDelimiterForLoopErrors/delimiterNoValue
+	at havabol.Parser.error(Parser.java:1668)
+	at havabol.Parser.forStmt(Parser.java:977)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.Parser.forStmt(Parser.java:1029)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/forLoopErrors/nestedDelimiterForLoopErrors/
+********** ERROR **********
+Line 5: 	for ch from str by delim:
+"str" is uninitialized
+File: errorTestCases/forLoopErrors/nestedDelimiterForLoopErrors/stringNoValue
+	at havabol.Parser.error(Parser.java:1668)
+	at havabol.Parser.forStmt(Parser.java:900)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.Parser.forStmt(Parser.java:1029)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+********** ERROR **********
+Line 4: 	for ch from str by 5:
+"5" must be a string
+File: errorTestCases/forLoopErrors/nestedDelimiterForLoopErrors/delimiterNotString2
+	at havabol.Parser.error(Parser.java:1668)
+	at havabol.Parser.forStmt(Parser.java:985)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.Parser.forStmt(Parser.java:1029)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/forLoopErrors/nestedDelimiterForLoopErrors/
+errorTestCases/forLoopErrors/nestedDelimiterForLoopErrors/
+********** ERROR **********
+Line 3: 	for 5 from str by ",":
+5 must be an identifier
+File: errorTestCases/forLoopErrors/nestedDelimiterForLoopErrors/iterableNotIdentifier
+	at havabol.Parser.error(Parser.java:1668)
+	at havabol.Parser.forStmt(Parser.java:866)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.Parser.forStmt(Parser.java:1029)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/forLoopErrors/nestedDelimiterForLoopErrors/
+********** ERROR **********
+Line 5: 	for ch from str by delim:
+"delim" is undeclared
+File: errorTestCases/forLoopErrors/nestedDelimiterForLoopErrors/delimiterUndeclared
+	at havabol.Parser.error(Parser.java:1668)
+	at havabol.Parser.forStmt(Parser.java:969)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.Parser.forStmt(Parser.java:1029)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/forLoopErrors/nestedDelimiterForLoopErrors/
+********** ERROR **********
+Line 5: 	for ch from str by delim:
+"delim" must be a string
+File: errorTestCases/forLoopErrors/nestedDelimiterForLoopErrors/delimiterNotString
+	at havabol.Parser.error(Parser.java:1668)
+	at havabol.Parser.forStmt(Parser.java:972)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.Parser.forStmt(Parser.java:1029)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+********** ERROR **********
+Line 4: 	for ch from 5 by delim:
+"5" must be a string
+File: errorTestCases/forLoopErrors/nestedDelimiterForLoopErrors/stringNotAString2
+********** ERROR **********
+Line 6: 	for iterable from str by ",":
+"iterable" must be a string identifier
+File: errorTestCases/forLoopErrors/nestedDelimiterForLoopErrors/iterableNotStringIdentifier
+	at havabol.Parser.error(Parser.java:1668)
+	at havabol.Parser.forStmt(Parser.java:881)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.Parser.forStmt(Parser.java:1029)
+	at havabol.Parser.error(Parser.java:1668)	at havabol.Parser.statements(Parser.java:280)
+
+	at havabol.Parser.forStmt(Parser.java:935)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.Parser.forStmt(Parser.java:1029)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/forLoopErrors/nestedDelimiterForLoopErrors/
+errorTestCases/forLoopErrors/nestedDelimiterForLoopErrors/
+errorTestCases/forLoopErrors/nestedDelimiterForLoopErrors/
+i
+ love
+ havabol
+********** ERROR **********
+Line 3: for i in "string, delimited" by ",":
+Missing terminating "endfor" after for loop
+File: errorTestCases/forLoopErrors/nestedDelimiterForLoopErrors/missingEndfor
+	at havabol.Parser.error(Parser.java:1678)
+	at havabol.Parser.forStmt(Parser.java:1032)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+i
+ love
+********** ERROR **********
+Line 4: 	for ch from notString by ",":
+"notString" must be a string
+File: errorTestCases/forLoopErrors/nestedDelimiterForLoopErrors/stringNotAString
+ havabol
+	at havabol.Parser.error(Parser.java:1668)
+	at havabol.Parser.forStmt(Parser.java:904)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.Parser.forStmt(Parser.java:1029)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/forLoopErrors/nestedDelimiterForLoopErrors/
+errorTestCases/forLoopErrors/nestedDelimiterForLoopErrors/
+********** ERROR **********
+Line 4: 	for token from str by ","
+Missing terminating ":" in for loop
+File: errorTestCases/forLoopErrors/nestedDelimiterForLoopErrors/missingColon
+	at havabol.Parser.errorNoTerm(Parser.java:1673)
+	at havabol.Parser.forStmt(Parser.java:995)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.Parser.forStmt(Parser.java:1029)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/forLoopErrors/nestedDelimiterForLoopErrors/
+********** ERROR **********
+Line 3: for i in "string, delimited" by ",":
+Missing terminating "; after "endfor"
+File: errorTestCases/forLoopErrors/nestedDelimiterForLoopErrors/missingEndforSemicolon
+	at havabol.Parser.error(Parser.java:1678)
+	at havabol.Parser.forStmt(Parser.java:1035)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+********** ERROR **********
+Line 1: errorTestCases/forLoopErrors/nestedDelimiterForLoopErrors/
+Symbol 'errorTestCases' is not in Symbol Table.
+File: errorTestCases/forLoopErrors/nestedDelimiterForLoopErrors/nestedDelimiterErrors.txt
+	at havabol.Parser.error(Parser.java:1668)
+	at havabol.Parser.statements(Parser.java:212)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/forLoopErrors/nestedDelimiterForLoopErrors/
+errorTestCases/forLoopErrors/nestedDelimiterForLoopErrors/

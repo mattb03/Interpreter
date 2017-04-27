@@ -1,0 +1,10 @@
+Int i = 1;
+Int o = 1;
+while i < 10:
+	print (i);
+	while o < 5:
+		print(o);
+		o = o + 3;
+	endwhile;
+	i = i + 2;
+	

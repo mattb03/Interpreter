@@ -1,0 +1,5 @@
+Int limit;
+
+for i = 0 to limit:
+	print ("i=", i);
+endfor;
