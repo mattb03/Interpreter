@@ -1,0 +1,4 @@
+String limit = "not integer";
+for i = 0 to limit:
+	print ("i=", i);
+endfor;

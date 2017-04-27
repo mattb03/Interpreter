@@ -1,0 +1,5 @@
+for i = 0 to 5:
+	for i = 0 to "wrong":
+		print ("i=", i);
+	endfor;
+endfor;

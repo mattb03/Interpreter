@@ -1,0 +1,5 @@
+Int array[5] = 1, 2, 3;
+
+for 5 in array:
+	print (5);
+endfor;

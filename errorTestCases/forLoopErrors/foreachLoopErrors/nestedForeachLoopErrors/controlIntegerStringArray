@@ -1,0 +1,7 @@
+Int i;
+
+String array[5] = "1", "2", "three";
+
+for i in array:
+	print (i);
+endfor;

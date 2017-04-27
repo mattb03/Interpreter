@@ -1,0 +1,3 @@
+for item in array:
+	print ("item=", item);
+endfor;

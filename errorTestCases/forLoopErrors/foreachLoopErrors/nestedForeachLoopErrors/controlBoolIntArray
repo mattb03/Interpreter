@@ -1,0 +1,6 @@
+Bool flag = T;
+Int array[5] = 1, 2, 3;
+
+for flag in array:
+	print (flag);
+endfor;

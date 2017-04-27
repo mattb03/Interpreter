@@ -1,0 +1,6 @@
+Int incr;
+for i = 0 to 5:
+	for i = 0 to 5 by incr:
+		print ("i=", i);
+	endfor;
+endfor;

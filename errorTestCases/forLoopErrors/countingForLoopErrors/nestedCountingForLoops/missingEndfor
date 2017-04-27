@@ -1,0 +1,7 @@
+// error case for missing endfor in counter loop
+
+for i = 0 to 5:
+	for i = 0 to 5:
+		print ("i=", i);
+		
+endfor;
