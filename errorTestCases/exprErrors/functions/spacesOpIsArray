@@ -4,4 +4,4 @@ String s = "a cool string";
 Bool b = T;
 Int array[] = 1, 1, 2, 3, 54, 2034234;
 
-print(SPACES(i));
+print(SPACES(array));

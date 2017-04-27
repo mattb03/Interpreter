@@ -1387,7 +1387,7 @@ public class Parser {
 	                        resTemp = Utility.negative(this, nOp2);
 	    					break;
 	    				case "not":
-	    					if (resOp2.type != Token.BOOLEAN || resOp2.type != Token.STRING)
+	    					if (resOp2.type != Token.BOOLEAN && resOp2.type != Token.STRING)
 	    						error("Operand for 'not' is not of type BOOLEAN", tokOp2);
 	    					
 	    					resTemp = Utility.booleanConditionals(this, null, resOp2, "not");
@@ -1570,15 +1570,11 @@ public class Parser {
 	    				case "LENGTH":
 	    					if (tokOp2.isArray)
 	    						error("'" + tokOp2.tokenStr + "' type ARRAY is not a valid type for function LENGTH", tokOp2);
-	    					if (tokOp2.subClassif != Token.STRING)
-	    						error("Operand '" + tokOp2.tokenStr + "' is not a valid type for function LENGTH", tokOp2);
 	    					resTemp = Utility.LENGTH(this, resOp2.value);
 	    					break;
 	    				case "SPACES":
 	    					if (tokOp2.isArray)
 	    						error("'" + tokOp2.tokenStr + "' type ARRAY is not a valid type for function SPACES", tokOp2);
-	    					if (tokOp2.subClassif != Token.STRING)
-	    						error("Operand '" + tokOp2.tokenStr + "' is not a valid type for function SPACES", tokOp2);
 	    					resTemp = Utility.SPACES(this, resOp2.value);
 	    					break;
 	    				case "ELEM":
