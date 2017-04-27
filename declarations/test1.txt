@@ -6,7 +6,6 @@ n2 = 3.14;
 n = n + n2;
 print("n should be '103'  n is : ", n);
 
-debug Exit on;
 
 // casting for type Int
 Int num = 5;
