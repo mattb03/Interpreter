@@ -1,0 +1,7 @@
+Int notString = 1;
+
+for i in "string, delimited" by ",":
+	for ch from notString by ",":
+		print (ch);
+	endfor;
+endfor;

@@ -1,0 +1,7 @@
+Int i;
+Int stuff[5] = 1, 2, 3;
+for i stuff:
+	for i in "string":
+		print (i);
+	endfor;
+endfor;

@@ -1,0 +1,8 @@
+Bool flag = T;
+
+Int stuff[5] = 1, 2, 3;
+for i stuff:
+	for flag in "Tring":
+		print (flag);
+	endfor;
+endfor;

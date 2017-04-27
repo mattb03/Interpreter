@@ -1,0 +1,5 @@
+String notInt = "not int";
+
+for i = notInt to 5:
+	print ("i=", i);
+endfor;

@@ -1,0 +1,5 @@
+Int notString = 1;
+
+for ch from notString by ",":
+	print (ch);
+endfor;

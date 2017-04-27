@@ -1,0 +1,8 @@
+String str = "delimited, by, commas";
+
+String delim;
+for i in "string, delimited" by ",":
+	for ch from str by delim:
+		print (ch);
+	endfor;
+endfor;

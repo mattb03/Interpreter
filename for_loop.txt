@@ -84,9 +84,9 @@ String exclamation = "!";
 
 for i in array:
 	print (i);
-	for i in list:
-		print (i);
-		for tok in "really! pushing! it!" by exclamation:
+	for str in list:
+		print (str);
+		for tok in "delimited, by, exclamation" by exclamation:
 			print (tok);
 		endfor;
 	endfor;

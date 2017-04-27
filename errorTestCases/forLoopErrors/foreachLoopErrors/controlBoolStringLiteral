@@ -1,0 +1,5 @@
+Bool flag = T;
+
+for flag in "Tring":
+	print (flag);
+endfor;

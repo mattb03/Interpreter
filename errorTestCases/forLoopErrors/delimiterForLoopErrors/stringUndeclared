@@ -1,0 +1,3 @@
+for ch from str by ",":
+	print ("ch=", ch);
+endfor;

@@ -1,0 +1,6 @@
+String str;
+String delim = ",";
+
+for ch from str by delim:
+	print (ch);
+endfor;
