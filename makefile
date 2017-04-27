@@ -34,9 +34,6 @@ func:
 
 
 
-for: 
-	$(JAVA) $(JFLAGS) havabol.HavaBol ./errorTestCases/forLoopErrors/countingForLoopErrors/nestedCountingForLoops/* 
-
 
 simp:
 	$(JAVA) $(JFLAGS) havabol.HavaBol p3SimpExpr.txt

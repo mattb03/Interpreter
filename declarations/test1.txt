@@ -4,7 +4,7 @@ Int n = 100;
 Float n2;
 n2 = 3.14;
 n = n + n2;
-print("n should be '103'. n is : ", n);
+print("n should be '103'  n is : ", n);
 
 
 
@@ -23,7 +23,7 @@ Float f = 10;
 Float f2 = "10";
 Float f3 = "10.0000";
 Float farr[3] = f, f2, f3;
-print("values should all be 10.00. farr--> ", farr);
+print("values should all be 10.00  farr--> ", farr);
 
 
 // Casting for type Bool
@@ -31,7 +31,7 @@ print("values should all be 10.00. farr--> ", farr);
 Bool b = T;
 Bool b2 = "T";
 Bool barray[] = b, b2;
-print("barray's values should both be T. barray --> ", barray);
+print("barray's values should both be T  barray --> ", barray);
 
 // casting for type String
 
@@ -58,7 +58,7 @@ print("Initials:  ", first[0]#".\t"#last[0]#".");
 // ARRAYS
 String sf = "1.11";
 Float ff = sf;
-print(ff);
+print("string \"1.11\" was cast to a float --> ", ff);
 
 Int inums[5] = 10, 10.234, "10.999", "10", f;
 print("\nAll Int values should be '10'. inums--> ",inums);
