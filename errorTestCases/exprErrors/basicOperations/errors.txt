@@ -1,0 +1,69 @@
+errorTestCases/exprErrors/basicOperations/
+java.io.IOException: Is a directory
+	at sun.nio.ch.FileDispatcherImpl.read0(Native Method)
+	at sun.nio.ch.FileDispatcherImpl.read(FileDispatcherImpl.java:46)
+	at sun.nio.ch.IOUtil.readIntoNativeBuffer(IOUtil.java:223)
+	at sun.nio.ch.IOUtil.read(IOUtil.java:197)
+	at sun.nio.ch.FileChannelImpl.read(FileChannelImpl.java:143)
+	at sun.nio.ch.ChannelInputStream.read(ChannelInputStream.java:65)
+	at sun.nio.ch.ChannelInputStream.read(ChannelInputStream.java:109)
+	at sun.nio.ch.ChannelInputStream.read(ChannelInputStream.java:103)
+	at java.nio.file.Files.read(Files.java:3102)
+	at java.nio.file.Files.readAllBytes(Files.java:3155)
+	at havabol.Scanner.<init>(Scanner.java:40)
+	at havabol.Parser.<init>(Parser.java:19)
+	at havabol.HavaBol.main(HavaBol.java:7)
+errorTestCases/exprErrors/basicOperations/
+********** ERROR **********
+Line 1: errorTestCases/exprErrors/basicOperations/
+Symbol 'errorTestCases' is not in Symbol Table.
+File: errorTestCases/exprErrors/basicOperations/errors.txt
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.Parser.statements(Parser.java:212)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/exprErrors/basicOperations/
+java.io.IOException: Is a directory
+	at sun.nio.ch.FileDispatcherImpl.read0(Native Method)
+	at sun.nio.ch.FileDispatcherImpl.read(FileDispatcherImpl.java:46)
+	at sun.nio.ch.IOUtil.readIntoNativeBuffer(IOUtil.java:223)
+	at sun.nio.ch.IOUtil.read(IOUtil.java:197)
+	at sun.nio.ch.FileChannelImpl.read(FileChannelImpl.java:143)
+	at sun.nio.ch.ChannelInputStream.read(ChannelInputStream.java:65)
+	at sun.nio.ch.ChannelInputStream.read(ChannelInputStream.java:109)
+	at sun.nio.ch.ChannelInputStream.read(ChannelInputStream.java:103)
+	at java.nio.file.Files.read(Files.java:3102)
+	at java.nio.file.Files.readAllBytes(Files.java:3155)
+	at havabol.Scanner.<init>(Scanner.java:40)
+	at havabol.Parser.<init>(Parser.java:19)
+	at havabol.HavaBol.main(HavaBol.java:7)
+errorTestCases/exprErrors/basicOperations/
+********** ERROR **********
+Line 7: print( + );
+Missing expression operand for operator: '+'
+File: errorTestCases/exprErrors/basicOperations/missingOperands
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Parser.evaluateExpr(Parser.java:1431)
+	at havabol.Parser.expr(Parser.java:1230)
+	at havabol.Parser.statements(Parser.java:56)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/exprErrors/basicOperations/
+********** ERROR **********
+Line 7: print(1 23);
+Unbalanced Expression. Possibly Missing Operator
+File: errorTestCases/exprErrors/basicOperations/missingOperator
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Parser.evaluateExpr(Parser.java:1676)
+	at havabol.Parser.expr(Parser.java:1230)
+	at havabol.Parser.statements(Parser.java:85)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/exprErrors/basicOperations/
+********** ERROR **********
+Line 7: print(i + e);
+Symbol 'e' is not in Symbol Table.
+File: errorTestCases/exprErrors/basicOperations/operandNotCreated
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Parser.evaluateExpr(Parser.java:1468)
+	at havabol.Parser.expr(Parser.java:1230)
+	at havabol.Parser.statements(Parser.java:85)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/exprErrors/basicOperations/

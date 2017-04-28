@@ -1,0 +1,87 @@
+errorTestCases/whileErrors/
+i = 1
+o = 1
+o = 4
+********** ERROR **********
+Line 10: endwhile:
+Invalid terminating token for endwhile: ':'
+File: errorTestCases/whileErrors/endWhileNotCorrectlyTerminated
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Parser.whileStmt(Parser.java:632)
+	at havabol.Parser.statements(Parser.java:273)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/whileErrors/
+i = 1
+o = 1
+o = 4
+********** ERROR **********
+Line 10: endwhile
+Invalid terminating token for endwhile: 'endwhile'
+File: errorTestCases/whileErrors/endWhileNotTerminated
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Parser.whileStmt(Parser.java:632)
+	at havabol.Parser.statements(Parser.java:273)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/whileErrors/
+java.io.IOException: Is a directory
+	at sun.nio.ch.FileDispatcherImpl.read0(Native Method)
+	at sun.nio.ch.FileDispatcherImpl.read(FileDispatcherImpl.java:46)
+	at sun.nio.ch.IOUtil.readIntoNativeBuffer(IOUtil.java:223)
+	at sun.nio.ch.IOUtil.read(IOUtil.java:197)
+	at sun.nio.ch.FileChannelImpl.read(FileChannelImpl.java:143)
+	at sun.nio.ch.ChannelInputStream.read(ChannelInputStream.java:65)
+	at sun.nio.ch.ChannelInputStream.read(ChannelInputStream.java:109)
+	at sun.nio.ch.ChannelInputStream.read(ChannelInputStream.java:103)
+	at java.nio.file.Files.read(Files.java:3102)
+	at java.nio.file.Files.readAllBytes(Files.java:3155)
+	at havabol.Scanner.<init>(Scanner.java:40)
+	at havabol.Parser.<init>(Parser.java:19)
+	at havabol.HavaBol.main(HavaBol.java:7)
+errorTestCases/whileErrors/
+1
+1
+4
+********** ERROR **********
+Line 3: while i < 10:
+While not terminated by endwhile.
+File: errorTestCases/whileErrors/noEndWhile
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Parser.whileStmt(Parser.java:628)
+	at havabol.Parser.statements(Parser.java:273)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/whileErrors/
+********** ERROR **********
+Line 3: while "this is not a boolean":
+Invalid conditional for while: 'this is not a boolean'
+File: errorTestCases/whileErrors/nonBooleanCondition
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Parser.whileStmt(Parser.java:689)
+	at havabol.Parser.statements(Parser.java:273)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/whileErrors/
+********** ERROR **********
+Line 1: errorTestCases/whileErrors/
+Symbol 'errorTestCases' is not in Symbol Table.
+File: errorTestCases/whileErrors/whileErrors.txt
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.Parser.statements(Parser.java:212)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/whileErrors/
+********** ERROR **********
+Line 3: while i < 10;
+Invalid terminating token for while: ';'
+File: errorTestCases/whileErrors/whileNotCorrectlyTerminated
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Parser.whileStmt(Parser.java:617)
+	at havabol.Parser.statements(Parser.java:273)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/whileErrors/
+********** ERROR **********
+Line 3: while i < 10
+Invalid terminating token for while: 'print'
+File: errorTestCases/whileErrors/whileNotTerminated
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Parser.whileStmt(Parser.java:617)
+	at havabol.Parser.statements(Parser.java:273)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/whileErrors/

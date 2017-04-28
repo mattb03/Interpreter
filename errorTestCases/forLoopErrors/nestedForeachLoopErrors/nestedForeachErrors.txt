@@ -1,46 +1,37 @@
 errorTestCases/forLoopErrors/nestedForeachLoopErrors/
 ********** ERROR **********
-Line 4: for i stuff:
-stuff is not a valid for loop token
-File: errorTestCases/forLoopErrors/nestedForeachLoopErrors/controlBoolStringLiteral
-	at havabol.Parser.error(Parser.java:1668)
-	at havabol.Parser.forStmt(Parser.java:1077)
-	at havabol.Parser.statements(Parser.java:280)
-	at havabol.HavaBol.main(HavaBol.java:9)
-errorTestCases/forLoopErrors/nestedForeachLoopErrors/
-********** ERROR **********
-Line 3: for i stuff:
-stuff is not a valid for loop token
-File: errorTestCases/forLoopErrors/nestedForeachLoopErrors/controlIntegerStringLiteral
-	at havabol.Parser.error(Parser.java:1668)
-	at havabol.Parser.forStmt(Parser.java:1077)
-	at havabol.Parser.statements(Parser.java:280)
-	at havabol.HavaBol.main(HavaBol.java:9)
-errorTestCases/forLoopErrors/nestedForeachLoopErrors/
-********** ERROR **********
-Line 3: for i stuff:
-stuff is not a valid for loop token
-File: errorTestCases/forLoopErrors/nestedForeachLoopErrors/missingColon
-	at havabol.Parser.error(Parser.java:1668)
-	at havabol.Parser.forStmt(Parser.java:1077)
-	at havabol.Parser.statements(Parser.java:280)
-	at havabol.HavaBol.main(HavaBol.java:9)
-********** ERROR **********
 Line 2: for i stuff:
 stuff is not a valid for loop token
 File: errorTestCases/forLoopErrors/nestedForeachLoopErrors/arrayUndeclared
-	at havabol.Parser.error(Parser.java:1668)
-	at havabol.Parser.forStmt(Parser.java:1077)
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.Parser.forStmt(Parser.java:1094)
 	at havabol.Parser.statements(Parser.java:280)
 	at havabol.HavaBol.main(HavaBol.java:9)
 errorTestCases/forLoopErrors/nestedForeachLoopErrors/
+********** ERROR **********
+Line 4: for i stuff:
+stuff is not a valid for loop token
+File: errorTestCases/forLoopErrors/nestedForeachLoopErrors/controlBoolIntArray
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.Parser.forStmt(Parser.java:1094)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
 errorTestCases/forLoopErrors/nestedForeachLoopErrors/
 ********** ERROR **********
-Line 3: for i stuff:
+Line 5: for i stuff:
 stuff is not a valid for loop token
-File: errorTestCases/forLoopErrors/nestedForeachLoopErrors/missingEndforSemicolon
-	at havabol.Parser.error(Parser.java:1668)
-	at havabol.Parser.forStmt(Parser.java:1077)
+File: errorTestCases/forLoopErrors/nestedForeachLoopErrors/controlBoolStringArray
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.Parser.forStmt(Parser.java:1094)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/forLoopErrors/nestedForeachLoopErrors/
+********** ERROR **********
+Line 4: for i stuff:
+stuff is not a valid for loop token
+File: errorTestCases/forLoopErrors/nestedForeachLoopErrors/controlBoolStringLiteral
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.Parser.forStmt(Parser.java:1094)
 	at havabol.Parser.statements(Parser.java:280)
 	at havabol.HavaBol.main(HavaBol.java:9)
 errorTestCases/forLoopErrors/nestedForeachLoopErrors/
@@ -48,70 +39,79 @@ errorTestCases/forLoopErrors/nestedForeachLoopErrors/
 Line 5: for i stuff:
 stuff is not a valid for loop token
 File: errorTestCases/forLoopErrors/nestedForeachLoopErrors/controlFloatStringArray
-	at havabol.Parser.error(Parser.java:1668)
-	at havabol.Parser.forStmt(Parser.java:1077)
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.Parser.forStmt(Parser.java:1094)
 	at havabol.Parser.statements(Parser.java:280)
 	at havabol.HavaBol.main(HavaBol.java:9)
-********** ERROR **********
-Line 1: errorTestCases/forLoopErrors/nestedForeachLoopErrors/
-Symbol 'errorTestCases' is not in Symbol Table.
-File: errorTestCases/forLoopErrors/nestedForeachLoopErrors/nestedForeachErrors.txt
-	at havabol.Parser.error(Parser.java:1668)
-	at havabol.Parser.statements(Parser.java:212)
-	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/forLoopErrors/nestedForeachLoopErrors/
 ********** ERROR **********
 Line 3: for i stuff:
 stuff is not a valid for loop token
-File: errorTestCases/forLoopErrors/nestedForeachLoopErrors/controlFloatStringLiteral********** ERROR **********
-Line 3: for i stuff:
-stuff is not a valid for loop token
-File: errorTestCases/forLoopErrors/nestedForeachLoopErrors/missingEndfor
-	at havabol.Parser.error(Parser.java:1668)
-	at havabol.Parser.forStmt(Parser.java:1077)
+File: errorTestCases/forLoopErrors/nestedForeachLoopErrors/controlFloatStringLiteral
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.Parser.forStmt(Parser.java:1094)
 	at havabol.Parser.statements(Parser.java:280)
 	at havabol.HavaBol.main(HavaBol.java:9)
 errorTestCases/forLoopErrors/nestedForeachLoopErrors/
-
-errorTestCases/forLoopErrors/nestedForeachLoopErrors/
-errorTestCases/forLoopErrors/nestedForeachLoopErrors/
-	at havabol.Parser.error(Parser.java:1668)
-	at havabol.Parser.forStmt(Parser.java:1077)
-	at havabol.Parser.statements(Parser.java:280)
-	at havabol.HavaBol.main(HavaBol.java:9)
 ********** ERROR **********
 Line 5: for i stuff:
 stuff is not a valid for loop token
 File: errorTestCases/forLoopErrors/nestedForeachLoopErrors/controlIntegerStringArray
-	at havabol.Parser.error(Parser.java:1668)
-	at havabol.Parser.forStmt(Parser.java:1077)
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.Parser.forStmt(Parser.java:1094)
 	at havabol.Parser.statements(Parser.java:280)
 	at havabol.HavaBol.main(HavaBol.java:9)
-errorTestCases/forLoopErrors/nestedForeachLoopErrors/
 errorTestCases/forLoopErrors/nestedForeachLoopErrors/
 ********** ERROR **********
-Line 5: for i stuff:
+Line 3: for i stuff:
 stuff is not a valid for loop token
-File: errorTestCases/forLoopErrors/nestedForeachLoopErrors/controlBoolStringArray
-	at havabol.Parser.error(Parser.java:1668)
-	at havabol.Parser.forStmt(Parser.java:1077)
+File: errorTestCases/forLoopErrors/nestedForeachLoopErrors/controlIntegerStringLiteral
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.Parser.forStmt(Parser.java:1094)
 	at havabol.Parser.statements(Parser.java:280)
 	at havabol.HavaBol.main(HavaBol.java:9)
-********** ERROR **********
-Line 4: for i stuff:
-stuff is not a valid for loop token
-File: errorTestCases/forLoopErrors/nestedForeachLoopErrors/controlBoolIntArray
-	at havabol.Parser.error(Parser.java:1668)
-	at havabol.Parser.forStmt(Parser.java:1077)
-	at havabol.Parser.statements(Parser.java:280)
-	at havabol.HavaBol.main(HavaBol.java:9)
-errorTestCases/forLoopErrors/nestedForeachLoopErrors/
 errorTestCases/forLoopErrors/nestedForeachLoopErrors/
 ********** ERROR **********
 Line 3: for i stuff:
 stuff is not a valid for loop token
 File: errorTestCases/forLoopErrors/nestedForeachLoopErrors/controlNotIdentifier
-	at havabol.Parser.error(Parser.java:1668)
-	at havabol.Parser.forStmt(Parser.java:1077)
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.Parser.forStmt(Parser.java:1094)
 	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/forLoopErrors/nestedForeachLoopErrors/
+********** ERROR **********
+Line 3: for i stuff:
+stuff is not a valid for loop token
+File: errorTestCases/forLoopErrors/nestedForeachLoopErrors/missingColon
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.Parser.forStmt(Parser.java:1094)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/forLoopErrors/nestedForeachLoopErrors/
+********** ERROR **********
+Line 3: for i stuff:
+stuff is not a valid for loop token
+File: errorTestCases/forLoopErrors/nestedForeachLoopErrors/missingEndfor
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.Parser.forStmt(Parser.java:1094)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/forLoopErrors/nestedForeachLoopErrors/
+********** ERROR **********
+Line 3: for i stuff:
+stuff is not a valid for loop token
+File: errorTestCases/forLoopErrors/nestedForeachLoopErrors/missingEndforSemicolon
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.Parser.forStmt(Parser.java:1094)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/forLoopErrors/nestedForeachLoopErrors/
+********** ERROR **********
+Line 1: errorTestCases/forLoopErrors/nestedForeachLoopErrors/
+Symbol 'errorTestCases' is not in Symbol Table.
+File: errorTestCases/forLoopErrors/nestedForeachLoopErrors/nestedForeachErrors.txt
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.Parser.statements(Parser.java:212)
 	at havabol.HavaBol.main(HavaBol.java:9)
 errorTestCases/forLoopErrors/nestedForeachLoopErrors/

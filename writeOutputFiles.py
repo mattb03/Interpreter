@@ -5,9 +5,16 @@ errorFlag = False
 buf = ""
 for line in sys.stdin:
     line = line.strip()
-    buf += line
-    if ("ERROR" in line):
-        errorFlag = True
+    buf += line + "\n"
+    if ("********** ERROR **********" in line):
+        if (errorFlag == True):
+            handle.write(buf)
+            errorFlag = False
+            handle.close()
+            buf = ""
+            fileName = ""
+        else:
+            errorFlag = True
     elif (line.startswith("File:")):
         count = 0
         i = 0
@@ -18,4 +25,4 @@ for line in sys.stdin:
             i += 1
         fileName = line[i:]
         print (fileName)
-
+        handle = open (fileName, "w")
