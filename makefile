@@ -13,6 +13,10 @@ makebin:
 dec:
 	$(JAVA) $(JFLAGS) havabol.HavaBol declarations/test1.txt
 
+funcs:
+	$(JAVA) $(JFLAGS) havabol.HavaBol declarations/goodCases.hav
+
+
 test:
 	$(JAVA) $(JFLAGS) havabol.HavaBol test.txt
 

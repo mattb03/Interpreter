@@ -13,7 +13,7 @@ fopen = False
 for line in buff:
     if line != "":
         if fopen == False:
-            wfile = open(line, 'w+')
+            wfile = open(line, 'w')
             fopen = True;
         else:
             wfile.write(line)
