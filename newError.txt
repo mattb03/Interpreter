@@ -1,0 +1,179 @@
+errorTestCases/exprErrors/basicOperations/cond/
+********** ERROR **********
+Line 6: print(i == b);
+2nd Operand of == operator cannot be type BOOLEAN
+File: errorTestCases/exprErrors/basicOperations/cond/equalROpBool
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Utility.equals(Utility.java:216)
+	at havabol.Parser.evaluateExpr(Parser.java:1525)
+	at havabol.Parser.expr(Parser.java:1230)
+	at havabol.Parser.statements(Parser.java:85)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/exprErrors/basicOperations/cond/
+********** ERROR **********
+Line 6: print(b <= i);
+1st Operand of <= operator cannot be type BOOLEAN
+File: errorTestCases/exprErrors/basicOperations/cond/lessEqLOpBool
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Utility.lessThan(Utility.java:109)
+	at havabol.Parser.evaluateExpr(Parser.java:1519)
+	at havabol.Parser.expr(Parser.java:1230)
+	at havabol.Parser.statements(Parser.java:85)
+	at havabol.HavaBol.main(HavaBol.java:9)
+********** ERROR **********
+Line 6: print(i and b);
+1st Operand of 'and' isn't of type BOOLEAN.
+File: errorTestCases/exprErrors/basicOperations/cond/andLOpNotBool
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.Utility.booleanConditionals(Utility.java:307)
+	at havabol.Parser.evaluateExpr(Parser.java:1536)
+	at havabol.Parser.expr(Parser.java:1230)
+	at havabol.Parser.statements(Parser.java:85)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/exprErrors/basicOperations/cond/
+********** ERROR **********
+Line 6: print(b >= i);
+1st Operand of >= operator cannot be type BOOLEAN
+File: errorTestCases/exprErrors/basicOperations/cond/greatEqLOpBool
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Utility.greaterThan(Utility.java:160)
+	at havabol.Parser.evaluateExpr(Parser.java:1522)
+	at havabol.Parser.expr(Parser.java:1230)
+	at havabol.Parser.statements(Parser.java:85)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/exprErrors/basicOperations/cond/
+errorTestCases/exprErrors/basicOperations/cond/
+********** ERROR **********
+Line 6: print(b > i);
+1st Operand of > operator cannot be type BOOLEAN
+File: errorTestCases/exprErrors/basicOperations/cond/greatLOpBool
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Utility.greaterThan(Utility.java:161)
+	at havabol.Parser.evaluateExpr(Parser.java:1516)
+	at havabol.Parser.expr(Parser.java:1230)
+	at havabol.Parser.statements(Parser.java:85)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/exprErrors/basicOperations/cond/
+T
+errorTestCases/exprErrors/basicOperations/cond/
+********** ERROR **********
+Line 6: print(i > b);
+2nd Operand of > operator cannot be type BOOLEAN
+File: errorTestCases/exprErrors/basicOperations/cond/greatROpBool
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Utility.greaterThan(Utility.java:166)
+	at havabol.Parser.evaluateExpr(Parser.java:1516)
+	at havabol.Parser.expr(Parser.java:1230)
+	at havabol.Parser.statements(Parser.java:85)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/exprErrors/basicOperations/cond/
+********** ERROR **********
+Line 6: print(b != i);
+1st Operand of != operator cannot be type BOOLEAN
+File: errorTestCases/exprErrors/basicOperations/cond/equalNotLOpBool
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Utility.equals(Utility.java:210)
+	at havabol.Parser.evaluateExpr(Parser.java:1528)
+	at havabol.Parser.expr(Parser.java:1230)
+	at havabol.Parser.statements(Parser.java:85)
+	at havabol.HavaBol.main(HavaBol.java:9)
+********** ERROR **********
+Line 6: print(i != b);
+2nd Operand of != operator cannot be type BOOLEAN
+File: errorTestCases/exprErrors/basicOperations/cond/equalNotROpBool
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Utility.equals(Utility.java:215)
+	at havabol.Parser.evaluateExpr(Parser.java:1528)
+	at havabol.Parser.expr(Parser.java:1230)
+	at havabol.Parser.statements(Parser.java:85)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/exprErrors/basicOperations/cond/
+errorTestCases/exprErrors/basicOperations/cond/
+********** ERROR **********
+Line 6: print(b == i);
+1st Operand of == operator cannot be type BOOLEAN
+File: errorTestCases/exprErrors/basicOperations/cond/equalLOpBool
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Utility.equals(Utility.java:211)
+	at havabol.Parser.evaluateExpr(Parser.java:1525)
+	at havabol.Parser.expr(Parser.java:1230)
+	at havabol.Parser.statements(Parser.java:85)
+	at havabol.HavaBol.main(HavaBol.java:9)
+********** ERROR **********
+Line 6: print(b and i);
+2nd Operand of 'and' isn't of type BOOLEAN.
+File: errorTestCases/exprErrors/basicOperations/cond/andROpNotBool
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.Utility.booleanConditionals(Utility.java:309)
+	at havabol.Parser.evaluateExpr(Parser.java:1536)
+	at havabol.Parser.expr(Parser.java:1230)
+	at havabol.Parser.statements(Parser.java:85)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/exprErrors/basicOperations/cond/
+errorTestCases/exprErrors/basicOperations/cond/
+********** ERROR **********
+Line 6: print(i < b);
+2nd Operand of < operator cannot be type BOOLEAN
+File: errorTestCases/exprErrors/basicOperations/cond/lessROpBool
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Utility.lessThan(Utility.java:115)
+	at havabol.Parser.evaluateExpr(Parser.java:1513)
+	at havabol.Parser.expr(Parser.java:1230)
+	at havabol.Parser.statements(Parser.java:85)
+	at havabol.HavaBol.main(HavaBol.java:9)
+********** ERROR **********
+Line 6: print(i or b);
+1st Operand of 'or' isn't of type BOOLEAN.
+File: errorTestCases/exprErrors/basicOperations/cond/orLOpNotBool
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.Utility.booleanConditionals(Utility.java:307)
+	at havabol.Parser.evaluateExpr(Parser.java:1539)
+errorTestCases/exprErrors/basicOperations/cond/
+	at havabol.Parser.expr(Parser.java:1230)
+	at havabol.Parser.statements(Parser.java:85)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/exprErrors/basicOperations/cond/
+********** ERROR **********
+Line 6: print(i >= b);
+2nd Operand of >= operator cannot be type BOOLEAN
+File: errorTestCases/exprErrors/basicOperations/cond/greatEqROpBool
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Utility.greaterThan(Utility.java:165)
+	at havabol.Parser.evaluateExpr(Parser.java:1522)
+	at havabol.Parser.expr(Parser.java:1230)
+	at havabol.Parser.statements(Parser.java:85)
+	at havabol.HavaBol.main(HavaBol.java:9)
+********** ERROR **********
+Line 6: print(i <= b);
+2nd Operand of <= operator cannot be type BOOLEAN
+File: errorTestCases/exprErrors/basicOperations/cond/lessEqROpBool
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Utility.lessThan(Utility.java:114)
+	at havabol.Parser.evaluateExpr(Parser.java:1519)
+	at havabol.Parser.expr(Parser.java:1230)
+	at havabol.Parser.statements(Parser.java:85)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/exprErrors/basicOperations/cond/
+errorTestCases/exprErrors/basicOperations/cond/
+********** ERROR **********
+Line 6: print(b < i);
+1st Operand of < operator cannot be type BOOLEAN
+File: errorTestCases/exprErrors/basicOperations/cond/lessLOpBool
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Utility.lessThan(Utility.java:110)
+	at havabol.Parser.evaluateExpr(Parser.java:1513)
+	at havabol.Parser.expr(Parser.java:1230)
+	at havabol.Parser.statements(Parser.java:85)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/exprErrors/basicOperations/cond/
+********** ERROR **********
+Line 6: print(b or i);
+2nd Operand of 'or' isn't of type BOOLEAN.
+File: errorTestCases/exprErrors/basicOperations/cond/orROpNotBool
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.Utility.booleanConditionals(Utility.java:309)
+	at havabol.Parser.evaluateExpr(Parser.java:1539)
+	at havabol.Parser.expr(Parser.java:1230)
+	at havabol.Parser.statements(Parser.java:85)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/exprErrors/basicOperations/cond/

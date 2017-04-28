@@ -1124,7 +1124,7 @@ public class Parser {
     		tok.setPrecedence();
     		switch (tok.primClassif) {
     			case Token.OPERAND:
-    				if (tok.tokenStr.equals("to") || tok.tokenStr.equals("by")) {
+    				if (tok.tokenStr.equals("to") || (tok.tokenStr.equals("by") && tok.subClassif != Token.STRING)) {
     					while (! mainStack.isEmpty()) {
     						popped = mainStack.pop();
 	    		    		if (popped.tokenStr.equals("("))
