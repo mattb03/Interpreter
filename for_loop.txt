@@ -20,7 +20,7 @@ endfor;
 
 String uno = "1";
 
-String szStr = "size, string, done";
+String szStr = "a, string, value";
 String number = "20";
 
 for j = 0 to number by 2:
@@ -33,16 +33,16 @@ for j = ELEM(array) to MAXELEM(array) by LENGTH(uno):
 		print (item);
 	endfor;
 endfor;
-print ("oh yes");
+print ("for testing");
 String delim = ",";
-for item in "oh yes":
+for item in "for testing":
 	print (item);
 	for token from szStr by delim:
 		print (token);
 	endfor;
 endfor;
 
-for token from "oh, yes" by ",":
+for token from "for, testing" by ",":
 	print (token);
 	for i = LENGTH(uno) to MAXELEM(array):
 		print ("i=", i);
@@ -73,12 +73,12 @@ endfor;
 
 for ch from szStr by ",":
 	print (ch);
-	for ch from "oh! yes!" by "!":
+	for ch from "for! testing!" by "!":
 		print (ch);
 	endfor;
 endfor;
 
-String list[5] = "this", "better", "work";
+String list[5] = "delimited", "by", "commas";
 
 String exclamation = "!";
 
@@ -147,7 +147,7 @@ endfor;
 
 for j = 5 * 2 / 2 ^ 2 to j * 5 + 3 ^ 2 by j ^ 2 / 3 * 1:
 	print ("last outer j=", j);
-	for item in "size, string, oh, YES!" by ",":
+	for item in "for, testing, nested, tokenizer!" by ",":
 		print (item);
 	endfor;
 endfor;
@@ -155,14 +155,14 @@ endfor;
 Int array2[10] = 3, 4, 5;
 // array = 1, 2, 3;
 for i = array[0] to array2[2] by array[1]:
-	print ("oh no i=", i);
+	print ("another test i=", i);
 	for j = array[0] to array2[2]:
 		print ("j=", j);
 	endfor;
 endfor;
 
 for i = array[0] to array2[2]:
-	print ("oh no i=", i);
+	print ("a final test i=", i);
 	for j = array[0] to array2[2] by array[1]:
 		print ("j=", j);
 	endfor;
