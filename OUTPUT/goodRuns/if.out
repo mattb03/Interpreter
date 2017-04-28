@@ -1,0 +1,4 @@
+java -classpath bin havabol.HavaBol goodCases/ifGoodCases.hav
+if is true, i=0j=3
+array[i]=1
+line

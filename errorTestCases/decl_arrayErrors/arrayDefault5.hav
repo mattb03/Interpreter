@@ -1,1 +1,3 @@
-Bool bools[] = T, F, 2 > 100;Int idef = 10;bools = idef;
+Bool bools[] = T, F, 2 > 100;
+Int idef = 10;
+bools = idef;

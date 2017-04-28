@@ -4,7 +4,7 @@ if T:
 		print("inner if is true");
 	else:
 		print("inner if is false");
-	endif;
+	endif
 else:
 	print("false");
 	if T:
@@ -12,4 +12,4 @@ else:
 	else:
 		print("inner if is false");
 	endif;
-endif
+endif;

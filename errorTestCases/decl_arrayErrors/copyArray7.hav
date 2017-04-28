@@ -1,1 +1,3 @@
-String str[unbound] = "T", "F" , "dog";Bool bools[unbound] = T, F, 2 > 100;bools = str;
+String str[unbound] = "T", "F" , "dog";
+Bool bools[unbound] = T, F, 2 > 100;
+bools = str;

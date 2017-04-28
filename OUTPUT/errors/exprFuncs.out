@@ -1,0 +1,128 @@
+errorTestCases/exprErrors/functions/
+********** ERROR **********
+Line 1: print(Chris);
+Symbol 'Chris' is not in Symbol Table.
+File: errorTestCases/exprErrors/functions/printForgotQuotes.hav
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Parser.evaluateExpr(Parser.java:1640)
+	at havabol.Parser.expr(Parser.java:1230)
+	at havabol.Parser.statements(Parser.java:56)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/exprErrors/functions/
+********** ERROR **********
+Line 1: boolToNum.hav
+Symbol 'boolToNum.hav' is not in Symbol Table.
+File: errorTestCases/exprErrors/functions/test2.txt
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.Parser.statements(Parser.java:212)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/exprErrors/functions/
+********** ERROR **********
+Line 1: print(T == 2);
+1st Operand of == operator cannot be type BOOLEAN
+File: errorTestCases/exprErrors/functions/boolToNum.hav
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Utility.equals(Utility.java:211)
+	at havabol.Parser.evaluateExpr(Parser.java:1525)
+	at havabol.Parser.expr(Parser.java:1230)
+	at havabol.Parser.statements(Parser.java:85)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/exprErrors/functions/
+********** ERROR **********
+Line 7: print(MAXELEM(s));
+'s' is not type ARRAY for function ELEM
+File: errorTestCases/exprErrors/functions/maxElemOpNotArray
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Parser.evaluateExpr(Parser.java:1606)
+	at havabol.Parser.expr(Parser.java:1230)
+	at havabol.Parser.statements(Parser.java:85)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/exprErrors/functions/
+********** ERROR **********
+Line 7: print(SPACES(array));
+'array' type ARRAY is not a valid type for function SPACES
+File: errorTestCases/exprErrors/functions/spacesOpIsArray
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Parser.evaluateExpr(Parser.java:1596)
+	at havabol.Parser.expr(Parser.java:1230)
+	at havabol.Parser.statements(Parser.java:85)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/exprErrors/functions/
+********** ERROR **********
+Line 1: Bool b = T;print(MAXELEM(b));
+'b' is not type ARRAY for function ELEM
+File: errorTestCases/exprErrors/functions/maxelemOnInt.hav
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Parser.evaluateExpr(Parser.java:1606)
+	at havabol.Parser.expr(Parser.java:1230)
+	at havabol.Parser.statements(Parser.java:85)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/exprErrors/functions/
+********** ERROR **********
+Line 1: /usr/bin/python: can't find '__main__' module in 'errorTestCases/exprErrors/functions/'
+Symbol 'usr' is not in Symbol Table.
+File: errorTestCases/exprErrors/functions/functionErrors.txt
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.Parser.statements(Parser.java:212)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/exprErrors/functions/
+********** ERROR **********
+Line 1: Float f = 3.14;print(MAXELEM(f));
+'f' is not type ARRAY for function ELEM
+File: errorTestCases/exprErrors/functions/elemOnInt.hav
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Parser.evaluateExpr(Parser.java:1606)
+	at havabol.Parser.expr(Parser.java:1230)
+	at havabol.Parser.statements(Parser.java:85)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/exprErrors/functions/
+********** ERROR **********
+Line 7: print(LENGTH(array));
+'array' type ARRAY is not a valid type for function LENGTH
+File: errorTestCases/exprErrors/functions/lengthOpIsArray
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Parser.evaluateExpr(Parser.java:1591)
+	at havabol.Parser.expr(Parser.java:1230)
+	at havabol.Parser.statements(Parser.java:85)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/exprErrors/functions/
+********** ERROR **********
+Line 7: print(ELEM(s));
+'s' is not type ARRAY for function ELEM
+File: errorTestCases/exprErrors/functions/elemOpNotArray
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Parser.evaluateExpr(Parser.java:1601)
+	at havabol.Parser.expr(Parser.java:1230)
+	at havabol.Parser.statements(Parser.java:85)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/exprErrors/functions/
+********** ERROR **********
+Line 1: Bool b = T;print(ELEM(b));
+'b' is not type ARRAY for function ELEM
+File: errorTestCases/exprErrors/functions/elemOnBool.hav
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Parser.evaluateExpr(Parser.java:1601)
+	at havabol.Parser.expr(Parser.java:1230)
+	at havabol.Parser.statements(Parser.java:85)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/exprErrors/functions/
+********** ERROR **********
+Line 1: Float f = 3.14;print(ELEM(f));
+'f' is not type ARRAY for function ELEM
+File: errorTestCases/exprErrors/functions/elemOnFloat.hav
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Parser.evaluateExpr(Parser.java:1601)
+	at havabol.Parser.expr(Parser.java:1230)
+	at havabol.Parser.statements(Parser.java:85)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/exprErrors/functions/
+********** ERROR **********
+Line 1: String s = "Chris";print(ELEM(s));
+'s' is not type ARRAY for function ELEM
+File: errorTestCases/exprErrors/functions/elemOnString.hav
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Parser.evaluateExpr(Parser.java:1601)
+	at havabol.Parser.expr(Parser.java:1230)
+	at havabol.Parser.statements(Parser.java:85)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/exprErrors/functions/

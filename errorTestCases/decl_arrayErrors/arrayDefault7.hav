@@ -1,1 +1,3 @@
-Bool bools[10] = T, F, 2 > 100;String sdef = "cat";bools = sdef;
+Bool bools[10] = T, F, 2 > 100;
+String sdef = "cat";
+bools = sdef;

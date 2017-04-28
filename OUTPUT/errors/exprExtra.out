@@ -1,0 +1,51 @@
+errorTestCases/exprErrors/extraErrors/
+********** ERROR **********
+Line 7: print(i + e);
+Symbol 'e' is not in Symbol Table.
+File: errorTestCases/exprErrors/extraErrors/operandNotCreated
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Parser.evaluateExpr(Parser.java:1468)
+	at havabol.Parser.expr(Parser.java:1230)
+	at havabol.Parser.statements(Parser.java:85)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/exprErrors/extraErrors/
+********** ERROR **********
+Line 7: print(1 23);
+Unbalanced Expression. Possibly Missing Operator
+File: errorTestCases/exprErrors/extraErrors/missingOperator
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Parser.evaluateExpr(Parser.java:1676)
+	at havabol.Parser.expr(Parser.java:1230)
+	at havabol.Parser.statements(Parser.java:85)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/exprErrors/extraErrors/
+********** ERROR **********
+Line 1: Int i = 1 + 1);
+Missing left paren in expression
+File: errorTestCases/exprErrors/extraErrors/missingLParen
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Parser.expr(Parser.java:1232)
+	at havabol.Parser.assign(Parser.java:366)
+	at havabol.Parser.statements(Parser.java:158)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/exprErrors/extraErrors/
+********** ERROR **********
+Line 1: Int i = (1 + 1;
+Missing ')' separator
+File: errorTestCases/exprErrors/extraErrors/missingRParen
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Parser.expr(Parser.java:1287)
+	at havabol.Parser.assign(Parser.java:366)
+	at havabol.Parser.statements(Parser.java:158)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/exprErrors/extraErrors/
+********** ERROR **********
+Line 7: print( + );
+Missing expression operand for operator: '+'
+File: errorTestCases/exprErrors/extraErrors/missingOperands
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Parser.evaluateExpr(Parser.java:1431)
+	at havabol.Parser.expr(Parser.java:1230)
+	at havabol.Parser.statements(Parser.java:56)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/exprErrors/extraErrors/

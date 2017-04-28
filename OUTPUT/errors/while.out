@@ -1,0 +1,80 @@
+errorTestCases/whileErrors/
+********** ERROR **********
+Line 1: errorTestCases/whileErrors/innerErrors/
+Symbol 'errorTestCases' is not in Symbol Table.
+File: errorTestCases/whileErrors/innerWhileErrors.txt
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.Parser.statements(Parser.java:212)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/whileErrors/
+********** ERROR **********
+Line 3: while i < 10
+Invalid terminating token for while: 'print'
+File: errorTestCases/whileErrors/whileNotTerminated
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Parser.whileStmt(Parser.java:617)
+	at havabol.Parser.statements(Parser.java:273)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/whileErrors/
+********** ERROR **********
+Line 3: while "this is not a boolean":
+Invalid conditional for while: 'this is not a boolean'
+File: errorTestCases/whileErrors/nonBooleanCondition
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Parser.whileStmt(Parser.java:689)
+	at havabol.Parser.statements(Parser.java:273)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/whileErrors/
+i = 1
+o = 1
+o = 4
+********** ERROR **********
+Line 10: endwhile:
+Invalid terminating token for endwhile: ':'
+File: errorTestCases/whileErrors/endWhileNotCorrectlyTerminated
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Parser.whileStmt(Parser.java:632)
+	at havabol.Parser.statements(Parser.java:273)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/whileErrors/
+1
+1
+4
+********** ERROR **********
+Line 3: while i < 10:
+While not terminated by endwhile.
+File: errorTestCases/whileErrors/noEndWhile
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Parser.whileStmt(Parser.java:628)
+	at havabol.Parser.statements(Parser.java:273)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/whileErrors/
+********** ERROR **********
+Line 1: errorTestCases/whileErrors/
+Symbol 'errorTestCases' is not in Symbol Table.
+File: errorTestCases/whileErrors/whileErrors.txt
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.Parser.statements(Parser.java:212)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/whileErrors/
+i = 1
+o = 1
+o = 4
+********** ERROR **********
+Line 10: endwhile
+Invalid terminating token for endwhile: 'endwhile'
+File: errorTestCases/whileErrors/endWhileNotTerminated
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Parser.whileStmt(Parser.java:632)
+	at havabol.Parser.statements(Parser.java:273)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/whileErrors/
+********** ERROR **********
+Line 3: while i < 10;
+Invalid terminating token for while: ';'
+File: errorTestCases/whileErrors/whileNotCorrectlyTerminated
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Parser.whileStmt(Parser.java:617)
+	at havabol.Parser.statements(Parser.java:273)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/whileErrors/

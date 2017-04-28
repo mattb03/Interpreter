@@ -1,1 +1,3 @@
-Float farr[] = 1.11, 2.22, 3.33;String sdef = "cat";farr = sdef;
+Float farr[] = 1.11, 2.22, 3.33;
+String sdef = "cat";
+farr = sdef;

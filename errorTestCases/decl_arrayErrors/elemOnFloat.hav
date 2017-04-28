@@ -1,0 +1,2 @@
+Float f = 3.14;
+print(ELEM(f));

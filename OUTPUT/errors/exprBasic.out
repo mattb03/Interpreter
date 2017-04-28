@@ -1,0 +1,300 @@
+errorTestCases/exprErrors/basicOperations/
+********** ERROR **********
+Line 7: print(-s);
+Operand of u- operator isn't a valid numeric type
+File: errorTestCases/exprErrors/basicOperations/negOpNonNum
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Numeric.<init>(Numeric.java:30)
+	at havabol.Parser.evaluateExpr(Parser.java:1405)
+	at havabol.Parser.expr(Parser.java:1230)
+	at havabol.Parser.statements(Parser.java:85)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/exprErrors/basicOperations/
+********** ERROR **********
+Line 7: print(s * o);
+1st Operand of * operator isn't a valid numeric type
+File: errorTestCases/exprErrors/basicOperations/mulLOpNonNum
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Numeric.<init>(Numeric.java:30)
+	at havabol.Parser.evaluateExpr(Parser.java:1495)
+	at havabol.Parser.expr(Parser.java:1230)
+	at havabol.Parser.statements(Parser.java:85)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/exprErrors/basicOperations/
+********** ERROR **********
+Line 6: print(i != b);
+2nd Operand of != operator cannot be type BOOLEAN
+File: errorTestCases/exprErrors/basicOperations/equalNotROpBool
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Utility.equals(Utility.java:215)
+	at havabol.Parser.evaluateExpr(Parser.java:1528)
+	at havabol.Parser.expr(Parser.java:1230)
+	at havabol.Parser.statements(Parser.java:85)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/exprErrors/basicOperations/
+********** ERROR **********
+Line 6: print(b != i);
+1st Operand of != operator cannot be type BOOLEAN
+File: errorTestCases/exprErrors/basicOperations/equalNotLOpBool
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Utility.equals(Utility.java:210)
+	at havabol.Parser.evaluateExpr(Parser.java:1528)
+	at havabol.Parser.expr(Parser.java:1230)
+	at havabol.Parser.statements(Parser.java:85)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/exprErrors/basicOperations/
+********** ERROR **********
+Line 7: print(i - s);
+2nd Operand of - operator isn't a valid numeric type
+File: errorTestCases/exprErrors/basicOperations/subROpNonNum
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Numeric.<init>(Numeric.java:30)
+	at havabol.Parser.evaluateExpr(Parser.java:1491)
+	at havabol.Parser.expr(Parser.java:1230)
+	at havabol.Parser.statements(Parser.java:85)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/exprErrors/basicOperations/
+T
+errorTestCases/exprErrors/basicOperations/
+********** ERROR **********
+Line 7: print(i ^ s);
+2nd Operand of ^ operator isn't a valid numeric type
+File: errorTestCases/exprErrors/basicOperations/expoROpNonNum
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Numeric.<init>(Numeric.java:30)
+	at havabol.Parser.evaluateExpr(Parser.java:1506)
+	at havabol.Parser.expr(Parser.java:1230)
+	at havabol.Parser.statements(Parser.java:85)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/exprErrors/basicOperations/
+********** ERROR **********
+Line 7: print(s + o);
+1st Operand of + operator isn't a valid numeric type
+File: errorTestCases/exprErrors/basicOperations/addLOpNonNum
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Numeric.<init>(Numeric.java:30)
+	at havabol.Parser.evaluateExpr(Parser.java:1485)
+	at havabol.Parser.expr(Parser.java:1230)
+	at havabol.Parser.statements(Parser.java:85)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/exprErrors/basicOperations/
+********** ERROR **********
+Line 6: print(i == b);
+2nd Operand of == operator cannot be type BOOLEAN
+File: errorTestCases/exprErrors/basicOperations/equalROpBool
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Utility.equals(Utility.java:216)
+	at havabol.Parser.evaluateExpr(Parser.java:1525)
+	at havabol.Parser.expr(Parser.java:1230)
+	at havabol.Parser.statements(Parser.java:85)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/exprErrors/basicOperations/
+********** ERROR **********
+Line 6: print(i and b);
+1st Operand of 'and' isn't of type BOOLEAN.
+File: errorTestCases/exprErrors/basicOperations/andLOpNotBool
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.Utility.booleanConditionals(Utility.java:307)
+	at havabol.Parser.evaluateExpr(Parser.java:1536)
+	at havabol.Parser.expr(Parser.java:1230)
+	at havabol.Parser.statements(Parser.java:85)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/exprErrors/basicOperations/
+********** ERROR **********
+Line 6: print(b <= i);
+1st Operand of <= operator cannot be type BOOLEAN
+File: errorTestCases/exprErrors/basicOperations/lessEqLOpBool
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Utility.lessThan(Utility.java:109)
+	at havabol.Parser.evaluateExpr(Parser.java:1519)
+	at havabol.Parser.expr(Parser.java:1230)
+	at havabol.Parser.statements(Parser.java:85)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/exprErrors/basicOperations/
+********** ERROR **********
+Line 6: print(b and i);
+2nd Operand of 'and' isn't of type BOOLEAN.
+File: errorTestCases/exprErrors/basicOperations/andROpNotBool
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.Utility.booleanConditionals(Utility.java:309)
+	at havabol.Parser.evaluateExpr(Parser.java:1536)
+	at havabol.Parser.expr(Parser.java:1230)
+	at havabol.Parser.statements(Parser.java:85)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/exprErrors/basicOperations/
+********** ERROR **********
+Line 7: print(i / s);
+2nd Operand of / operator isn't a valid numeric type
+File: errorTestCases/exprErrors/basicOperations/divROpNonNum
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Numeric.<init>(Numeric.java:30)
+	at havabol.Parser.evaluateExpr(Parser.java:1501)
+	at havabol.Parser.expr(Parser.java:1230)
+	at havabol.Parser.statements(Parser.java:85)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/exprErrors/basicOperations/
+********** ERROR **********
+Line 6: print(b < i);
+1st Operand of < operator cannot be type BOOLEAN
+File: errorTestCases/exprErrors/basicOperations/lessLOpBool
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Utility.lessThan(Utility.java:110)
+	at havabol.Parser.evaluateExpr(Parser.java:1513)
+	at havabol.Parser.expr(Parser.java:1230)
+	at havabol.Parser.statements(Parser.java:85)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/exprErrors/basicOperations/
+********** ERROR **********
+Line 6: print(b == i);
+1st Operand of == operator cannot be type BOOLEAN
+File: errorTestCases/exprErrors/basicOperations/equalLOpBool
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Utility.equals(Utility.java:211)
+	at havabol.Parser.evaluateExpr(Parser.java:1525)
+	at havabol.Parser.expr(Parser.java:1230)
+	at havabol.Parser.statements(Parser.java:85)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/exprErrors/basicOperations/
+********** ERROR **********
+Line 6: print(i or b);
+1st Operand of 'or' isn't of type BOOLEAN.
+File: errorTestCases/exprErrors/basicOperations/orLOpNotBool
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.Utility.booleanConditionals(Utility.java:307)
+	at havabol.Parser.evaluateExpr(Parser.java:1539)
+	at havabol.Parser.expr(Parser.java:1230)
+	at havabol.Parser.statements(Parser.java:85)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/exprErrors/basicOperations/
+********** ERROR **********
+Line 6: print(i <= b);
+2nd Operand of <= operator cannot be type BOOLEAN
+File: errorTestCases/exprErrors/basicOperations/lessEqROpBool
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Utility.lessThan(Utility.java:114)
+	at havabol.Parser.evaluateExpr(Parser.java:1519)
+	at havabol.Parser.expr(Parser.java:1230)
+	at havabol.Parser.statements(Parser.java:85)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/exprErrors/basicOperations/
+********** ERROR **********
+Line 6: print(b or i);
+2nd Operand of 'or' isn't of type BOOLEAN.
+File: errorTestCases/exprErrors/basicOperations/orROpNotBool
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.Utility.booleanConditionals(Utility.java:309)
+	at havabol.Parser.evaluateExpr(Parser.java:1539)
+	at havabol.Parser.expr(Parser.java:1230)
+	at havabol.Parser.statements(Parser.java:85)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/exprErrors/basicOperations/
+********** ERROR **********
+Line 6: print(i > b);
+2nd Operand of > operator cannot be type BOOLEAN
+File: errorTestCases/exprErrors/basicOperations/greatROpBool
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Utility.greaterThan(Utility.java:166)
+	at havabol.Parser.evaluateExpr(Parser.java:1516)
+	at havabol.Parser.expr(Parser.java:1230)
+	at havabol.Parser.statements(Parser.java:85)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/exprErrors/basicOperations/
+********** ERROR **********
+Line 7: print(i + s);
+2nd Operand of + operator isn't a valid numeric type
+File: errorTestCases/exprErrors/basicOperations/addROpNonNum
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Numeric.<init>(Numeric.java:30)
+	at havabol.Parser.evaluateExpr(Parser.java:1486)
+	at havabol.Parser.expr(Parser.java:1230)
+	at havabol.Parser.statements(Parser.java:85)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/exprErrors/basicOperations/
+********** ERROR **********
+Line 6: print(i >= b);
+2nd Operand of >= operator cannot be type BOOLEAN
+File: errorTestCases/exprErrors/basicOperations/greatEqROpBool
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Utility.greaterThan(Utility.java:165)
+	at havabol.Parser.evaluateExpr(Parser.java:1522)
+	at havabol.Parser.expr(Parser.java:1230)
+	at havabol.Parser.statements(Parser.java:85)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/exprErrors/basicOperations/
+********** ERROR **********
+Line 6: print(b >= i);
+1st Operand of >= operator cannot be type BOOLEAN
+File: errorTestCases/exprErrors/basicOperations/greatEqLOpBool
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Utility.greaterThan(Utility.java:160)
+	at havabol.Parser.evaluateExpr(Parser.java:1522)
+	at havabol.Parser.expr(Parser.java:1230)
+	at havabol.Parser.statements(Parser.java:85)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/exprErrors/basicOperations/
+********** ERROR **********
+Line 7: print(s - o);
+1st Operand of - operator isn't a valid numeric type
+File: errorTestCases/exprErrors/basicOperations/subLOpNonNum
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Numeric.<init>(Numeric.java:30)
+	at havabol.Parser.evaluateExpr(Parser.java:1490)
+	at havabol.Parser.expr(Parser.java:1230)
+	at havabol.Parser.statements(Parser.java:85)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/exprErrors/basicOperations/
+********** ERROR **********
+Line 6: print(i < b);
+2nd Operand of < operator cannot be type BOOLEAN
+File: errorTestCases/exprErrors/basicOperations/lessROpBool
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Utility.lessThan(Utility.java:115)
+	at havabol.Parser.evaluateExpr(Parser.java:1513)
+	at havabol.Parser.expr(Parser.java:1230)
+	at havabol.Parser.statements(Parser.java:85)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/exprErrors/basicOperations/
+********** ERROR **********
+Line 7: print(s ^ o);
+1st Operand of ^ operator isn't a valid numeric type
+File: errorTestCases/exprErrors/basicOperations/expoLOpNonNum
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Numeric.<init>(Numeric.java:30)
+	at havabol.Parser.evaluateExpr(Parser.java:1505)
+	at havabol.Parser.expr(Parser.java:1230)
+	at havabol.Parser.statements(Parser.java:85)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/exprErrors/basicOperations/
+********** ERROR **********
+Line 7: print(i * s);
+2nd Operand of * operator isn't a valid numeric type
+File: errorTestCases/exprErrors/basicOperations/mulROpNonNum
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Numeric.<init>(Numeric.java:30)
+	at havabol.Parser.evaluateExpr(Parser.java:1496)
+	at havabol.Parser.expr(Parser.java:1230)
+	at havabol.Parser.statements(Parser.java:85)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/exprErrors/basicOperations/
+********** ERROR **********
+Line 7: print(s / o);
+1st Operand of / operator isn't a valid numeric type
+File: errorTestCases/exprErrors/basicOperations/divLOpNonNum
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Numeric.<init>(Numeric.java:30)
+	at havabol.Parser.evaluateExpr(Parser.java:1500)
+	at havabol.Parser.expr(Parser.java:1230)
+	at havabol.Parser.statements(Parser.java:85)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/exprErrors/basicOperations/
+********** ERROR **********
+Line 6: print(b > i);
+1st Operand of > operator cannot be type BOOLEAN
+File: errorTestCases/exprErrors/basicOperations/greatLOpBool
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Utility.greaterThan(Utility.java:161)
+	at havabol.Parser.evaluateExpr(Parser.java:1516)
+	at havabol.Parser.expr(Parser.java:1230)
+	at havabol.Parser.statements(Parser.java:85)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/exprErrors/basicOperations/

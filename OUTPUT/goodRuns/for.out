@@ -1,0 +1,370 @@
+java -classpath bin havabol.HavaBol goodCases/good_for_loops.hav
+first i=0
+inner j=0
+inner j=2
+first i=1
+inner j=0
+inner j=2
+first i=2
+inner j=0
+inner j=2
+elem j =3
+i=1
+i=2
+i=3
+0
+2
+4
+6
+8
+10
+12
+14
+16
+18
+inside funky calls j=3
+a
+,
+ 
+s
+t
+r
+i
+n
+g
+,
+ 
+v
+a
+l
+u
+e
+inside funky calls j=4
+a
+,
+ 
+s
+t
+r
+i
+n
+g
+,
+ 
+v
+a
+l
+u
+e
+for testing
+f
+a
+ string
+ value
+o
+a
+ string
+ value
+r
+a
+ string
+ value
+ 
+a
+ string
+ value
+t
+a
+ string
+ value
+e
+a
+ string
+ value
+s
+a
+ string
+ value
+t
+a
+ string
+ value
+i
+a
+ string
+ value
+n
+a
+ string
+ value
+g
+a
+ string
+ value
+for
+i=1
+i=2
+i=3
+i=4
+bottom of parent loop
+ testing
+i=1
+i=2
+i=3
+i=4
+bottom of parent loop
+another i=0
+another i=1
+another i=2
+another i=3
+another i=4
+a
+ahahahaha
+old i is 5
+,
+ahahahaha
+old i is 5
+ 
+ahahahaha
+old i is 5
+s
+ahahahaha
+old i is 5
+t
+ahahahaha
+old i is 5
+r
+ahahahaha
+old i is 5
+i
+ahahahaha
+old i is 5
+n
+ahahahaha
+old i is 5
+g
+ahahahaha
+old i is 5
+,
+ahahahaha
+old i is 5
+ 
+ahahahaha
+old i is 5
+v
+ahahahaha
+old i is 5
+a
+ahahahaha
+old i is 5
+l
+ahahahaha
+old i is 5
+u
+ahahahaha
+old i is 5
+e
+ahahahaha
+old i is 5
+ testing
+g
+5
+5
+fin,a,
+
+y
+a
+for
+ testing
+ string
+for
+ testing
+ value
+for
+ testing
+1
+delimited
+delimited, by, exclamation
+by
+delimited, by, exclamation
+commas
+delimited, by, exclamation
+2
+delimited
+delimited, by, exclamation
+by
+delimited, by, exclamation
+commas
+delimited, by, exclamation
+3
+delimited
+delimited, by, exclamation
+by
+delimited, by, exclamation
+commas
+delimited, by, exclamation
+0
+2
+4
+0
+2
+4
+0
+1
+2
+2
+1
+2
+4
+1
+2
+inside builtin func loop i=1
+inside builtin func loop i=2
+inside last builtin func loop i=1
+inside last builtin func loop i=2
+inside last builtin func loop i=3
+inside last builtin func loop i=4
+2
+5
+8
+11
+14
+17
+i=1
+7
+i=4
+7
+i=7
+7
+i=10
+7
+i=13
+7
+i=16
+7
+i=19
+7
+last outer j=5
+last inner j=8
+last outer j=10
+last inner j=8
+last outer j=15
+last inner j=8
+last outer j=20
+last inner j=8
+last test
+last outer j=5
+last inner j=8
+last outer j=13
+last inner j=8
+last outer j=21
+last inner j=8
+last outer j=29
+last inner j=8
+last outer j=2
+for
+ testing
+ nested
+ tokenizer!
+last outer j=3
+for
+ testing
+ nested
+ tokenizer!
+last outer j=4
+for
+ testing
+ nested
+ tokenizer!
+last outer j=5
+for
+ testing
+ nested
+ tokenizer!
+last outer j=6
+for
+ testing
+ nested
+ tokenizer!
+last outer j=7
+for
+ testing
+ nested
+ tokenizer!
+last outer j=8
+for
+ testing
+ nested
+ tokenizer!
+last outer j=9
+for
+ testing
+ nested
+ tokenizer!
+last outer j=10
+for
+ testing
+ nested
+ tokenizer!
+last outer j=11
+for
+ testing
+ nested
+ tokenizer!
+last outer j=12
+for
+ testing
+ nested
+ tokenizer!
+last outer j=13
+for
+ testing
+ nested
+ tokenizer!
+last outer j=14
+for
+ testing
+ nested
+ tokenizer!
+last outer j=15
+for
+ testing
+ nested
+ tokenizer!
+last outer j=16
+for
+ testing
+ nested
+ tokenizer!
+last outer j=17
+for
+ testing
+ nested
+ tokenizer!
+last outer j=18
+for
+ testing
+ nested
+ tokenizer!
+another test i=1
+j=1
+j=2
+j=3
+j=4
+another test i=3
+j=1
+j=2
+j=3
+j=4
+a final test i=1
+j=1
+j=3
+a final test i=2
+j=1
+j=3
+a final test i=3
+j=1
+j=3
+a final test i=4
+j=1
+j=3

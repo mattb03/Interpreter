@@ -1,0 +1,101 @@
+errorTestCases/exprErrors/arrays/
+********** ERROR **********
+Line 7: print(s[s]);
+Index Operand of s operator isn't a valid numeric type
+File: errorTestCases/exprErrors/arrays/stringIndexNotNumeric
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Numeric.<init>(Numeric.java:30)
+	at havabol.Parser.evaluateExpr(Parser.java:1356)
+	at havabol.Parser.expr(Parser.java:1230)
+	at havabol.Parser.statements(Parser.java:85)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/exprErrors/arrays/
+********** ERROR **********
+Line 7: print(array 3 + 1);
+Array 'array' is missing an index reference
+File: errorTestCases/exprErrors/arrays/arrayMissingIndexRefInOp
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Parser.evaluateExpr(Parser.java:1673)
+	at havabol.Parser.expr(Parser.java:1230)
+	at havabol.Parser.statements(Parser.java:85)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/exprErrors/arrays/
+********** ERROR **********
+Line 7: print(array]);
+']' is an invalid expression.
+File: errorTestCases/exprErrors/arrays/arrayMissingLBracket
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.Parser.evaluateExpr(Parser.java:1679)
+	at havabol.Parser.expr(Parser.java:1260)
+	at havabol.Parser.statements(Parser.java:56)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/exprErrors/arrays/
+********** ERROR **********
+Line 7: print(array[]);
+Missing index expression operand for array 'array'.
+File: errorTestCases/exprErrors/arrays/arrayMissingIndex
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Parser.evaluateExpr(Parser.java:1331)
+	at havabol.Parser.expr(Parser.java:1230)
+	at havabol.Parser.statements(Parser.java:85)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/exprErrors/arrays/
+********** ERROR **********
+Line 7: print(array[4] + array);
+2nd Operand of + operator cannot be of type ARRAY
+File: errorTestCases/exprErrors/arrays/arrayAsROperand
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Parser.evaluateExpr(Parser.java:1448)
+	at havabol.Parser.expr(Parser.java:1230)
+	at havabol.Parser.statements(Parser.java:85)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/exprErrors/arrays/
+********** ERROR **********
+Line 7: print(array + array[4]);
+Missing expression operand for operator: '+'
+File: errorTestCases/exprErrors/arrays/arrayAsLOperand
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Parser.evaluateExpr(Parser.java:1437)
+	at havabol.Parser.expr(Parser.java:1230)
+	at havabol.Parser.statements(Parser.java:85)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/exprErrors/arrays/
+********** ERROR **********
+Line 7: print(array[-123123]);
+Out of bounds exception
+File: errorTestCases/exprErrors/arrays/arrayIndexNegNumeric
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.StorageManager.get(StorageManager.java:128)
+	at havabol.Parser.evaluateExpr(Parser.java:1351)
+	at havabol.Parser.expr(Parser.java:1230)
+	at havabol.Parser.statements(Parser.java:85)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/exprErrors/arrays/
+********** ERROR **********
+Line 7: print(array[s]);
+Index Operand of array operator isn't a valid numeric type
+File: errorTestCases/exprErrors/arrays/arrayIndexNonNumeric
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Numeric.<init>(Numeric.java:30)
+	at havabol.Parser.evaluateExpr(Parser.java:1347)
+	at havabol.Parser.expr(Parser.java:1230)
+	at havabol.Parser.statements(Parser.java:85)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/exprErrors/arrays/
+********** ERROR **********
+Line 1: /usr/bin/python: can't find '__main__' module in 'errorTestCases/exprErrors/arrays/'
+Symbol 'usr' is not in Symbol Table.
+File: errorTestCases/exprErrors/arrays/errors.txt
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.Parser.statements(Parser.java:212)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/exprErrors/arrays/
+********** ERROR **********
+Line 7: print(array[);
+Missing ']' separator
+File: errorTestCases/exprErrors/arrays/arrayMissingRBracket
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Parser.expr(Parser.java:1211)
+	at havabol.Parser.statements(Parser.java:85)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/exprErrors/arrays/

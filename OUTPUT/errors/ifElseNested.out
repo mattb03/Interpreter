@@ -1,0 +1,125 @@
+errorTestCases/ifElseNested/
+false
+inner if is true
+********** ERROR **********
+Line 14: 	endif:
+Invalid terminating token for endif: ':'
+File: errorTestCases/ifElseNested/endIfNotCorrectlyTerminated
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Parser.ifStmt(Parser.java:510)
+	at havabol.Parser.statements(Parser.java:270)
+	at havabol.Parser.ifStmt(Parser.java:579)
+	at havabol.Parser.statements(Parser.java:270)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/ifElseNested/
+false
+********** ERROR **********
+Line 10: 	if T
+Invalid terminating token for if: 'print'
+File: errorTestCases/ifElseNested/ifNotTerminated
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Parser.ifStmt(Parser.java:447)
+	at havabol.Parser.statements(Parser.java:270)
+	at havabol.Parser.ifStmt(Parser.java:579)
+	at havabol.Parser.statements(Parser.java:270)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/ifElseNested/
+false
+********** ERROR **********
+Line 10: 	if "this isn't a boolean":
+Invalid conditional for if: 'this isn't a boolean'
+File: errorTestCases/ifElseNested/nonBooleanCondition
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Parser.ifStmt(Parser.java:604)
+	at havabol.Parser.statements(Parser.java:270)
+	at havabol.Parser.ifStmt(Parser.java:579)
+	at havabol.Parser.statements(Parser.java:270)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/ifElseNested/
+false
+inner if is true
+********** ERROR **********
+Line 12: 	else;
+Invalid terminating token for else: ';'
+File: errorTestCases/ifElseNested/elseNotCorrectlyTerminated
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Parser.ifStmt(Parser.java:459)
+	at havabol.Parser.statements(Parser.java:270)
+	at havabol.Parser.ifStmt(Parser.java:579)
+	at havabol.Parser.statements(Parser.java:270)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/ifElseNested/
+false
+inner if is true
+********** ERROR **********
+Line 14: 	endif
+Invalid terminating token for endif: 'endif'
+File: errorTestCases/ifElseNested/endIfNotTerminated
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Parser.ifStmt(Parser.java:510)
+	at havabol.Parser.statements(Parser.java:270)
+	at havabol.Parser.ifStmt(Parser.java:579)
+	at havabol.Parser.statements(Parser.java:270)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/ifElseNested/
+false
+********** ERROR **********
+Line 10: 	if T;
+Invalid terminating token for if: ';'
+File: errorTestCases/ifElseNested/ifNotCorrectlyTerminated
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Parser.ifStmt(Parser.java:447)
+	at havabol.Parser.statements(Parser.java:270)
+	at havabol.Parser.ifStmt(Parser.java:579)
+	at havabol.Parser.statements(Parser.java:270)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/ifElseNested/
+false
+inner if is true
+********** ERROR **********
+Line 12: 	else
+Invalid terminating token for else: 'print'
+File: errorTestCases/ifElseNested/elseNotTerminated
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Parser.ifStmt(Parser.java:459)
+	at havabol.Parser.statements(Parser.java:270)
+	at havabol.Parser.ifStmt(Parser.java:579)
+	at havabol.Parser.statements(Parser.java:270)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/ifElseNested/
+false
+inner if is true
+********** ERROR **********
+Line 8: else:
+Else statement not terminated by endif.
+File: errorTestCases/ifElseNested/noEndif
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Parser.ifStmt(Parser.java:587)
+	at havabol.Parser.statements(Parser.java:270)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/ifElseNested/
+false
+inner if is true
+********** ERROR **********
+Line 12: 	ese:
+Symbol 'ese' is not in Symbol Table.
+File: errorTestCases/ifElseNested/elseMisspelled
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.Parser.statements(Parser.java:212)
+	at havabol.Parser.ifStmt(Parser.java:453)
+	at havabol.Parser.statements(Parser.java:270)
+	at havabol.Parser.ifStmt(Parser.java:579)
+	at havabol.Parser.statements(Parser.java:270)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/ifElseNested/
+false
+inner if is true
+********** ERROR **********
+Line 8: else:
+Else statement not terminated by endif.
+File: errorTestCases/ifElseNested/endIfMisspelled
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Parser.ifStmt(Parser.java:587)
+	at havabol.Parser.statements(Parser.java:270)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/ifElseNested/

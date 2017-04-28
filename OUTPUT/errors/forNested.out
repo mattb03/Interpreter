@@ -1,0 +1,424 @@
+errorTestCases/forLoopErrors/nestedForErrors/
+********** ERROR **********
+Line 5: 	for ch from str by delim:
+"str" is uninitialized
+File: errorTestCases/forLoopErrors/nestedForErrors/stringNoValue
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.Parser.forStmt(Parser.java:917)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.Parser.forStmt(Parser.java:1046)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/forLoopErrors/nestedForErrors/
+********** ERROR **********
+Line 4:     for i = notInt to 5:
+RIGHT OPERAND of = operator isn't a valid numeric type
+File: errorTestCases/forLoopErrors/nestedForErrors/startIdentifierNotInteger
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Numeric.<init>(Numeric.java:30)
+	at havabol.Parser.forStmt(Parser.java:746)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.Parser.forStmt(Parser.java:830)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/forLoopErrors/nestedForErrors/
+i
+ love
+ havabol
+********** ERROR **********
+Line 3: for i in "string, delimited" by ",":
+Missing terminating "; after "endfor"
+File: errorTestCases/forLoopErrors/nestedForErrors/missingEndforSemicolon
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Parser.forStmt(Parser.java:1052)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/forLoopErrors/nestedForErrors/
+i=0
+********** ERROR **********
+Line 3:     for i = 0 to 5 by 2:
+Missing terminating "; after "endfor"
+File: errorTestCases/forLoopErrors/nestedForErrors/missingEndforSemicolon3
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Parser.forStmt(Parser.java:838)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.Parser.forStmt(Parser.java:830)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/forLoopErrors/nestedForErrors/
+********** ERROR **********
+Line 5: for i stuff:
+stuff is not a valid for loop token
+File: errorTestCases/forLoopErrors/nestedForErrors/controlBoolStringArray
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.Parser.forStmt(Parser.java:1094)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/forLoopErrors/nestedForErrors/
+********** ERROR **********
+Line 4:     for i = 0 to limit:
+OPERAND of limit operator isn't a valid numeric type
+File: errorTestCases/forLoopErrors/nestedForErrors/limitIdentifierNotInteger
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Numeric.<init>(Numeric.java:30)
+	at havabol.Parser.forStmt(Parser.java:766)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.Parser.forStmt(Parser.java:830)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/forLoopErrors/nestedForErrors/
+********** ERROR **********
+Line 2: for i stuff:
+stuff is not a valid for loop token
+File: errorTestCases/forLoopErrors/nestedForErrors/arrayUndeclared
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.Parser.forStmt(Parser.java:1094)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/forLoopErrors/nestedForErrors/
+********** ERROR **********
+Line 2: for i stuff:
+stuff is not a valid for loop token
+File: errorTestCases/forLoopErrors/nestedForErrors/arrayUndeclared2
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.Parser.forStmt(Parser.java:1094)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/forLoopErrors/nestedForErrors/
+********** ERROR **********
+Line 5: for i stuff:
+stuff is not a valid for loop token
+File: errorTestCases/forLoopErrors/nestedForErrors/controlFloatStringArray
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.Parser.forStmt(Parser.java:1094)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/forLoopErrors/nestedForErrors/
+********** ERROR **********
+Line 3: for i stuff:
+stuff is not a valid for loop token
+File: errorTestCases/forLoopErrors/nestedForErrors/controlNotIdentifier
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.Parser.forStmt(Parser.java:1094)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/forLoopErrors/nestedForErrors/
+********** ERROR **********
+Line 1: errorTestCases/forLoopErrors/nestedCountingForLoops/
+Symbol 'errorTestCases' is not in Symbol Table.
+File: errorTestCases/forLoopErrors/nestedForErrors/nestedCountingErrors.txt
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.Parser.statements(Parser.java:212)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/forLoopErrors/nestedForErrors/
+********** ERROR **********
+Line 1: errorTestCases/forLoopErrors/nestedForeachLoopErrors/
+Symbol 'errorTestCases' is not in Symbol Table.
+File: errorTestCases/forLoopErrors/nestedForErrors/nestedForeachErrors.txt
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.Parser.statements(Parser.java:212)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/forLoopErrors/nestedForErrors/
+********** ERROR **********
+Line 2:     for i = 0 to 5 by "wrong":
+wrong must be an integer
+File: errorTestCases/forLoopErrors/nestedForErrors/incrInvalid
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.Parser.forStmt(Parser.java:814)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.Parser.forStmt(Parser.java:830)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/forLoopErrors/nestedForErrors/
+********** ERROR **********
+Line 3:     for 5 = 0 to 10:
+5 must be an identifier
+File: errorTestCases/forLoopErrors/nestedForErrors/controlNotIdentifier2
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.Parser.forStmt(Parser.java:726)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.Parser.forStmt(Parser.java:830)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/forLoopErrors/nestedForErrors/
+********** ERROR **********
+Line 3: 	for 5 from str by ",":
+5 must be an identifier
+File: errorTestCases/forLoopErrors/nestedForErrors/iterableNotIdentifier
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.Parser.forStmt(Parser.java:883)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.Parser.forStmt(Parser.java:1046)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/forLoopErrors/nestedForErrors/
+********** ERROR **********
+Line 3: for i stuff:
+stuff is not a valid for loop token
+File: errorTestCases/forLoopErrors/nestedForErrors/controlFloatStringLiteral
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.Parser.forStmt(Parser.java:1094)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/forLoopErrors/nestedForErrors/
+********** ERROR **********
+Line 4: for i stuff:
+stuff is not a valid for loop token
+File: errorTestCases/forLoopErrors/nestedForErrors/controlBoolStringLiteral
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.Parser.forStmt(Parser.java:1094)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/forLoopErrors/nestedForErrors/
+********** ERROR **********
+Line 3:     for i = 0 to 5 2:
+Missing "by" keyword in for loop
+File: errorTestCases/forLoopErrors/nestedForErrors/missingByKeyword
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.Parser.forStmt(Parser.java:822)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.Parser.forStmt(Parser.java:830)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/forLoopErrors/nestedForErrors/
+********** ERROR **********
+Line 4: 	for token from str by ","
+Missing terminating ":" in for loop
+File: errorTestCases/forLoopErrors/nestedForErrors/missingColon
+	at havabol.Parser.errorNoTerm(Parser.java:1690)
+	at havabol.Parser.forStmt(Parser.java:1012)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.Parser.forStmt(Parser.java:1046)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/forLoopErrors/nestedForErrors/
+********** ERROR **********
+Line 4: 	for ch from str by 5:
+"5" must be a string
+File: errorTestCases/forLoopErrors/nestedForErrors/delimiterNotString2
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.Parser.forStmt(Parser.java:1002)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.Parser.forStmt(Parser.java:1046)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/forLoopErrors/nestedForErrors/
+********** ERROR **********
+Line 4: 	for ch from 5 by delim:
+"5" must be a string
+File: errorTestCases/forLoopErrors/nestedForErrors/stringNotAString2
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.Parser.forStmt(Parser.java:952)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.Parser.forStmt(Parser.java:1046)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/forLoopErrors/nestedForErrors/
+********** ERROR **********
+Line 3:     for i = "wrong" to 5:
+"wrong" must be an integer
+File: errorTestCases/forLoopErrors/nestedForErrors/startInvalid
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.Parser.forStmt(Parser.java:737)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.Parser.forStmt(Parser.java:830)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/forLoopErrors/nestedForErrors/
+********** ERROR **********
+Line 5: 	for ch from str by delim:
+"delim" is uninitialized
+File: errorTestCases/forLoopErrors/nestedForErrors/delimiterNoValue
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.Parser.forStmt(Parser.java:994)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.Parser.forStmt(Parser.java:1046)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/forLoopErrors/nestedForErrors/
+********** ERROR **********
+Line 3:     for i = 0 to limit:
+"limit" is undeclared
+File: errorTestCases/forLoopErrors/nestedForErrors/limitUndeclared
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.Parser.forStmt(Parser.java:757)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.Parser.forStmt(Parser.java:830)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/forLoopErrors/nestedForErrors/
+********** ERROR **********
+Line 3: for i stuff:
+stuff is not a valid for loop token
+File: errorTestCases/forLoopErrors/nestedForErrors/missingColon2
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.Parser.forStmt(Parser.java:1094)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/forLoopErrors/nestedForErrors/
+********** ERROR **********
+Line 3: for i stuff:
+stuff is not a valid for loop token
+File: errorTestCases/forLoopErrors/nestedForErrors/missingEndforSemicolon2
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.Parser.forStmt(Parser.java:1094)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/forLoopErrors/nestedForErrors/
+********** ERROR **********
+Line 1: errorTestCases/forLoopErrors/nestedDelimiterForLoopErrors/
+Symbol 'errorTestCases' is not in Symbol Table.
+File: errorTestCases/forLoopErrors/nestedForErrors/nestedDelimiterErrors.txt
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.Parser.statements(Parser.java:212)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/forLoopErrors/nestedForErrors/
+********** ERROR **********
+Line 3: for i stuff:
+stuff is not a valid for loop token
+File: errorTestCases/forLoopErrors/nestedForErrors/controlIntegerStringLiteral
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.Parser.forStmt(Parser.java:1094)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/forLoopErrors/nestedForErrors/
+********** ERROR **********
+Line 4: for i stuff:
+stuff is not a valid for loop token
+File: errorTestCases/forLoopErrors/nestedForErrors/controlBoolIntArray
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.Parser.forStmt(Parser.java:1094)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/forLoopErrors/nestedForErrors/
+********** ERROR **********
+Line 4:     for i = 0 to 5 by incr:
+"incr" is uninitialized
+File: errorTestCases/forLoopErrors/nestedForErrors/incrNoValue
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.Parser.forStmt(Parser.java:796)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.Parser.forStmt(Parser.java:830)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/forLoopErrors/nestedForErrors/
+********** ERROR **********
+Line 4:     for i = start to 5:
+"i" has not been initialized
+File: errorTestCases/forLoopErrors/nestedForErrors/startNoValue
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.Parser.forStmt(Parser.java:743)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.Parser.forStmt(Parser.java:830)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/forLoopErrors/nestedForErrors/
+********** ERROR **********
+Line 4:     for i = 0 to array[2] by array[1]
+Missing terminating ":" in for loop
+File: errorTestCases/forLoopErrors/nestedForErrors/missingColonWithBy
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Parser.forStmt(Parser.java:825)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.Parser.forStmt(Parser.java:830)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/forLoopErrors/nestedForErrors/
+********** ERROR **********
+Line 3: for i stuff:
+stuff is not a valid for loop token
+File: errorTestCases/forLoopErrors/nestedForErrors/missingEndfor2
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.Parser.forStmt(Parser.java:1094)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/forLoopErrors/nestedForErrors/
+********** ERROR **********
+Line 4:     for i = 0 to limit:
+"limit" is uninitialized
+File: errorTestCases/forLoopErrors/nestedForErrors/limitNoValue
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.Parser.forStmt(Parser.java:761)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.Parser.forStmt(Parser.java:830)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/forLoopErrors/nestedForErrors/
+********** ERROR **********
+Line 3:     for i = 0 to "wrong":
+wrong must be an integer
+File: errorTestCases/forLoopErrors/nestedForErrors/limitInvalid
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.Parser.forStmt(Parser.java:780)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.Parser.forStmt(Parser.java:830)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/forLoopErrors/nestedForErrors/
+********** ERROR **********
+Line 6: 	for iterable from str by ",":
+"iterable" must be a string identifier
+File: errorTestCases/forLoopErrors/nestedForErrors/iterableNotStringIdentifier
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.Parser.forStmt(Parser.java:898)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.Parser.forStmt(Parser.java:1046)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/forLoopErrors/nestedForErrors/
+i=0
+i=1
+i=2
+i=3
+i=4
+********** ERROR **********
+Line 3: for k = 0 to 3:
+Missing terminating "endfor" after for loop
+File: errorTestCases/forLoopErrors/nestedForErrors/missingEndfor3
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Parser.forStmt(Parser.java:835)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/forLoopErrors/nestedForErrors/
+********** ERROR **********
+Line 4:     for i = 0 to array[2]
+Missing terminating ":" in for loop
+File: errorTestCases/forLoopErrors/nestedForErrors/missingColonWithoutBy
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Parser.forStmt(Parser.java:825)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.Parser.forStmt(Parser.java:830)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/forLoopErrors/nestedForErrors/
+********** ERROR **********
+Line 2: 	for ch from str by ",":
+"str" is undeclared
+File: errorTestCases/forLoopErrors/nestedForErrors/stringUndeclared
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.Parser.forStmt(Parser.java:912)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.Parser.forStmt(Parser.java:1046)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/forLoopErrors/nestedForErrors/
+********** ERROR **********
+Line 5: 	for ch from str by delim:
+"delim" must be a string
+File: errorTestCases/forLoopErrors/nestedForErrors/delimiterNotString
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.Parser.forStmt(Parser.java:989)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.Parser.forStmt(Parser.java:1046)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/forLoopErrors/nestedForErrors/
+********** ERROR **********
+Line 5: for i stuff:
+stuff is not a valid for loop token
+File: errorTestCases/forLoopErrors/nestedForErrors/controlIntegerStringArray
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.Parser.forStmt(Parser.java:1094)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/forLoopErrors/nestedForErrors/

@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 import os
 import sys
 import time
@@ -21,4 +23,3 @@ for i in range (0, len(testFiles)):
             call(["java", "-classpath", "bin", "havabol.HavaBol", sys.argv[1] + testFiles[index]])
             #print (outputFiles[i])
             sys.exit()
-

@@ -1,0 +1,610 @@
+errorTestCases/decl_arrayErrors/
+********** ERROR **********
+Line 3: bools = arr;
+Cannot coerce type INTEGER to BOOLEAN
+File: errorTestCases/decl_arrayErrors/copyArray5.hav
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.StorageManager.copy(StorageManager.java:228)
+	at havabol.Parser.copyOrDefaultArray(Parser.java:309)
+	at havabol.Parser.statements(Parser.java:216)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/decl_arrayErrors/
+********** ERROR **********
+Line 1: Int nums[10] = 1, "ten";
+Index 1 of nums operator isn't a valid numeric type
+File: errorTestCases/decl_arrayErrors/badArrayItemDeclareFixed2.hav
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Numeric.<init>(Numeric.java:30)
+	at havabol.StorageManager.set(StorageManager.java:90)
+	at havabol.Parser.declareArray(Parser.java:345)
+	at havabol.Parser.statements(Parser.java:203)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/decl_arrayErrors/
+********** ERROR **********
+Line 3: farr = bools;
+Type BOOL can ONLY be cast to type STRING when value is 'T' or 'F'
+File: errorTestCases/decl_arrayErrors/copyArray4.hav
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.StorageManager.copy(StorageManager.java:201)
+	at havabol.Parser.copyOrDefaultArray(Parser.java:309)
+	at havabol.Parser.statements(Parser.java:216)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/decl_arrayErrors/
+********** ERROR **********
+Line 1: int a
+Symbol 'int' is not in Symbol Table.
+File: errorTestCases/decl_arrayErrors/invalidDec.hav
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.Parser.statements(Parser.java:212)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/decl_arrayErrors/
+********** ERROR **********
+Line 1: print(Chris);
+Symbol 'Chris' is not in Symbol Table.
+File: errorTestCases/decl_arrayErrors/printForgotQuotes.hav
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Parser.evaluateExpr(Parser.java:1640)
+	at havabol.Parser.expr(Parser.java:1230)
+	at havabol.Parser.statements(Parser.java:56)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/decl_arrayErrors/
+********** ERROR **********
+Line 1: Float nums[] = 1, 2.3, T;
+Type BOOL can ONLY be cast to type STRING when value is 'T' or 'F'
+File: errorTestCases/decl_arrayErrors/badArrayItemDeclare3.hav
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.StorageManager.add(StorageManager.java:49)
+	at havabol.Parser.declareArray(Parser.java:343)
+	at havabol.Parser.statements(Parser.java:203)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/decl_arrayErrors/
+********** ERROR **********
+Line 1: Bool bools[unbound] = T, F, 10.1;
+Cannot coerce type FLOAT to BOOLEAN
+File: errorTestCases/decl_arrayErrors/badArrayItemDeclare_unbound5.hav
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.StorageManager.set(StorageManager.java:99)
+	at havabol.Parser.declareArray(Parser.java:345)
+	at havabol.Parser.statements(Parser.java:203)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/decl_arrayErrors/
+********** ERROR **********
+Line 1: print(T == 2);
+1st Operand of == operator cannot be type BOOLEAN
+File: errorTestCases/decl_arrayErrors/boolToNum.hav
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Utility.equals(Utility.java:211)
+	at havabol.Parser.evaluateExpr(Parser.java:1525)
+	at havabol.Parser.expr(Parser.java:1230)
+	at havabol.Parser.statements(Parser.java:85)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/decl_arrayErrors/
+********** ERROR **********
+Line 1: Int nums[unbound] = 1, 3.14, T;
+Type BOOL can ONLY be cast to type STRING when value is 'T' or 'F'
+File: errorTestCases/decl_arrayErrors/badArrayItemDeclare_unbound.hav
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.StorageManager.set(StorageManager.java:82)
+	at havabol.Parser.declareArray(Parser.java:345)
+	at havabol.Parser.statements(Parser.java:203)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/decl_arrayErrors/
+********** ERROR **********
+Line 3: bools = farr;
+Cannot coerce type FLOAT to BOOLEAN
+File: errorTestCases/decl_arrayErrors/copyArray6.hav
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.StorageManager.copy(StorageManager.java:228)
+	at havabol.Parser.copyOrDefaultArray(Parser.java:309)
+	at havabol.Parser.statements(Parser.java:216)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/decl_arrayErrors/
+********** ERROR **********
+Line 1: print(Chris)
+Symbol 'Chris' is not in Symbol Table.
+File: errorTestCases/decl_arrayErrors/forgotQuotes.hav
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Parser.evaluateExpr(Parser.java:1640)
+	at havabol.Parser.expr(Parser.java:1230)
+	at havabol.Parser.statements(Parser.java:56)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/decl_arrayErrors/
+********** ERROR **********
+Line 1: Float f = 1 # "T" # F;
+'1TF' of = operator isn't a valid numeric type
+File: errorTestCases/decl_arrayErrors/concatErrors4.hav
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Numeric.<init>(Numeric.java:30)
+	at havabol.Parser.assign(Parser.java:391)
+	at havabol.Parser.statements(Parser.java:158)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/decl_arrayErrors/
+********** ERROR **********
+Line 1: Bool b = 10;
+Incompatible types. Cannot assign INTEGER to BOOLEAN when STRING is a not a 'T' or 'F'
+File: errorTestCases/decl_arrayErrors/invalidCast5.hav
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.Parser.assign(Parser.java:381)
+	at havabol.Parser.statements(Parser.java:158)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/decl_arrayErrors/
+********** ERROR **********
+Line 1: Int nums[] = 1, 3.14, T;
+Type BOOL can ONLY be cast to type STRING when value is 'T' or 'F'
+File: errorTestCases/decl_arrayErrors/badArrayItemDeclare.hav
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.StorageManager.add(StorageManager.java:49)
+	at havabol.Parser.declareArray(Parser.java:343)
+	at havabol.Parser.statements(Parser.java:203)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/decl_arrayErrors/
+********** ERROR **********
+Line 1: String str = Chris;
+Symbol 'Chris' is not in Symbol Table.
+File: errorTestCases/decl_arrayErrors/forgotQuotes2.hav
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Parser.evaluateExpr(Parser.java:1640)
+	at havabol.Parser.expr(Parser.java:1296)
+	at havabol.Parser.assign(Parser.java:366)
+	at havabol.Parser.statements(Parser.java:158)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/decl_arrayErrors/
+********** ERROR **********
+Line 1: Int i = 1 # T # "F" # 0.1;
+'1TF0.1' of = operator isn't a valid numeric type
+File: errorTestCases/decl_arrayErrors/concatErrors2.hav
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Numeric.<init>(Numeric.java:30)
+	at havabol.Parser.assign(Parser.java:391)
+	at havabol.Parser.statements(Parser.java:158)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/decl_arrayErrors/
+********** ERROR **********
+Line 3: farr = sdef;
+The default value of 'farr' operator isn't a valid numeric type
+File: errorTestCases/decl_arrayErrors/arrayDefault3.hav
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.StorageManager.defaultArray(StorageManager.java:255)
+	at havabol.Parser.copyOrDefaultArray(Parser.java:325)
+	at havabol.Parser.statements(Parser.java:216)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/decl_arrayErrors/
+********** ERROR **********
+Line 1: Int nums[] = 1, "ten";
+Index 1 of nums operator isn't a valid numeric type
+File: errorTestCases/decl_arrayErrors/badArrayItemDeclare2.hav
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Numeric.<init>(Numeric.java:30)
+	at havabol.StorageManager.add(StorageManager.java:58)
+	at havabol.Parser.declareArray(Parser.java:343)
+	at havabol.Parser.statements(Parser.java:203)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/decl_arrayErrors/
+********** ERROR **********
+Line 1: Bool bools[10] = T, F, 3.14;
+Cannot coerce type FLOAT to BOOLEAN
+File: errorTestCases/decl_arrayErrors/badArrayItemDeclareFixed6.hav
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.StorageManager.set(StorageManager.java:99)
+	at havabol.Parser.declareArray(Parser.java:345)
+	at havabol.Parser.statements(Parser.java:203)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/decl_arrayErrors/
+********** ERROR **********
+Line 1: Int i = 1.2 # 0.0;
+'1.20.0' of = operator isn't a valid numeric type
+File: errorTestCases/decl_arrayErrors/concatErrors.hav
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Numeric.<init>(Numeric.java:30)
+	at havabol.Parser.assign(Parser.java:391)
+	at havabol.Parser.statements(Parser.java:158)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/decl_arrayErrors/
+********** ERROR **********
+Line 1: print("hello world!")
+Print function not terminated with ';'
+File: errorTestCases/decl_arrayErrors/missingSem.hav
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.Parser.statements(Parser.java:102)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/decl_arrayErrors/
+********** ERROR **********
+Line 1: Int nums[10] = 1, 3.14, T;
+Type BOOL can ONLY be cast to type STRING when value is 'T' or 'F'
+File: errorTestCases/decl_arrayErrors/badArrayItemDeclareFixed.hav
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.StorageManager.set(StorageManager.java:82)
+	at havabol.Parser.declareArray(Parser.java:345)
+	at havabol.Parser.statements(Parser.java:203)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/decl_arrayErrors/
+********** ERROR **********
+Line 1: Float nums[10] = 1, 2.3, T;
+Type BOOL can ONLY be cast to type STRING when value is 'T' or 'F'
+File: errorTestCases/decl_arrayErrors/badArrayItemDeclareFixed3.hav
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.StorageManager.set(StorageManager.java:82)
+	at havabol.Parser.declareArray(Parser.java:345)
+	at havabol.Parser.statements(Parser.java:203)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/decl_arrayErrors/
+********** ERROR **********
+Line 1: Bool bools[] = T, F, 3.14;
+Cannot coerce type FLOAT to BOOLEAN
+File: errorTestCases/decl_arrayErrors/badArrayItemDeclare6.hav
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.StorageManager.add(StorageManager.java:67)
+	at havabol.Parser.declareArray(Parser.java:343)
+	at havabol.Parser.statements(Parser.java:203)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/decl_arrayErrors/
+********** ERROR **********
+Line 3: bools = str;
+Type BOOL can ONLY be cast to type STRING when value is 'T' or 'F'
+File: errorTestCases/decl_arrayErrors/copyArray7.hav
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.StorageManager.copy(StorageManager.java:165)
+	at havabol.Parser.copyOrDefaultArray(Parser.java:309)
+	at havabol.Parser.statements(Parser.java:216)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/decl_arrayErrors/
+********** ERROR **********
+Line 2: print(MAXELEM(b));
+'b' is not type ARRAY for function ELEM
+File: errorTestCases/decl_arrayErrors/maxelemOnInt.hav
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Parser.evaluateExpr(Parser.java:1606)
+	at havabol.Parser.expr(Parser.java:1230)
+	at havabol.Parser.statements(Parser.java:85)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/decl_arrayErrors/
+********** ERROR **********
+Line 3: arr = sdef;
+The default value of 'arr' operator isn't a valid numeric type
+File: errorTestCases/decl_arrayErrors/arrayDefault.hav
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.StorageManager.defaultArray(StorageManager.java:255)
+	at havabol.Parser.copyOrDefaultArray(Parser.java:325)
+	at havabol.Parser.statements(Parser.java:216)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/decl_arrayErrors/
+********** ERROR **********
+Line 1: Int a = "Chris";
+'Chris' of = operator isn't a valid numeric type
+File: errorTestCases/decl_arrayErrors/invalidCast2.hav
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Numeric.<init>(Numeric.java:30)
+	at havabol.Parser.assign(Parser.java:391)
+	at havabol.Parser.statements(Parser.java:158)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/decl_arrayErrors/
+********** ERROR **********
+Line 3: farr = bdef;
+Type BOOL can ONLY be cast to type STRING when value is 'T' or 'F'
+File: errorTestCases/decl_arrayErrors/arrayDefault4.hav
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.StorageManager.defaultArray(StorageManager.java:241)
+	at havabol.Parser.copyOrDefaultArray(Parser.java:325)
+	at havabol.Parser.statements(Parser.java:216)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/decl_arrayErrors/
+********** ERROR **********
+Line 1: Bool bools[10] = T, F, "true";
+Type BOOL can ONLY be cast to type STRING when value is 'T' or 'F'
+File: errorTestCases/decl_arrayErrors/badArrayItemDeclareFixed7.hav
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.StorageManager.set(StorageManager.java:87)
+	at havabol.Parser.declareArray(Parser.java:345)
+	at havabol.Parser.statements(Parser.java:203)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/decl_arrayErrors/
+********** ERROR **********
+Line 1: Bool bools[] = T, F, 10.1;
+Cannot coerce type FLOAT to BOOLEAN
+File: errorTestCases/decl_arrayErrors/badArrayItemDeclare5.hav
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.StorageManager.add(StorageManager.java:67)
+	at havabol.Parser.declareArray(Parser.java:343)
+	at havabol.Parser.statements(Parser.java:203)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/decl_arrayErrors/
+********** ERROR **********
+Line 3: arr = bdef;
+Type BOOL can ONLY be cast to type STRING when value is 'T' or 'F'
+File: errorTestCases/decl_arrayErrors/arrayDefault2.hav
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.StorageManager.defaultArray(StorageManager.java:241)
+	at havabol.Parser.copyOrDefaultArray(Parser.java:325)
+	at havabol.Parser.statements(Parser.java:216)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/decl_arrayErrors/
+********** ERROR **********
+Line 3: bools = sdef;
+Type BOOL can ONLY be cast to type STRING when value is 'T' or 'F'
+File: errorTestCases/decl_arrayErrors/arrayDefault7.hav
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.StorageManager.defaultArray(StorageManager.java:247)
+	at havabol.Parser.copyOrDefaultArray(Parser.java:325)
+	at havabol.Parser.statements(Parser.java:216)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/decl_arrayErrors/
+********** ERROR **********
+Line 1: Bool b = 3.14;
+Incompatible types. Cannot assign FLOAT to BOOLEAN when STRING is a not a 'T' or 'F'
+File: errorTestCases/decl_arrayErrors/invalidCast6.hav
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.Parser.assign(Parser.java:381)
+	at havabol.Parser.statements(Parser.java:158)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/decl_arrayErrors/
+********** ERROR **********
+Line 1: Int arr[T] = 10;
+'T' is not a valid size parameter
+File: errorTestCases/decl_arrayErrors/invalidArrdec2.hav
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.Parser.statements(Parser.java:198)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/decl_arrayErrors/
+********** ERROR **********
+Line 1: Int arr["cat"] = 100;
+'cat' is not a valid size parameter
+File: errorTestCases/decl_arrayErrors/invalidArrdec.hav
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.Parser.statements(Parser.java:198)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/decl_arrayErrors/
+********** ERROR **********
+Line 1: Float nums[unbound] = 1, 2.3, T;
+Type BOOL can ONLY be cast to type STRING when value is 'T' or 'F'
+File: errorTestCases/decl_arrayErrors/badArrayItemDeclare_unbound3.hav
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.StorageManager.set(StorageManager.java:82)
+	at havabol.Parser.declareArray(Parser.java:345)
+	at havabol.Parser.statements(Parser.java:203)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/decl_arrayErrors/
+********** ERROR **********
+Line 1: Bool bools[unbound] = T, F, "true";
+Type BOOL can ONLY be cast to type STRING when value is 'T' or 'F'
+File: errorTestCases/decl_arrayErrors/badArrayItemDeclare_unbound7.hav
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.StorageManager.set(StorageManager.java:87)
+	at havabol.Parser.declareArray(Parser.java:345)
+	at havabol.Parser.statements(Parser.java:203)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/decl_arrayErrors/
+********** ERROR **********
+Line 1: Float nums[unbound] = 1, 2.3, "two point three";
+Index 2 of nums operator isn't a valid numeric type
+File: errorTestCases/decl_arrayErrors/badArrayItemDeclare_unbound4.hav
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Numeric.<init>(Numeric.java:30)
+	at havabol.StorageManager.set(StorageManager.java:90)
+	at havabol.Parser.declareArray(Parser.java:345)
+	at havabol.Parser.statements(Parser.java:203)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/decl_arrayErrors/
+********** ERROR **********
+Line 2: print(MAXELEM(f));
+'f' is not type ARRAY for function ELEM
+File: errorTestCases/decl_arrayErrors/elemOnInt.hav
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Parser.evaluateExpr(Parser.java:1606)
+	at havabol.Parser.expr(Parser.java:1230)
+	at havabol.Parser.statements(Parser.java:85)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/decl_arrayErrors/
+********** ERROR **********
+Line 1: Float f = "Chris";
+'Chris' of = operator isn't a valid numeric type
+File: errorTestCases/decl_arrayErrors/invalidCast3.hav
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Numeric.<init>(Numeric.java:30)
+	at havabol.Parser.assign(Parser.java:391)
+	at havabol.Parser.statements(Parser.java:158)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/decl_arrayErrors/
+********** ERROR **********
+Line 1: Bool b = "true";
+Found 'true'. STRING must be either 'T' or 'F'
+File: errorTestCases/decl_arrayErrors/invalidCast7.hav
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.Parser.assign(Parser.java:378)
+	at havabol.Parser.statements(Parser.java:158)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/decl_arrayErrors/
+********** ERROR **********
+Line 3: bools = fdef;
+Cannot coerce type FLOAT to BOOLEAN
+File: errorTestCases/decl_arrayErrors/arrayDefault6.hav
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.StorageManager.defaultArray(StorageManager.java:267)
+	at havabol.Parser.copyOrDefaultArray(Parser.java:325)
+	at havabol.Parser.statements(Parser.java:216)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/decl_arrayErrors/
+********** ERROR **********
+Line 1: Float f = 2.2 # 0.3;
+'2.20.3' of = operator isn't a valid numeric type
+File: errorTestCases/decl_arrayErrors/concatErrors3.hav
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Numeric.<init>(Numeric.java:30)
+	at havabol.Parser.assign(Parser.java:391)
+	at havabol.Parser.statements(Parser.java:158)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/decl_arrayErrors/
+********** ERROR **********
+Line 1: Float nums[10] = 1, 2.3, "two point three";
+Index 2 of nums operator isn't a valid numeric type
+File: errorTestCases/decl_arrayErrors/badArrayItemDeclareFixed4.hav
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Numeric.<init>(Numeric.java:30)
+	at havabol.StorageManager.set(StorageManager.java:90)
+	at havabol.Parser.declareArray(Parser.java:345)
+	at havabol.Parser.statements(Parser.java:203)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/decl_arrayErrors/
+java.lang.ArrayIndexOutOfBoundsException: -2
+	at havabol.Parser.errorNoTerm(Parser.java:1690)
+	at havabol.Parser.statements(Parser.java:162)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/decl_arrayErrors/
+********** ERROR **********
+Line 1: Bool bools[unbound] = T, F, 3.14;
+Cannot coerce type FLOAT to BOOLEAN
+File: errorTestCases/decl_arrayErrors/badArrayItemDeclare_unbound6.hav
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.StorageManager.set(StorageManager.java:99)
+	at havabol.Parser.declareArray(Parser.java:345)
+	at havabol.Parser.statements(Parser.java:203)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/decl_arrayErrors/
+********** ERROR **********
+Line 1: Bool bools[10] = T, F, 10.1;
+Cannot coerce type FLOAT to BOOLEAN
+File: errorTestCases/decl_arrayErrors/badArrayItemDeclareFixed5.hav
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.StorageManager.set(StorageManager.java:99)
+	at havabol.Parser.declareArray(Parser.java:345)
+	at havabol.Parser.statements(Parser.java:203)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/decl_arrayErrors/
+********** ERROR **********
+Line 3: arr = bools;
+Type BOOL can ONLY be cast to type STRING when value is 'T' or 'F'
+File: errorTestCases/decl_arrayErrors/copyArray2.hav
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.StorageManager.copy(StorageManager.java:201)
+	at havabol.Parser.copyOrDefaultArray(Parser.java:309)
+	at havabol.Parser.statements(Parser.java:216)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/decl_arrayErrors/
+********** ERROR **********
+Line 1: Int a = T;
+'T' of = operator isn't a valid numeric type
+File: errorTestCases/decl_arrayErrors/invalidCast1.hav
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Numeric.<init>(Numeric.java:30)
+	at havabol.Parser.assign(Parser.java:391)
+	at havabol.Parser.statements(Parser.java:158)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/decl_arrayErrors/
+********** ERROR **********
+Line 1: Float nums[] = 1, 2.3, "two point three";
+Index 2 of nums operator isn't a valid numeric type
+File: errorTestCases/decl_arrayErrors/badArrayItemDeclare4.hav
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Numeric.<init>(Numeric.java:30)
+	at havabol.StorageManager.add(StorageManager.java:58)
+	at havabol.Parser.declareArray(Parser.java:343)
+	at havabol.Parser.statements(Parser.java:203)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/decl_arrayErrors/
+********** ERROR **********
+Line 1: Float f = F;
+'F' of = operator isn't a valid numeric type
+File: errorTestCases/decl_arrayErrors/invalidCast4.hav
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Numeric.<init>(Numeric.java:30)
+	at havabol.Parser.assign(Parser.java:391)
+	at havabol.Parser.statements(Parser.java:158)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/decl_arrayErrors/
+********** ERROR **********
+Line 3: farr = str;
+Index 0 of 'str' operator isn't a valid numeric type
+File: errorTestCases/decl_arrayErrors/copyArray3.hav
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.StorageManager.copy(StorageManager.java:216)
+	at havabol.Parser.copyOrDefaultArray(Parser.java:309)
+	at havabol.Parser.statements(Parser.java:216)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/decl_arrayErrors/
+********** ERROR **********
+Line 2: print(ELEM(b));
+'b' is not type ARRAY for function ELEM
+File: errorTestCases/decl_arrayErrors/elemOnBool.hav
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Parser.evaluateExpr(Parser.java:1601)
+	at havabol.Parser.expr(Parser.java:1230)
+	at havabol.Parser.statements(Parser.java:85)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/decl_arrayErrors/
+********** ERROR **********
+Line 1: Int a ?
+Invalid non-array assignment. Token '=' or ';' expected. Found '?'
+File: errorTestCases/decl_arrayErrors/invalidDec2.hav
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.Parser.statements(Parser.java:166)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/decl_arrayErrors/
+********** ERROR **********
+Line 1: Int nums[unbound] = 1, "ten";
+Index 1 of nums operator isn't a valid numeric type
+File: errorTestCases/decl_arrayErrors/badArrayItemDeclare_unbound2.hav
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Numeric.<init>(Numeric.java:30)
+	at havabol.StorageManager.set(StorageManager.java:90)
+	at havabol.Parser.declareArray(Parser.java:345)
+	at havabol.Parser.statements(Parser.java:203)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/decl_arrayErrors/
+********** ERROR **********
+Line 1: Bool b = "T" # "T";
+Found 'TT'. STRING must be either 'T' or 'F'
+File: errorTestCases/decl_arrayErrors/concatErrors5.hav
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.Parser.assign(Parser.java:378)
+	at havabol.Parser.statements(Parser.java:158)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/decl_arrayErrors/
+********** ERROR **********
+Line 2: print(ELEM(f));
+'f' is not type ARRAY for function ELEM
+File: errorTestCases/decl_arrayErrors/elemOnFloat.hav
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Parser.evaluateExpr(Parser.java:1601)
+	at havabol.Parser.expr(Parser.java:1230)
+	at havabol.Parser.statements(Parser.java:85)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/decl_arrayErrors/
+********** ERROR **********
+Line 2: print(ELEM(s));
+'s' is not type ARRAY for function ELEM
+File: errorTestCases/decl_arrayErrors/elemOnString.hav
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Parser.evaluateExpr(Parser.java:1601)
+	at havabol.Parser.expr(Parser.java:1230)
+	at havabol.Parser.statements(Parser.java:85)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/decl_arrayErrors/
+********** ERROR **********
+Line 1: Bool bools[] = T, F, "true";
+Type BOOL can ONLY be cast to type STRING when value is 'T' or 'F'
+File: errorTestCases/decl_arrayErrors/badArrayItemDeclare7.hav
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.StorageManager.add(StorageManager.java:55)
+	at havabol.Parser.declareArray(Parser.java:343)
+	at havabol.Parser.statements(Parser.java:203)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/decl_arrayErrors/
+********** ERROR **********
+Line 3: arr = str;
+Index 0 of 'str' operator isn't a valid numeric type
+File: errorTestCases/decl_arrayErrors/copyArray.hav
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.StorageManager.copy(StorageManager.java:216)
+	at havabol.Parser.copyOrDefaultArray(Parser.java:309)
+	at havabol.Parser.statements(Parser.java:216)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/decl_arrayErrors/
+********** ERROR **********
+Line 3: bools = idef;
+Cannot coerce type INTEGER to BOOLEAN
+File: errorTestCases/decl_arrayErrors/arrayDefault5.hav
+	at havabol.Parser.error(Parser.java:1685)
+	at havabol.StorageManager.defaultArray(StorageManager.java:267)
+	at havabol.Parser.copyOrDefaultArray(Parser.java:325)
+	at havabol.Parser.statements(Parser.java:216)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/decl_arrayErrors/

@@ -1,0 +1,19 @@
+java -classpath bin havabol.HavaBol goodCases/goodFuncs.hav
+ELEM(array2) --> 0
+ELEM(array3) --> 0
+ELEM(array) --> 5
+ELEM(array2) --> 5
+ELEM(arr) --> 26
+MAXELEM(array2) --> 10
+MAXELEM(array3) --> 1
+MAXELEM(array) --> 10
+MAXELEM(array2) --> 5
+MAXELEM(arr) --> 30
+length of 'name' --> 11
+length of 'null' --> 0
+length of 'num' is --> 3
+length of 'num2' is --> 7
+'hello world' --> F
+' ' --> T
+str is 'null' --> T
+false AND true --> F

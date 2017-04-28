@@ -1,1 +1,3 @@
-Float farr[] = 1.11, 2.22, 3.33;String str[10] = "T", "F" , "dog";farr = str;
+Float farr[] = 1.11, 2.22, 3.33;
+String str[10] = "T", "F" , "dog";
+farr = str;

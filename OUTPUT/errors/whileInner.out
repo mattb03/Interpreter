@@ -1,0 +1,75 @@
+errorTestCases/whileInnerErrors/
+i = 1
+********** ERROR **********
+Line 5: 	while o < 5
+Invalid terminating token for while: 'print'
+File: errorTestCases/whileInnerErrors/innerWhileNotTerminated
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Parser.whileStmt(Parser.java:617)
+	at havabol.Parser.statements(Parser.java:273)
+	at havabol.Parser.whileStmt(Parser.java:624)
+	at havabol.Parser.statements(Parser.java:273)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/whileInnerErrors/
+i = 1
+o = 1
+********** ERROR **********
+Line 8: 	endwhile:
+Invalid terminating token for endwhile: ':'
+File: errorTestCases/whileInnerErrors/innerEndWhileNotCorrectlyTerminated
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Parser.whileStmt(Parser.java:632)
+	at havabol.Parser.statements(Parser.java:273)
+	at havabol.Parser.whileStmt(Parser.java:624)
+	at havabol.Parser.statements(Parser.java:273)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/whileInnerErrors/
+i = 1
+o = 1
+o = 4
+********** ERROR **********
+Line 3: while i < 10:
+While not terminated by endwhile.
+File: errorTestCases/whileInnerErrors/noInnerEndWhile
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Parser.whileStmt(Parser.java:628)
+	at havabol.Parser.statements(Parser.java:273)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/whileInnerErrors/
+i = 1
+********** ERROR **********
+Line 5: 	while "this is not a boolean":
+Invalid conditional for while: 'this is not a boolean'
+File: errorTestCases/whileInnerErrors/innerNonBooleanCondition
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Parser.whileStmt(Parser.java:689)
+	at havabol.Parser.statements(Parser.java:273)
+	at havabol.Parser.whileStmt(Parser.java:624)
+	at havabol.Parser.statements(Parser.java:273)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/whileInnerErrors/
+i = 1
+o = 1
+********** ERROR **********
+Line 8: 	endwhile
+Invalid terminating token for endwhile: 'i'
+File: errorTestCases/whileInnerErrors/innerEndWhileNotTerminated
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Parser.whileStmt(Parser.java:632)
+	at havabol.Parser.statements(Parser.java:273)
+	at havabol.Parser.whileStmt(Parser.java:624)
+	at havabol.Parser.statements(Parser.java:273)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/whileInnerErrors/
+i = 1
+********** ERROR **********
+Line 5: 	while o < 5;
+Invalid terminating token for while: ';'
+File: errorTestCases/whileInnerErrors/innerWhileNotCorrectlyTerminated
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Parser.whileStmt(Parser.java:617)
+	at havabol.Parser.statements(Parser.java:273)
+	at havabol.Parser.whileStmt(Parser.java:624)
+	at havabol.Parser.statements(Parser.java:273)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/whileInnerErrors/

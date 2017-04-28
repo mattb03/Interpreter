@@ -11,49 +11,22 @@ makebin:
 	mkdir -p bin
 
 dec:
-	$(JAVA) $(JFLAGS) havabol.HavaBol declarations/test1.txt
+	$(JAVA) $(JFLAGS) havabol.HavaBol goodCases/goodDeclare.hav
 
 funcs:
-	$(JAVA) $(JFLAGS) havabol.HavaBol declarations/goodCases.hav
+	$(JAVA) $(JFLAGS) havabol.HavaBol goodCases/goodFuncs.hav
 
+for:
+	$(JAVA) $(JFLAGS) havabol.HavaBol goodCases/good_for_loops.hav
 
-test:
-	$(JAVA) $(JFLAGS) havabol.HavaBol test.txt
+while:
+	$(JAVA) $(JFLAGS) havabol.HavaBol goodCases/whileGoodCases.hav
 
-test2:
-	$(JAVA) $(JFLAGS) havabol.HavaBol p2Input.txt
-
-test3:
-	$(JAVA) $(JFLAGS) havabol.HavaBol p3Input.txt
-
-arr:
-	$(JAVA) $(JFLAGS) havabol.HavaBol p4Array.txt
-
-string:
-	$(JAVA) $(JFLAGS) havabol.HavaBol p4String.txt
-expr:
-	$(JAVA) $(JFLAGS) havabol.HavaBol p4Expr.txt
-func:
-	$(JAVA) $(JFLAGS) havabol.HavaBol p4Func.txt
-
-
-
-
-simp:
-	$(JAVA) $(JFLAGS) havabol.HavaBol p3SimpExpr.txt
-
-out1:
-	$(JAVA) $(JFLAGS) havabol.HavaBol error1.txt
-
-out2:
-	$(JAVA) $(JFLAGS) havabol.HavaBol error2.txt
-
-out3:
-	$(JAVA) $(JFLAGS) havabol.HavaBol error3.txt
+if:
+	$(JAVA) $(JFLAGS) havabol.HavaBol goodCases/ifGoodCases.hav
 
 hav:
 	$(JAVA) $(JFLAGS) havabol.HavaBol prog.hav
-
 
 clean:
 	rm -r bin/*
