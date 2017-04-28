@@ -1,3 +1,6 @@
-for i = 5 10:
-	print ("i=", i);
+
+for k = 0 to 3:
+    for i = 5 10:
+            print ("i=", i);
+    endfor;
 endfor;

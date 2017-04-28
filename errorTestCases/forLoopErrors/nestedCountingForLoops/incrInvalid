@@ -1,3 +1,5 @@
-for i = 0 to 5 by "wrong":
-	print ("i=", i);
+for k = 0 to 3:
+    for i = 0 to 5 by "wrong":
+            print ("i=", i);
+    endfor;
 endfor;
