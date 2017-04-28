@@ -315,25 +315,39 @@ public class Utility {
 
 	// returns the length of the string
     public static ResultValue LENGTH(Parser parser, String str) {
-    	ResultValue resVal = new ResultValue(String.valueOf(str.length()));
-    	resVal.type = 2;
-    	resVal.structure.add("LENGTH");
+    	ResultValue resVal = null;
+    	if (str == null) {
+    		resVal = new ResultValue("0");
+    		resVal.type = 2;
+    		resVal.structure.add("LENGTH");
+    	} else {
+	    	resVal = new ResultValue(String.valueOf(str.length()));
+	    	resVal.type = 2;
+	    	resVal.structure.add("LENGTH");
+	    }
     	return resVal;
     }
 
     // returns T if the string is empty or nothing but spaces, F otherwise
     public static ResultValue SPACES(Parser parser, String str) {
     	int i;
-    	char array[] = str.toCharArray();
-    	ResultValue resVal = new ResultValue("F");
-    	resVal.type = 4;
-    	resVal.structure.add("SPACES");
-    	for (i = 0; i < array.length; i++) {
-    		if (array[i] != ' ') {
-    			return resVal;
-    		}
-    	}
-    	resVal.value = "T";
+    	ResultValue resVal = null;
+    	if (str == null) {
+    		resVal = new ResultValue("T");
+    		resVal.type = Token.BOOLEAN;
+	    	resVal.structure.add("SPACES");
+    	} else {
+	    	char array[] = str.toCharArray();
+	    	resVal = new ResultValue("F");
+	    	resVal.type = 4;
+	    	resVal.structure.add("SPACES");
+	    	for (i = 0; i < array.length; i++) {
+	    		if (array[i] != ' ') {
+	    			return resVal;
+	    		}
+	    	}
+	    	resVal.value = "T";
+	    }
     	return resVal;
     }
 
