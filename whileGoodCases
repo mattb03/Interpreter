@@ -1,0 +1,26 @@
+Int i = 0;
+Int j = i + 2;
+Bool flag = F;
+while i < j:
+    print ("top of while i=", i);
+    Int innerIndex1 = 0;
+    Int innerIndex2 = -5;
+    while innerIndex1 < -5 and innerIndex2 >= 2:
+        print ("inner while loop 1");
+        print ("innerIndex1=", innerIndex1, "\t", "innerIndex2=", innerIndex2);
+        while flag and T:
+            print ("third inner while, flag=", flag);
+            if innerIndex1 == 10:
+                flag = T;
+            else:
+                innerIndex1 = innerIndex1 + i;
+            endif;
+        endwhile;
+        print ("bottom of 2nd inner while innerIndex1=", innerIndex1, "\t", 
+            "innerIndex2=", innerIndex2);
+        innerIndex1 = innerIndex1 - 1;
+        innerIndex2 = innerIndex2 + 1;
+    endwhile;
+    print ("bottom of the outermost while, i=", i, "\t", "j=", j);
+    i = i + 1;
+endwhile;

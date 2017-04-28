@@ -1,0 +1,44 @@
+Int i = 0;
+Int j = i + 3;
+Bool flag = T;
+Int array[3] = 1, 2, 3;
+String str = "line";
+if j > i and j == 3 and i == 0:
+    print ("if is true, i=", i, "j=", j);
+    if array[i] > array[i-1] or array[i] == 1:
+        print ("array[i]=", array[i]);
+        if (str == "string"):
+            print ("wrong");
+        else:
+            print (str);
+        endif;
+    else:
+        if flag and T:
+            print ("flag is true");
+        else:
+            print ("flag is false");
+        endif;
+        print ("inner else ran");
+    endif;
+else:
+    print ("wrong, if cond is true");
+    if i == 0:
+        print ("inner if inside else");
+        if flag and F:
+            print ("tripled nested if treu");
+        else:
+            print ("tripeld nested else");
+        endif;
+    else:
+        if i == 0:
+            print ("i is 0");
+        else:
+            print ("i is not 0");
+        endif;
+        print ("inner else inside");
+    endif;
+endif;
+
+
+
+
