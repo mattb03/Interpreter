@@ -1,4 +1,0 @@
-// error test case for an endfor without the terminating semicolon
-for i = 0 to 5 by 2:
-	print ("i=", i);
-endfor

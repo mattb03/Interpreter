@@ -1,5 +1,0 @@
-Int array[5] = 1, 2, 3;
-
-for i = 0 to array[2] by array[1]
-	print ("i=", i);
-endfor;

@@ -1,3 +1,0 @@
-for i = "wrong" to 5:
-	print ("i=", i);
-endfor;

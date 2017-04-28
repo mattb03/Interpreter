@@ -1,0 +1,129 @@
+errorTestCases/forLoopErrors/foreachLoopErrors/
+********** ERROR **********
+Line 3: for i in "string":
+index 0 of iterated variable operator isn't a valid numeric type
+File: errorTestCases/forLoopErrors/foreachLoopErrors/controlIntegerStringLiteral
+	at havabol.Parser.error(Parser.java:1678)
+	at havabol.Numeric.<init>(Numeric.java:33)
+	at havabol.Parser.forStmt(Parser.java:1016)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/forLoopErrors/foreachLoopErrors/
+1.0
+2.0
+********** ERROR **********
+Line 6: 	print (flo);
+index 2 of iterated variable operator isn't a valid numeric type
+File: errorTestCases/forLoopErrors/foreachLoopErrors/controlFloatStringArray
+	at havabol.Parser.error(Parser.java:1678)
+	at havabol.Numeric.<init>(Numeric.java:33)
+	at havabol.Parser.forStmt(Parser.java:1016)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/forLoopErrors/foreachLoopErrors/
+item=1
+T
+********** ERROR **********
+Line 3: for item in array:
+Missing terminating "endfor" after for loop
+File: errorTestCases/forLoopErrors/foreachLoopErrors/missingEndfor
+	at havabol.Parser.error(Parser.java:1678)
+	at havabol.Parser.forStmt(Parser.java:1032)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+********** ERROR **********
+Line 5: for flag in array:
+"string" must be T or F
+File: errorTestCases/forLoopErrors/foreachLoopErrors/controlBoolStringArray
+	at havabol.Parser.error(Parser.java:1668)
+	at havabol.Parser.forStmt(Parser.java:1007)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/forLoopErrors/foreachLoopErrors/
+********** ERROR **********
+Line 3: for flo in "string":
+index 0 of iterated variable operator isn't a valid numeric type
+File: errorTestCases/forLoopErrors/foreachLoopErrors/controlFloatStringLiteral
+	at havabol.Parser.error(Parser.java:1678)
+	at havabol.Numeric.<init>(Numeric.java:33)
+	at havabol.Parser.forStmt(Parser.java:1016)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+T
+********** ERROR **********
+Line 3: for flag in "Tring":
+"r" must be T or F
+File: errorTestCases/forLoopErrors/foreachLoopErrors/controlBoolStringLiteral
+	at havabol.Parser.error(Parser.java:1668)
+	at havabol.Parser.forStmt(Parser.java:1007)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/forLoopErrors/foreachLoopErrors/
+errorTestCases/forLoopErrors/foreachLoopErrors/
+1
+2
+********** ERROR **********
+Line 4: for flag in array:
+"flag" must be of type string or boolean
+File: errorTestCases/forLoopErrors/foreachLoopErrors/controlBoolIntArray
+	at havabol.Parser.error(Parser.java:1668)
+	at havabol.Parser.forStmt(Parser.java:912)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+********** ERROR **********
+Line 3: for item in array
+Missing terminating ":" in for loop
+File: errorTestCases/forLoopErrors/foreachLoopErrors/missingColon
+	at havabol.Parser.errorNoTerm(Parser.java:1673)
+	at havabol.Parser.forStmt(Parser.java:995)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+********** ERROR **********
+Line 1: errorTestCases/forLoopErrors/foreachLoopErrors/
+Symbol 'errorTestCases' is not in Symbol Table.
+File: errorTestCases/forLoopErrors/foreachLoopErrors/foreachErrors.txt
+errorTestCases/forLoopErrors/foreachLoopErrors/
+	at havabol.Parser.error(Parser.java:1668)
+	at havabol.Parser.statements(Parser.java:212)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/forLoopErrors/foreachLoopErrors/
+********** ERROR **********
+Line 1: for item in array:
+"array" is undeclared
+File: errorTestCases/forLoopErrors/foreachLoopErrors/arrayUndeclared
+	at havabol.Parser.error(Parser.java:1668)
+	at havabol.Parser.forStmt(Parser.java:895)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/forLoopErrors/foreachLoopErrors/
+item=1
+********** ERROR **********
+Line 3: for 5 in array:
+5 must be an identifier
+File: errorTestCases/forLoopErrors/foreachLoopErrors/controlNotIdentifier
+********** ERROR **********
+Line 3: for item in array:
+Missing terminating "; after "endfor"
+File: errorTestCases/forLoopErrors/foreachLoopErrors/missingEndforSemicolon
+	at havabol.Parser.error(Parser.java:1668)
+	at havabol.Parser.error(Parser.java:1678)	at havabol.Parser.forStmt(Parser.java:866)
+	at havabol.Parser.forStmt(Parser.java:1035)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+********** ERROR **********
+Line 6: 	print (i);
+index 2 of iterated variable operator isn't a valid numeric type
+File: errorTestCases/forLoopErrors/foreachLoopErrors/controlIntegerStringArray
+errorTestCases/forLoopErrors/foreachLoopErrors/
+errorTestCases/forLoopErrors/foreachLoopErrors/
+	at havabol.Parser.error(Parser.java:1678)
+	at havabol.Numeric.<init>(Numeric.java:33)
+	at havabol.Parser.forStmt(Parser.java:1016)
+	at havabol.Parser.statements(Parser.java:280)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/forLoopErrors/foreachLoopErrors/
+errorTestCases/forLoopErrors/foreachLoopErrors/
+errorTestCases/forLoopErrors/foreachLoopErrors/
