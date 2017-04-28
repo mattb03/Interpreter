@@ -1,0 +1,1 @@
+Int arr[10] = 1, 2, 3;Bool bools[] = T, F, 2 > 100;arr = bools;

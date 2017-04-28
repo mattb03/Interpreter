@@ -83,6 +83,11 @@ public class Utility {
 		ResultValue res = new ResultValue("");
 		res.type = resOp1.type;
 		res.value = resOp1.value + resOp2.value;
+		try {
+			Numeric num = new Numeric(parser, res, "", "");
+		} catch (Exception e) {
+			res.type = Token.STRING;
+		}
 		return res;
 	}
 
@@ -109,7 +114,7 @@ public class Utility {
 				parser.error("2nd Operand of <= operator cannot be type BOOLEAN", parser.startOfExprToken);
 			parser.error("2nd Operand of < operator cannot be type BOOLEAN", parser.startOfExprToken);
 		}
-		
+
 		ResultValue res = new ResultValue("");
 		res.type = Token.BOOLEAN;
 		if (resOp1.type == Token.INTEGER || resOp1.type == Token.FLOAT) {
@@ -160,7 +165,7 @@ public class Utility {
 				parser.error("2nd Operand of >= operator cannot be type BOOLEAN", parser.startOfExprToken);
 			parser.error("2nd Operand of > operator cannot be type BOOLEAN", parser.startOfExprToken);
 		}
-		
+
 		ResultValue res = new ResultValue("");
 		res.type = Token.BOOLEAN;
 		if (resOp1.type == Token.INTEGER || resOp1.type == Token.FLOAT) {
@@ -210,7 +215,7 @@ public class Utility {
 				parser.error("2nd Operand of != operator cannot be type BOOLEAN", parser.startOfExprToken);
 			parser.error("2nd Operand of == operator cannot be type BOOLEAN", parser.startOfExprToken);
 		}
-		
+
 		ResultValue res = new ResultValue("");
 		res.type = Token.BOOLEAN;
 		if (resOp1.type == Token.INTEGER || resOp1.type == Token.FLOAT) {
@@ -276,7 +281,7 @@ public class Utility {
 			if (resOp2.value.equals("T") || resOp2.value.equals("F")) {
 				type2 = Token.BOOLEAN;
 			}
-	
+
 			if (type1 == Token.BOOLEAN && type2 == Token.BOOLEAN) {
 				switch (op) {
 					case "and":
@@ -302,12 +307,12 @@ public class Utility {
 					parser.error("1st Operand of '" + op + "' isn't of type BOOLEAN.");
 				else
 					parser.error("2nd Operand of '" + op + "' isn't of type BOOLEAN.");
-	
+
 				return null; // unreachable code
 			}
 		}
 	}
-    
+
 	// returns the length of the string
     public static ResultValue LENGTH(Parser parser, String str) {
     	ResultValue resVal = new ResultValue(String.valueOf(str.length()));
@@ -315,11 +320,11 @@ public class Utility {
     	resVal.structure.add("LENGTH");
     	return resVal;
     }
-    
+
     // returns T if the string is empty or nothing but spaces, F otherwise
     public static ResultValue SPACES(Parser parser, String str) {
     	int i;
-    	char array[] = str.toCharArray();    	
+    	char array[] = str.toCharArray();
     	ResultValue resVal = new ResultValue("F");
     	resVal.type = 4;
     	resVal.structure.add("SPACES");
@@ -331,7 +336,7 @@ public class Utility {
     	resVal.value = "T";
     	return resVal;
     }
-    
+
     // returns the index of the highest initialized element + 1
     public static ResultValue ELEM(Parser parser, String array) throws ParserException {
     	STIdentifier arrayIdent = (STIdentifier) parser.st.getSymbol(array);
@@ -351,7 +356,7 @@ public class Utility {
     	resVal.structure.add("ELEM");
     	return resVal;
     }
-    
+
     // returns the number of elements in the array, whether initialized or not
     public static ResultValue MAXELEM(Parser parser, String array) throws ParserException {
     	STIdentifier arrayIdent = (STIdentifier) parser.st.getSymbol(array);

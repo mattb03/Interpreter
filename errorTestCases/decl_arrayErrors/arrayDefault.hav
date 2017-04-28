@@ -1,0 +1,1 @@
+Int arr[10] = 1, 2, 3;String sdef = "cat";arr = sdef;

@@ -339,10 +339,11 @@ public class Parser {
                 error("EOF reached");
             } else if (scan.currentToken.primClassif == Token.OPERAND) {
                 ResultValue resVal = expr(false);
-                if (entry.array.sizeUnknown)
+                if (entry.array.sizeUnknown) {
                     entry.array.add(index, resVal, curSymbol.tokenStr);
-                else
+                } else {
                     entry.array.set(index, resVal, curSymbol.tokenStr);
+                }
                 index++;
             } else if (scan.currentToken.subClassif == Token.DECLARE) {
                 errorNoTerm("Array declaration not terminated. Expected ';'");
@@ -365,7 +366,6 @@ public class Parser {
         ResultValue resExpr = expr(false);
         int assignType = resExpr.type;
         if (ltype != assignType) {
-            //ResultValue resVal = new ResultValue(val);
             if (ltype == Token.BOOLEAN) {
                 if (assignType == Token.STRING) {
                     if (resExpr.value.equals("T") || resExpr.value.equals("F")) {
@@ -393,6 +393,10 @@ public class Parser {
                     resExpr.value = String.valueOf(num.integerValue);
                 } else if (ltype == Token.FLOAT) {
                     resExpr.value = String.valueOf(num.doubleValue);
+                    String last;
+                    last = resExpr.value.substring(resExpr.value.length() - 2, resExpr.value.length());
+                    if (last.charAt(0) == '.')
+                        resExpr.value += "0";
                 } else if (ltype == Token.STRING) {
                     if (assignType == Token.BOOLEAN) {
 
@@ -410,7 +414,20 @@ public class Parser {
                 }
             }
         } else {
-            st.getSymbol(curr.tokenStr).value = resExpr.value;
+            if (ltype == Token.INTEGER || ltype == Token.FLOAT) {
+                Numeric num = new Numeric(this, resExpr, "=", "'"+resExpr.value+"'");
+                if (ltype == Token.INTEGER) {
+                    st.getSymbol(curr.tokenStr).value = Integer.toString(num.integerValue);
+                } else {
+                    String last;
+                    last = num.strValue.substring(num.strValue.length() - 2, num.strValue.length());
+                    if (last.charAt(0) == '.')
+                        num.strValue += "0";
+                    st.getSymbol(curr.tokenStr).value = num.strValue;
+                }
+            } else  {
+                st.getSymbol(curr.tokenStr).value = resExpr.value;
+            }
             if (expr) {
                 System.out.println("+++++ EXPRN +++++ :"+curr.iSourceLineNr
                                     + ": " + curr.tokenStr + " = "+resExpr.value);

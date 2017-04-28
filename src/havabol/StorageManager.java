@@ -46,12 +46,15 @@ public class StorageManager {
         if (this.type != resVal.type) {
             if (resVal.type == Token.BOOLEAN) {
                 if (this.type != Token.STRING) {
-                    this.parser.error("Type Bool can ONLY be casted to type STRING");
+                    this.parser.error("Type BOOL can ONLY be cast to type STRING when value is 'T' or 'F'");
                 }
             }
             if (this.type == Token.BOOLEAN && resVal.type == Token.STRING) {
                 if (resVal.value.equals("T") || resVal.value.equals("F")) {;}
-            } else {
+                else {
+                    this.parser.error("Type BOOL can ONLY be cast to type STRING when value is 'T' or 'F'");
+                }
+            } else if (this.type != Token.BOOLEAN) {
                 Numeric num = new Numeric(this.parser, resVal, token, "Index "+String.valueOf(index));
                 if (this.type == Token.INTEGER) {
                     item = String.valueOf(num.integerValue);
@@ -60,6 +63,8 @@ public class StorageManager {
                 } else if (this.type == Token.STRING) {
                     item = num.strValue;
                 }
+            } else {
+                this.parser.error("Cannot coerce type "+Token.strSubClassifM[resVal.type]+" to BOOLEAN");
             }
         }
         this.val.add(index, item);
@@ -74,11 +79,14 @@ public class StorageManager {
         if (this.type != resVal.type) {
             if (resVal.type == Token.BOOLEAN) {
                 if (this.type != Token.STRING) {
-                    this.parser.error("Type Bool can ONLY be casted to type STRING");
+                    this.parser.error("Type BOOL can ONLY be cast to type STRING when value is 'T' or 'F'");
                 }
             } else if (this.type == Token.BOOLEAN && resVal.type == Token.STRING) {
                 if (resVal.value.equals("T") || resVal.value.equals("F")) {;}
-            } else {
+                else {
+                    this.parser.error("Type BOOL can ONLY be cast to type STRING when value is 'T' or 'F'");
+                }
+            } else if (this.type != Token.BOOLEAN) {
                 Numeric num = new Numeric(this.parser, resVal, token, "Index "+String.valueOf(index));
                 if (this.type == Token.INTEGER) {
                     item = String.valueOf(num.integerValue);
@@ -87,6 +95,8 @@ public class StorageManager {
                 } else if (this.type == Token.STRING) {
                     item = num.strValue;
                 }
+            } else {
+                this.parser.error("Cannot coerce type "+Token.strSubClassifM[resVal.type]+" to BOOLEAN");
             }
         }
         try {
@@ -145,16 +155,23 @@ public class StorageManager {
                     }
                     if (passedArray.type == Token.BOOLEAN) {
                         if (this.type != Token.STRING) {
-                            this.parser.error("Type Bool can ONLY be casted to type STRING");
+                            this.parser.error("Type BOOL can ONLY be cast to type STRING when value 'T' or 'F'");
                         }
                         this.val.add(i, val);
                     } else if (this.type == Token.BOOLEAN && passedArray.type == Token.STRING) {
                         if (val.equals("T") || val.equals("F")) {
                             this.val.add(i, val);
+                        } else {
+                            this.parser.error("Type BOOL can ONLY be cast to type STRING when value is 'T' or 'F'");
                         }
-                    } else {
+                    } else if (this.type != Token.BOOLEAN) {
+                        Numeric num = null;
                         ResultValue resVal = new ResultValue(val);
-                        Numeric num = new Numeric(this.parser, resVal, arrayName, "");
+                        try {
+                            num = new Numeric(this.parser, resVal, arrayName, "");
+                        } catch (Exception e) {
+                            this.parser.error("Index "+i+" of "+arrayName+ " operator isn't a valid numeric type");
+                        }
                         if (this.type == Token.INTEGER) {
                             resVal.value = String.valueOf(num.integerValue);
                         } else if (this.type == Token.FLOAT) {
@@ -164,6 +181,8 @@ public class StorageManager {
                         }
                         val = resVal.value;
                         this.val.add(i, val);
+                    } else {
+                        this.parser.error("Cannot coerce type "+Token.strSubClassifM[passedArray.type]+" to BOOLEAN");
                     }
                 } else { // they are same type
                     this.val.add(i, val);
@@ -179,16 +198,23 @@ public class StorageManager {
                     }
                     if (passedArray.type == Token.BOOLEAN) {
                         if (this.type != Token.STRING) {
-                            this.parser.error("Type Bool can ONLY be casted to type STRING");
+                            this.parser.error("Type BOOL can ONLY be cast to type STRING when value is 'T' or 'F'");
                         }
                         this.val.add(i, val);
                     } else if (this.type == Token.BOOLEAN && passedArray.type == Token.STRING) {
                         if (val.equals("T") || val.equals("F")) {
                             this.val.add(i, val);
+                        } else {
+                            this.parser.error("Type BOOL can ONLY be cast to type STRING when value is 'T' or 'F'");
                         }
-                    } else {
+                    } else if (this.type != Token.BOOLEAN) {
+                        Numeric num = null;
                         ResultValue resVal = new ResultValue(val);
-                        Numeric num = new Numeric(this.parser, resVal, arrayName, "Index "+i);
+                        try {
+                            num = new Numeric(this.parser, resVal, arrayName, "Index "+i);
+                        } catch (Exception e) {
+                            this.parser.error("Index "+i+" of "+arrayName+ " operator isn't a valid numeric type");
+                        }
                         if (this.type == Token.INTEGER) {
                             resVal.value = String.valueOf(num.integerValue);
                         } else if (this.type == Token.FLOAT) {
@@ -198,6 +224,8 @@ public class StorageManager {
                         }
                         val = resVal.value;
                         this.val.add(i, val);
+                    } else {
+                        this.parser.error("Cannot coerce type "+Token.strSubClassifM[passedArray.type]+" to BOOLEAN");
                     }
                 } else {  //types are the same
                     this.val.add(i, val);
@@ -209,23 +237,44 @@ public class StorageManager {
     public void defaultArray(ResultValue resVal, String token) throws Exception {
         if (this.type != resVal.type) {
             if (resVal.type == Token.BOOLEAN) {
-                if (this.type != Token.STRING) {
-                    this.parser.error("Type Bool can ONLY be casted to type STRING");
+                if (this.type != Token.STRING)
+                    this.parser.error("Type BOOL can ONLY be cast to type STRING when value is 'T' or 'F'");
+                this.defaultVal = resVal.value;
+            } else if (this.type == Token.BOOLEAN && resVal.type == Token.STRING) {
+                if (resVal.value.equals("T") || resVal.value.equals("F")) {
+                    this.defaultVal = resVal.value;
                 } else {
-                    Numeric num = new Numeric(this.parser, resVal, token, "The default value");
-                    if (this.type == Token.INTEGER) {
-                        resVal.value = String.valueOf(num.integerValue);
-                    } else if (this.type == Token.FLOAT) {
-                        resVal.value = String.valueOf(num.doubleValue);
-                    } else if (this.type == Token.STRING) {
-                        resVal.value = num.strValue;
-                    }
+                    this.parser.error("Type BOOL can ONLY be cast to type STRING when value is 'T' or 'F'");
                 }
+            } else if (this.type != Token.BOOLEAN) {
+                Numeric num = null;
+                ResultValue res = new ResultValue(resVal.value);
+                try {
+                    num = new Numeric(this.parser, res, token, "The default value");
+                } catch (Exception e) {
+                    parser.error("The default value"+" of "+token+ " operator isn't a valid numeric type");
+                }
+                if (this.type == Token.INTEGER) {
+                    res.value = String.valueOf(num.integerValue);
+                } else if (this.type == Token.FLOAT) {
+
+                    res.value = String.valueOf(num.doubleValue);
+                } else if (this.type == Token.STRING) {
+                    res.value = num.strValue;
+                }
+                this.defaultVal = res.value;
+            } else {
+                this.parser.error("Cannot coerce type "+Token.strSubClassifM[resVal.type]+" to BOOLEAN");
             }
+        } else {
+            this.defaultVal = resVal.value;
         }
-        this.defaultVal = resVal.value;
         for (int i = 0; i < this.val.size(); i++)
             this.val.set(i, this.defaultVal);
     }
 
 }
+
+
+
+

@@ -11,9 +11,6 @@ public class Numeric {
 		if (res.value == null) {
 			parser.error(opPos+" of '"+op+"' has not been initialized.", parser.startOfExprToken);
 		}
-		if (res.value.equals("NO VALUE")) {
-			parser.error(opPos+" of '"+op+"' has not been initialized.", parser.startOfExprToken);
-		}
 		try {
 			integerValue = Integer.parseInt(res.value);
 			doubleValue = (double) integerValue;
