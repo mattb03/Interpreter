@@ -316,6 +316,16 @@ File: errorTestCases/decl_arrayErrors/printForgotQuotes.hav
 	at havabol.HavaBol.main(HavaBol.java:9)
 errorTestCases/decl_arrayErrors/
 ********** ERROR **********
+Line 3: print (MAXELEM(str));
+'str' is not type ARRAY for function ELEM
+File: errorTestCases/decl_arrayErrors/maxElemOpNotArray.hav
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Parser.evaluateExpr(Parser.java:1606)
+	at havabol.Parser.expr(Parser.java:1230)
+	at havabol.Parser.statements(Parser.java:85)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/decl_arrayErrors/
+********** ERROR **********
 Line 1: Int nums[] = 1, "ten";
 Index 1 of nums operator isn't a valid numeric type
 File: errorTestCases/decl_arrayErrors/badArrayItemDeclare2.hav
@@ -354,6 +364,16 @@ File: errorTestCases/decl_arrayErrors/concatErrors3.hav
 	at havabol.Numeric.<init>(Numeric.java:30)
 	at havabol.Parser.assign(Parser.java:391)
 	at havabol.Parser.statements(Parser.java:158)
+	at havabol.HavaBol.main(HavaBol.java:9)
+errorTestCases/decl_arrayErrors/
+********** ERROR **********
+Line 3: print (SPACES(array));
+'array' type ARRAY is not a valid type for function SPACES
+File: errorTestCases/decl_arrayErrors/spacesOpIsArray.hav
+	at havabol.Parser.error(Parser.java:1695)
+	at havabol.Parser.evaluateExpr(Parser.java:1596)
+	at havabol.Parser.expr(Parser.java:1230)
+	at havabol.Parser.statements(Parser.java:85)
 	at havabol.HavaBol.main(HavaBol.java:9)
 errorTestCases/decl_arrayErrors/
 ********** ERROR **********

@@ -1,0 +1,4 @@
+Int array[5] = 1, 2, 3;
+
+print (SPACES(array));
+

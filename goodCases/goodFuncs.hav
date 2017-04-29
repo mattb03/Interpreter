@@ -50,4 +50,14 @@ print("' ' --> ", SPACES(""));
 print("str is 'null' --> ", SPACES(str));
 
 print("false AND true --> ", F and T);
+str = "should return false";
+Int length = LENGTH(num);
+Int elements = ELEM(array);
+Int maxElements = MAXELEM(array2);
+Bool flag = SPACES(str);
+
+print ("length is : ", length);
+print ("number of populated elements in array: ",elements);
+print ("max number of elements in array2: ", maxElements);
+print ("flag is : ", flag);
 

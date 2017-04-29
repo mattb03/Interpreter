@@ -1,0 +1,18 @@
+Int i = 2 * 3 / 4 ^ 2;
+
+Int array[5] = 1, 2, 3;
+
+Float j = i ^ array[2] ^ i * 2 + 1 - array[1] + array[2];
+
+Bool flag = T and F;
+
+Bool flag2 = flag and F;
+
+Bool tFlag = T and T and T;
+
+Int k = j * 2 + 1 ^ 6 * 2 + 1 / array[1] - j;
+
+print ("i=", i, "\t", "j=", j, "\t", "k=", k);
+
+print ("flag=", flag, "\tflag2=", flag2, "\ttFlag=", tFlag);
+
