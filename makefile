@@ -29,5 +29,5 @@ hav:
 	$(JAVA) $(JFLAGS) havabol.HavaBol prog.hav
 
 clean:
-	rm -r bin/*
+	rm -rf bin
 
