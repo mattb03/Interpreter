@@ -1,5 +1,10 @@
 
-
+*** If you want to just get HavaBol on your linux system, you dont need to clone the repo, just download the 
+        installHavaBol.zip file  *****
+        
+        
+        
+        
 
 In order to create the .class files in the /bin directory and the /bin directory itself:
 
