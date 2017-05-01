@@ -25,7 +25,8 @@ to install HavaBol on your linux system (you will need sudo privleges)
 
 1.) Download the installHavabol.zip file (its in the repo)
 2.) unzip the file   $ unzip installHavaBol.zip
-3.) run the install.sh script  $ ./install.sh
+3.) go into the installHavaBol folder   $ cd installHavaBol
+4.) run the install.sh script  $ ./install.sh
 
 DONE!
 
