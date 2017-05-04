@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.EmptyStackException;
 import java.util.Stack;
 
+import com.sun.xml.internal.ws.encoding.soap.DeserializationException;
+
 
 
 public class Parser {
@@ -28,7 +30,13 @@ public class Parser {
 
         while (true) {
             expr = debugger.expr;
-            if (scan.currentToken.tokenStr.equals("print")) {
+            if (scan.currentToken.tokenStr.equals("do")) {
+            	doWhileStmt();
+            } else if (scan.currentToken.tokenStr.equals(":") && 
+            			scan.nextToken.tokenStr.equals("while")) {
+            	return;
+            }
+            else if (scan.currentToken.tokenStr.equals("print")) {
                 ArrayList<String> arglist = new ArrayList<String>();
                 if (scan.nextToken.tokenStr.equals("(")) {
                     scan.getNext();  // on '('
@@ -280,7 +288,8 @@ public class Parser {
                 forStmt();
             } else if (scan.currentToken.tokenStr.equals("endfor")) {
             	return;
-            }
+            } 
+            
 
             scan.getNext();
             if (scan.nextToken.primClassif == Token.EOF) {
@@ -555,6 +564,56 @@ public class Parser {
     	if (scan.currentToken.primClassif == Token.EOF) {
     		error("Missing terminating \"endwhile\" after while loop", beginningWhile);
     	}
+    }
+    
+    public void doWhileStmt() throws Exception {
+    	// currentToken is "do"
+    	Token beginningDo = scan.currentToken;
+    	scan.getNext();
+    	// on colon ":"
+    	if (!scan.currentToken.tokenStr.equals(":")) {
+    		error("Missing terminating colon \":\" after \"do\" keyword");
+    	}
+    	Scanner savedScanner = this.scan.saveState();
+    	scan.getNext();
+    	ResultValue resVal = new ResultValue("T");
+    	boolean done = false;
+		boolean isFunc = false;;
+    	while (resVal.value.equals("T")) {
+    		statements(true);
+    		if (done == false) {
+    			if (!scan.currentToken.tokenStr.equals(":") || 
+    					!scan.nextToken.tokenStr.equals("while")) {
+    				error("Missing terminating colon \":\" or \"while\" keyword after do while loop", beginningDo);
+    			}
+    			scan.getNext();
+    			scan.getNext();
+    			if (scan.currentToken.tokenStr.equals("LENGTH") ||
+    					scan.currentToken.tokenStr.equals("ELEM") ||
+    					scan.currentToken.tokenStr.equals("MAXELEM")) {
+    				isFunc = true;
+    			}
+    		}
+    		resVal = expr(isFunc);
+    		if (!scan.currentToken.tokenStr.equals(";")) {
+    			error("Missing terminating \";\" after do while loop condition", beginningDo);
+    		}
+    		this.scan = savedScanner;
+    		savedScanner = this.scan.saveState();
+    		
+    	}
+    	int doCount = 1;
+    	while (doCount != 0) {
+    		if (scan.currentToken.tokenStr.equals("do")) {
+    			doCount++;
+    		}
+    		else if (scan.currentToken.tokenStr.equals("while")) {
+    			doCount--;
+    		}
+    		scan.getNext();
+    	}
+    	Thread.sleep(100);
+    	resVal = expr(false);
     }
 
     public void forStmt() throws Exception {
