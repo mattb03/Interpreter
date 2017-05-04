@@ -437,257 +437,124 @@ public class Parser {
 
     // assumes currentToken is on an if.
     public void ifStmt() throws Exception {
-    	// statementToken is used to track the start of a statement for error checking
-    	Token beginningIf; // like statementToken this is used to save the start of the whole statement
-    	Token statementToken = beginningIf = scan.currentToken;
-    	scan.getNext(); // consume if
-
-    	ResultValue resCond = expr(false);
-    	if (! scan.currentToken.tokenStr.equals(":")) {
-    		error("Invalid terminating token for if: '"
-    				+ scan.currentToken.tokenStr + "'", statementToken);
+    	// just in case
+    	//Scanner savedScanner = this.scan.saveState();
+    	ResultValue resVal;
+    	Token beginningIf = scan.currentToken;
+    	scan.getNext();
+    	boolean flag;
+    	// currentToken is the start of the expression
+    	if (scan.nextToken.tokenStr.equals("LENGTH") ||
+    			scan.nextToken.tokenStr.equals("ELEM") ||
+    			scan.nextToken.tokenStr.equals("MAXELEM")) {
+    		resVal = expr(true);
     	}
-    	scan.getNext(); // consume separator
-    	if (resCond.value.equals("T")) {
-    		// the starting if is true execute the code
+    	else {
+    		resVal = expr(false);
+    	}
+    	
+    	// currentToken is a colon ":"
+    	if (!scan.currentToken.tokenStr.equals(":")) {
+    		error("Missing terminating colon \":\" ", beginningIf);
+    	}
+    	if (resVal.value.equals("T")) {
+    		flag = true;
     		statements(true);
-    		// currentToken is an endif or an else
+    		
     		if (scan.currentToken.tokenStr.equals("else")) {
-    			statementToken = scan.currentToken;
-            	scan.getNext(); // consume else
-            	if (! scan.currentToken.tokenStr.equals(":")) {
-            		error("Invalid terminating token for else: '"
-            				+ scan.currentToken.tokenStr +"'", statementToken);
-            	}
-            	statementToken = beginningIf;
-            	scan.getNext(); // consume separator
-            	// run through the false statements
-            	Stack<Token> stk = new Stack<Token>();
-            	while (true) {
-            		if (scan.currentToken.tokenStr.equals("if")) {
-            			stk.push(scan.currentToken);
-            			statementToken = scan.currentToken; // update to nested if
-            		} else if (stk.isEmpty()) {
-            			if (scan.currentToken.tokenStr.equals("else")
-            					|| scan.currentToken.tokenStr.equals("endif")) {
-            				break;
-            			}
-            		} else if (! stk.isEmpty()) {
-            			if (scan.currentToken.tokenStr.equals("else")) {
-            				if (! scan.nextToken.tokenStr.equals(":")) {
-            					error("Invalid terminating token for else: '"
-            							+ scan.nextToken.tokenStr + "'");
-            				}
-            			}
-            			if (scan.currentToken.tokenStr.equals("endif")) {
-            				if (! scan.nextToken.tokenStr.equals(";")) {
-            					error("Invalid terminating token for endif: '"
-            							+ scan.nextToken.tokenStr + "'");
-            				}
-            				stk.pop();
-            				if (! stk.isEmpty())
-            					statementToken = stk.peek();
-            				else
-            					statementToken = beginningIf;
-            			}
-            		}
-            		if (scan.currentToken.primClassif == Token.EOF)
-        				error("If statement not terminated by endif.", statementToken);
-
-            		scan.getNext();
-            	} // endwhile
-
-            	statementToken = scan.currentToken;
-
-            	// currentToken MUST be an else or endif
-            	if (scan.currentToken.tokenStr.equals("else")) {
-            		// an else is an error
-            		error("Unmatched nested else statement.");
-            	} else {
-            		// this is the correct scenario
-            		scan.getNext(); // consume endif
-            		if (! scan.currentToken.tokenStr.equals(";")) {
-            			error("Invalid terminating token for endif: '"
-            					+ scan.currentToken.tokenStr + "'", statementToken);
-            		}
-            		// there isn't anything else to execute
-            	}
-    		} else { // currentToken is not an else, must be an endif, check
-    			if (! scan.currentToken.tokenStr.equals("endif")) {
-    				error("If statement not terminated by endif.", statementToken);
-    			} else {
-    				statementToken = scan.currentToken;
-    				scan.getNext();
-                	if (! scan.currentToken.tokenStr.equals(";")) {
-                		error("Invalid terminating token for endif: '"
-            					+ scan.currentToken.tokenStr + "'", statementToken);
-                	}
-    			}
+        		skipIf(true);
     		}
-    	// end of starting if true
-
-    	} else if (resCond.value.equals("F")) {
-    		// the starting if is false
-        	// run through the false statements
-        	Stack<Token> stk = new Stack<Token>();
-        	while (true) {
-        		if (scan.currentToken.tokenStr.equals("if")) {
-        			stk.push(scan.currentToken);
-        			statementToken = scan.currentToken; // update to nested if
-        		} else if (stk.isEmpty()) {
-        			if (scan.currentToken.tokenStr.equals("else")
-        					|| scan.currentToken.tokenStr.equals("endif")) {
-        				break;
-        			}
-        		} else if (! stk.isEmpty()) {
-        			if (scan.currentToken.tokenStr.equals("else")) {
-        				if (! scan.nextToken.tokenStr.equals(":")) {
-        					error("Invalid terminating token for else: '"
-        							+ scan.nextToken.tokenStr + "'");
-        				}
-        			}
-        			if (scan.currentToken.tokenStr.equals("endif")) {
-        				if (! scan.nextToken.tokenStr.equals(";")) {
-        					error("Invalid terminating token for endif: '"
-        							+ scan.nextToken.tokenStr + "'");
-        				}
-        				stk.pop();
-        				if (! stk.isEmpty())
-        					statementToken = stk.peek();
-        				else
-        					statementToken = beginningIf;
-        			}
-        		}
-        		if (scan.currentToken.primClassif == Token.EOF)
-    				error("If statement not terminated by endif.", statementToken);
-
-        		scan.getNext();
-        	} // endwhile
-
-        	// currentToken MUST be an else or an endif
-    		statementToken = scan.currentToken; // save for error checking
-    		scan.getNext(); // consume else or endif
-
-    		if (statementToken.tokenStr.equals("else")) {
-            	if (! scan.currentToken.tokenStr.equals(":")) {
-            		error("Invalid terminating token for else: '"
-            				+ scan.currentToken.tokenStr +"'", statementToken);
-            	}
-        		scan.getNext(); // consume the separator
-
-    			// execute the statements in else
-    			statements(true);
-
-    			// currentToken MUST be an else or endif
-            	if (scan.currentToken.tokenStr.equals("else")) {
-            		// an else is an error
-            		error("Unmatched else statement.");
-            	} else { // currentToken is not an else, must be an endif, check
-        			if (! scan.currentToken.tokenStr.equals("endif")) {
-        				error("Else statement not terminated by endif.", statementToken);
-        			} else {
-        				statementToken = scan.currentToken;
-        				scan.getNext();
-                    	if (! scan.currentToken.tokenStr.equals(";")) {
-                    		error("Invalid terminating token for endif: '"
-                					+ scan.currentToken.tokenStr + "'", statementToken);
-                    	}
-        			}
-            	}
-    		} else {
-        		if (! scan.currentToken.tokenStr.equals(";")) {
-        			error("Invalid terminating token for endif: '"
-        					+ scan.currentToken.tokenStr + "'", statementToken);
-        		}
+    	}
+    	else {
+    		flag = false;
+    		// if cond was false. skip to else or endif, whichever comes first
+    		// currentToken is a colon
+    		if (!scan.currentToken.tokenStr.equals(":")) {
+        		error("Missing terminating colon \":\" ", beginningIf);
     		}
-    	} else {
-    		error("Invalid conditional for if: '" + resCond.value + "'", beginningIf);
+    		//Stack<Token> stk = new Stack<Token>();
+    		skipIf(false);
+    		if (!scan.currentToken.tokenStr.equals(":")) {
+        		error("Missing terminating colon \":\" ", beginningIf);
+    		}
+    		statements(true);
+    	}
+    	
+    	scan.getNext();
+    	if (!scan.currentToken.tokenStr.equals(";")) {
+    		error("Missing terminating semicolon \";\" after \"endif\"");
+    	}
+    }
+    
+    public void skipIf(boolean flag) throws Exception {
+    	int ifCount = 1;
+    	int elseCount;
+    	int endifCount = 0;
+    	scan.getNext();
+    	if (flag == true) { // if the condition was true we want to skip to the endif
+    		elseCount = -100000;
+    	}
+    	else { // if the condition was false we want to skip to the else
+    		elseCount = 0;
+    	}
+    	while (ifCount != endifCount && elseCount != ifCount) {
+    		if (scan.currentToken.tokenStr.equals("if")) {
+    			ifCount++;
+    		}
+    		else if (scan.currentToken.tokenStr.equals("endif")) {
+    			//ifCount--;
+    			endifCount++;
+    		}
+    		else if (scan.currentToken.tokenStr.equals("else")) {
+    			elseCount++;
+    		}
+    		if (ifCount != endifCount) {
+    			scan.getNext();
+    		}
     	}
     }
 
     public void whileStmt() throws Exception  {
-    	Scanner old = scan.saveState();
-    	Token beginningWhile;
-    	Token statementToken = beginningWhile = scan.currentToken; // used for saving the statement token for errors
-
-        scan.getNext(); // consume while
-        ResultValue resCond = expr(false);
-
-        if (! scan.currentToken.tokenStr.equals(":")) {
-        	error("Invalid terminating token for while: '"
-        			+ scan.currentToken.tokenStr + "'", beginningWhile);
-        }
-        scan.getNext(); // consume separator
-
-        if (resCond.value.equals("T")) {
-            while (resCond.value.equals("T")) {
-                statements(true);
-                // currentToken MUST be an endwhile
-                statementToken = scan.currentToken;
-                if (! statementToken.tokenStr.equals("endwhile")) {
-                    error("While not terminated by endwhile.", beginningWhile);
-                }
-                scan.getNext(); // consume endwhile
-                if (! scan.currentToken.tokenStr.equals(";")) {
-                    error("Invalid terminating token for endwhile: '"
-                            + scan.currentToken.tokenStr + "'", statementToken);
-                }
-                scan = old.saveState();
-                scan.getNext();
-                resCond = expr(false);
-            }
-            if (resCond.value.equals("F")) {
-                Stack<Token> stk = new Stack<Token>();
-                while (true) {
-                    if (scan.currentToken.tokenStr.equals("while")) {
-                        stk.push(scan.currentToken);
-                        statementToken = scan.currentToken; // update to nested while
-                    } else if (stk.isEmpty() && scan.currentToken.tokenStr.equals("endwhile")) {
-                        scan.getNext(); // consume endwhile
-                        return;
-                    } else if (! stk.isEmpty() && scan.currentToken.tokenStr.equals("endwhile")) {
-                        stk.pop();
-        				if (! stk.isEmpty())
-        					statementToken = stk.peek();
-        				else
-        					statementToken = beginningWhile;
-                    }
-                    if (scan.currentToken.primClassif == Token.EOF)
-        				error("While statement not terminated by endwhile.", statementToken);
-                    scan.getNext();
-                }
-            }
-        } else if (resCond.value.equals("F")) {
-            Stack<Token> stk = new Stack<Token>();
-            while (true) {
-                if (scan.currentToken.tokenStr.equals("while")) {
-                    stk.push(scan.currentToken);
-                    statementToken = scan.currentToken; // update to nested while
-                } else if (stk.isEmpty() && scan.currentToken.tokenStr.equals("endwhile")) {
-    				if (! scan.nextToken.tokenStr.equals(";")) {
-    					error("Invalid terminating token for endwhile: '"
-    							+ scan.nextToken.tokenStr + "'");
-    				}
-                    scan.getNext(); // consume endwhile
-                    return;
-                } else if (! stk.isEmpty() && scan.currentToken.tokenStr.equals("endwhile")) {
-    				if (! scan.nextToken.tokenStr.equals(";")) {
-    					error("Invalid terminating token for endwhile: '"
-    							+ scan.nextToken.tokenStr + "'");
-    				}
-                    stk.pop();
-    				if (! stk.isEmpty())
-    					statementToken = stk.peek();
-    				else
-    					statementToken = beginningWhile;
-                }
-                if (scan.currentToken.primClassif == Token.EOF)
-    				error("While statement not terminated by endwhile.", statementToken);
-                scan.getNext();
-            }
-        } else {
-        	error("Invalid conditional for while: '" + resCond.value + "'", beginningWhile);
-        }
+    	// currentToken is "while"
+    	Token beginningWhile = scan.currentToken;
+    	scan.getNext();
+    	// on beginning of condition/expr
+    	Scanner savedScanner = this.scan.saveState();
+    	boolean isFunc;
+    	ResultValue resVal;
+    	if (scan.currentToken.tokenStr.equals("LENGTH") ||
+    			scan.currentToken.tokenStr.equals("ELEM") ||
+    			scan.currentToken.tokenStr.equals("MAXELEM")) {
+    		isFunc = true;
+    		resVal = expr(isFunc);
+    	}
+    	else {
+    		isFunc = false;
+    		resVal = expr(isFunc);
+    	}
+    	// on the colon ":"
+    	if (!scan.currentToken.tokenStr.equals(":")) {
+    		error("Missing terminating colon \":\" after while loop condition", beginningWhile);
+    	}
+    	while (resVal.value.equals("T")) {
+    		statements(true);
+    		this.scan = savedScanner;
+    		savedScanner = this.scan.saveState();
+    		resVal = expr(isFunc);
+    	}
+    	int whileCount = 1;
+    	while (whileCount != 0 && scan.currentToken.primClassif != Token.EOF) {
+    		if (scan.currentToken.tokenStr.equals("while")) {
+    			whileCount++;
+    		}
+    		else if (scan.currentToken.tokenStr.equals("endwhile")) {
+    			whileCount--;
+    		}
+    		scan.getNext();
+    	}
+    	if (scan.currentToken.primClassif == Token.EOF) {
+    		error("Missing terminating \"endwhile\" after while loop", beginningWhile);
+    	}
     }
 
     public void forStmt() throws Exception {
