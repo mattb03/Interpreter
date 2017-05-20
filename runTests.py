@@ -20,4 +20,5 @@ for i in range (0, len(testFiles)):
         if (pids[index] == 0):
             time.sleep(i)
             call(["java", "-classpath", "bin", "havabol.HavaBol", sys.argv[1] + testFiles[index]])
+            print ("Running on file " + testFiles[index])
             sys.exit(0)

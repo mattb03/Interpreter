@@ -471,10 +471,13 @@ public class Parser {
     		statements(true);
     		
     		if (scan.currentToken.tokenStr.equals("else")) {
-        		skipIf(true);
+    			if (!scan.nextToken.tokenStr.equals(":")) {
+    				error("Missing terminating \":\" after \"else\"");
+    			}
+        		skipIf(true, beginningIf);
     		}
     	}
-    	else {
+    	else if (resVal.value.equals("F")){
     		flag = false;
     		// if cond was false. skip to else or endif, whichever comes first
     		// currentToken is a colon
@@ -482,20 +485,31 @@ public class Parser {
         		error("Missing terminating colon \":\" ", beginningIf);
     		}
     		//Stack<Token> stk = new Stack<Token>();
-    		skipIf(false);
+    		skipIf(false, beginningIf);
     		if (!scan.currentToken.tokenStr.equals(":")) {
         		error("Missing terminating colon \":\" ", beginningIf);
     		}
     		statements(true);
     	}
+    	// expr() did not return a valid boolean, error
+    	else {
+    		error("\"" + resVal.value + "\" is not a boolean condition");
+    	}
     	
     	scan.getNext();
+    	if (scan.currentToken.primClassif == Token.EOF) {
+    		error("Missing terminating \"endif\" after \"if\" block", beginningIf);
+    	}
     	if (!scan.currentToken.tokenStr.equals(";")) {
     		error("Missing terminating semicolon \";\" after \"endif\"");
     	}
     }
     
-    public void skipIf(boolean flag) throws Exception {
+    public void skipIf(boolean flag, Token beginningIf) throws Exception {
+    	boolean elseFlag = false;
+    	if (scan.currentToken.tokenStr.equals("else")) {
+    		elseFlag = true;
+    	}
     	int ifCount = 1;
     	int elseCount;
     	int endifCount = 0;
@@ -509,14 +523,26 @@ public class Parser {
     	while (ifCount != endifCount && elseCount != ifCount) {
     		if (scan.currentToken.tokenStr.equals("if")) {
     			ifCount++;
+    			// if the current token upon this call was 'else' then cannot hit an 'if' before hitting an 'endif'
+    			if (elseFlag == true) {
+    				error("Missing terminating \"endif\" for \"if\" block", beginningIf);
+    			}
     		}
     		else if (scan.currentToken.tokenStr.equals("endif")) {
     			//ifCount--;
     			endifCount++;
+    			elseFlag = false;
     		}
     		else if (scan.currentToken.tokenStr.equals("else")) {
     			elseCount++;
+    			// if the current token upon this call was 'else' then cannot hit an 'if' before hitting an 'endif'
+    			if (elseFlag == true) {
+    				error("Missing terminating \"endif\" for \"if\" block", beginningIf);
+    			}
     		}
+    		else if (scan.currentToken.primClassif == Token.EOF) {
+        		error("Missing terminating \"endif\" after \"if\" block", beginningIf);
+        	}
     		if (ifCount != endifCount) {
     			scan.getNext();
     		}
@@ -541,6 +567,11 @@ public class Parser {
     		isFunc = false;
     		resVal = expr(isFunc);
     	}
+    	
+    	if (!resVal.value.equals("T") && !resVal.value.equals("F")) {
+    		error("\"" + resVal.value + "\" is not a boolean condition", beginningWhile);
+    	}
+    	
     	// on the colon ":"
     	if (!scan.currentToken.tokenStr.equals(":")) {
     		error("Missing terminating colon \":\" after while loop condition", beginningWhile);
@@ -618,7 +649,6 @@ public class Parser {
     		}
     		scan.getNext();
     	}
-    	Thread.sleep(100);
     	resVal = expr(false);
     }
 
