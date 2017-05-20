@@ -547,6 +547,9 @@ public class Parser {
     	}
     	while (resVal.value.equals("T")) {
     		statements(true);
+    		if (!scan.nextToken.tokenStr.equals(";")) {
+    			error("Missing terminating \";\" after \"endwhile\"", beginningWhile);
+    		}
     		this.scan = savedScanner;
     		savedScanner = this.scan.saveState();
     		resVal = expr(isFunc);
@@ -563,6 +566,9 @@ public class Parser {
     	}
     	if (scan.currentToken.primClassif == Token.EOF) {
     		error("Missing terminating \"endwhile\" after while loop", beginningWhile);
+    	}
+    	else if (!scan.currentToken.tokenStr.equals(";")) {
+    		error("Missing terminating \";\" after \"endwhile\"", beginningWhile);
     	}
     }
     

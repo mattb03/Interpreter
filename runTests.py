@@ -4,11 +4,10 @@ import os
 import sys
 import time
 from subprocess import call
-import glob
 # external command to run havabol
 # java -classpath bin havabol.HavaBol for_loop.txt
 pids = []
-print (sys.argv[1])
+
 testFiles = os.listdir(sys.argv[1])
 outputFiles = []
 for testFile in testFiles:
@@ -21,5 +20,4 @@ for i in range (0, len(testFiles)):
         if (pids[index] == 0):
             time.sleep(i)
             call(["java", "-classpath", "bin", "havabol.HavaBol", sys.argv[1] + testFiles[index]])
-            #print (outputFiles[i])
-            sys.exit()
+            sys.exit(0)
